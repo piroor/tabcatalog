@@ -1,0 +1,9 @@
+radio[pane="prefpane-catalog"] {
+	list-style-image: url(pref-catalog.png);
+}
+radio[pane="prefpane-thumbnail"] {
+	list-style-image: url(pref-thumbnail.png);
+}
+radio[pane="prefpane-auto-show"] {
+	list-style-image: url(pref-auto.png);
+}

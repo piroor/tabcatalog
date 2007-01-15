@@ -1,0 +1,342 @@
+<?xml version="1.0"?>
+
+<?xml-stylesheet href="chrome://global/skin/"?>
+<?xml-stylesheet href="chrome://tabcatalog/skin/config.css"?>
+
+<!DOCTYPE prefwindow [
+<!ENTITY % versionDTD SYSTEM "chrome://tabcatalog/content/_version.dtd">
+%versionDTD;
+<!ENTITY % mainDTD SYSTEM "chrome://tabcatalog/locale/tabcatalog.dtd">
+%mainDTD;
+]>
+
+<prefwindow id="tabcatalog-config"
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	title="&tabcatalog.title;"
+	onload="sizeToContent();">
+
+<prefpane id="prefpane-catalog" label="&tabcatalog.tab.catalog;"
+	onpaneload="
+		shortcutShowHideCatalog = document.getElementById('shortcutShowHideCatalog');
+		shortcutShowHideCatalog.keyData = TabCatalog_parseShortcut(shortcutShowHideCatalog.value);
+	">
+	<preferences>
+		<preference id="extensions.tabcatalog.bothclick.enabled"
+			name="extensions.tabcatalog.bothclick.enabled"
+			type="bool"/>
+
+		<preference id="extensions.tabcatalog.override.ctrltab"
+			name="extensions.tabcatalog.override.ctrltab"
+			type="bool"/>
+		<preference id="extensions.tabcatalog.override.allinonegest"
+			name="extensions.tabcatalog.override.allinonegest"
+			type="bool"/>
+
+		<preference id="extensions.tabcatalog.shortcut"
+			name="extensions.tabcatalog.shortcut"
+			type="string"/>
+
+		<preference id="extensions.tabcatalog.animation.scroll.enabled"
+			name="extensions.tabcatalog.animation.scroll.enabled"
+			type="bool"/>
+
+		<preference id="extensions.tabcatalog.panning.scrollBehavior"
+			name="extensions.tabcatalog.panning.scrollBehavior"
+			type="int"/>
+
+		<preference id="extensions.tabcatalog.rendering_quality"
+			name="extensions.tabcatalog.rendering_quality"
+			type="int"/>
+
+		<!--preference id="extensions.tabcatalog.thumbnail.scale"
+			name="extensions.tabcatalog.thumbnail.scale"
+			type="int"/-->
+	</preferences>
+
+	<groupbox>
+		<caption label="&tabcatalog.override.caption;"/>
+
+		<hbox align="center">
+			<label value="&tabcatalog.override.shortcut;"/>
+			<textbox id="shortcutShowHideCatalog"
+				readonly="true"
+				style="width: 10em;"
+				preference="extensions.tabcatalog.shortcut"
+				dialogMessage="&tabcatalog.override.shortcut.dialog.message;"
+				dialogButton="&tabcatalog.override.shortcut.dialog.button;"/>
+			<button label="&tabcatalog.override.shortcut.set;"
+				oncommand="setShortcut(shortcutShowHideCatalog);"/>
+			<button label="&tabcatalog.override.shortcut.clear;"
+				oncommand="clearShortcut(shortcutShowHideCatalog);"/>
+		</hbox>
+
+		<checkbox id="tabcatalog.override.bothclick-check" flex="1"
+			label="&tabcatalog.override.bothclick;"
+			preference="extensions.tabcatalog.bothclick.enabled"/>
+
+		<checkbox id="tabcatalog.override.ctrltab-check" flex="1"
+			label="&tabcatalog.override.ctrltab;"
+			preference="extensions.tabcatalog.override.ctrltab"/>
+		<checkbox id="tabcatalog.override.allinonegest-check" flex="1"
+			label="&tabcatalog.override.allinonegest;"
+			preference="extensions.tabcatalog.override.allinonegest"/>
+	</groupbox>
+
+	<groupbox>
+		<caption label="&tabcatalog.panning.behavior;"/>
+		<vbox>
+			<radiogroup id="extensions.tabcatalog.panning.scrollBehavior-radiogroup"
+				preference="extensions.tabcatalog.panning.scrollBehavior"
+				orient="horizontal">
+				<radio value="0" label="&tabcatalog.panning.behavior.0;"/>
+				<radio value="1" label="&tabcatalog.panning.behavior.1;"/>
+			</radiogroup>
+		</vbox>
+	</groupbox>
+
+	<groupbox>
+		<caption label="&tabcatalog.rendering_quality.caption;"/>
+		<vbox>
+			<radiogroup id="extensions.tabcatalog.rendering_quality-radiogroup"
+				preference="extensions.tabcatalog.rendering_quality"
+				orient="horizontal">
+				<radio value="0" label="&tabcatalog.rendering_quality.low;"/>
+				<radio value="1" label="&tabcatalog.rendering_quality.middle;"/>
+				<radio value="2" label="&tabcatalog.rendering_quality.high;"/>
+			</radiogroup>
+			<checkbox id="tabcatalog.animation.scroll.enabled-check"
+				label="&tabcatalog.animation.scroll.enabled;"
+				preference="extensions.tabcatalog.animation.scroll.enabled"/>
+		</vbox>
+	</groupbox>
+
+	<!--groupbox>
+		<caption label="&tabcatalog.popupscale.caption;"/>
+		<hbox align="center">
+			<label value="&tabcatalog.popupscale.before;"
+				control="extensions.tabcatalog.thumbnail.scale-textbox"/>
+			<textbox id="extensions.tabcatalog.thumbnail.scale-textbox"
+				preference="extensions.tabcatalog.thumbnail.scale"
+				style="width: 5em;"
+				type="number" min="1" max="100" increment="1"/>
+			<label value="&tabcatalog.popupscale.after;"
+				control="extensions.tabcatalog.thumbnail.fix.scale-textbox"/>
+		</hbox>
+	</groupbox-->
+
+</prefpane>
+
+<prefpane id="prefpane-thumbnail" label="&tabcatalog.tab.thumbnail;">
+	<preferences>
+		<preference id="extensions.tabcatalog.sort_by_focus"
+			name="extensions.tabcatalog.sort_by_focus"
+			type="bool"/>
+
+		<preference id="extensions.tabcatalog.thumbnail.header"
+			name="extensions.tabcatalog.thumbnail.header"
+			type="bool"/>
+		<preference id="extensions.tabcatalog.thumbnail.closebox"
+			name="extensions.tabcatalog.thumbnail.closebox"
+			type="bool"/>
+
+		<preference id="extensions.tabcatalog.thumbnail.shortcut"
+			name="extensions.tabcatalog.thumbnail.shortcut"
+			type="bool"/>
+
+		<preference id="extensions.tabcatalog.thumbnail.min.size"
+			name="extensions.tabcatalog.thumbnail.min.size"
+			type="int"/>
+	</preferences>
+
+	<groupbox>
+		<caption label="&tabcatalog.appearance.caption;"/>
+		<vbox>
+			<checkbox id="tabcatalog.sort_by_focus-check"
+				label="&tabcatalog.sort_by_focus;"
+				preference="extensions.tabcatalog.sort_by_focus"/>
+
+			<checkbox id="tabcatalog.appearance.header-check" flex="1"
+				label="&tabcatalog.appearance.header;"
+				preference="extensions.tabcatalog.thumbnail.header"/>
+			<hbox>
+				<spacer style="width:1em;"/>
+				<checkbox id="tabcatalog.appearance.closebox-check" flex="1"
+					label="&tabcatalog.appearance.closebox;"
+					preference="extensions.tabcatalog.thumbnail.closebox"/>
+			</hbox>
+			<checkbox id="tabcatalog.thumbnail.shortcut.enable-check" flex="1"
+				label="&tabcatalog.thumbnail.shortcut.enable;"
+				preference="extensions.tabcatalog.thumbnail.shortcut"/>
+			<hbox align="center">
+				<label value="&tabcatalog.appearance.min.before;"
+					control="extensions.tabcatalog.thumbnail.min.size-textbox"/>
+				<textbox id="extensions.tabcatalog.thumbnail.min.size-textbox"
+					preference="extensions.tabcatalog.thumbnail.min.size"
+					style="width: 5em;"
+					type="number" min="0" increment="1"/>
+				<label value="&tabcatalog.appearance.min.after;"
+					control="extensions.tabcatalog.thumbnail.min.size-textbox"/>
+			</hbox>
+		</vbox>
+	</groupbox>
+</prefpane>
+
+<prefpane id="prefpane-auto-show" label="&tabcatalog.tab.auto_show;">
+	<preferences>
+		<preference id="extensions.tabcatalog.auto_show.enabled"
+			name="extensions.tabcatalog.auto_show.enabled"
+			type="bool"/>
+		<preference id="extensions.tabcatalog.auto_show.show_delay"
+			name="extensions.tabcatalog.auto_show.show_delay"
+			type="int"/>
+		<preference id="extensions.tabcatalog.auto_show.hide_delay"
+			name="extensions.tabcatalog.auto_show.hide_delay"
+			type="int"/>
+
+		<preference id="extensions.tabcatalog.auto_show.tabbar.enabled"
+			name="extensions.tabcatalog.auto_show.tabbar.enabled"
+			type="bool"/>
+		<preference id="extensions.tabcatalog.auto_show.tabbar.show_delay"
+			name="extensions.tabcatalog.auto_show.tabbar.show_delay"
+			type="int"/>
+		<preference id="extensions.tabcatalog.auto_show.tabbar.hide_delay"
+			name="extensions.tabcatalog.auto_show.tabbar.hide_delay"
+			type="int"/>
+	</preferences>
+
+	<groupbox>
+		<caption label="&tabcatalog.auto_show.caption;"/>
+		<vbox>
+			<checkbox id="tabcatalog.auto_show.enabled-check" flex="1"
+				label="&tabcatalog.auto_show.enabled;"
+				preference="extensions.tabcatalog.auto_show.enabled"/>
+
+			<hbox align="center">
+				<label value="&tabcatalog.auto_show.delay.show.before;"
+					control="tabcatalog.auto_show.delay.show-textbox"/>
+				<textbox id="tabcatalog.auto_show.delay.show-textbox"
+					preference="extensions.tabcatalog.auto_show.show_delay"
+					style="width: 5em;"
+					type="number" min="0" increment="1"/>
+				<label value="&tabcatalog.auto_show.delay.show.after;"
+					control="tabcatalog.auto_show.delay.show-textbox"/>
+			</hbox>
+
+			<hbox align="center">
+				<label value="&tabcatalog.auto_show.delay.hide.before;"
+					control="tabcatalog.auto_show.delay.hide-textbox"/>
+				<textbox id="tabcatalog.auto_show.delay.hide-textbox"
+					preference="extensions.tabcatalog.auto_show.hide_delay"
+					style="width: 5em;"
+					type="number" min="0" increment="1"/>
+				<label value="&tabcatalog.auto_show.delay.hide.after;"
+					control="tabcatalog.auto_show.delay.hide-textbox"/>
+			</hbox>
+		</vbox>
+	</groupbox>
+
+	<groupbox>
+		<caption label="&tabcatalog.auto_show.tabbar.caption;"/>
+		<vbox>
+			<checkbox id="tabcatalog.auto_show.tabbar.enabled-check" flex="1"
+				label="&tabcatalog.auto_show.tabbar.enabled;"
+				preference="extensions.tabcatalog.auto_show.tabbar.enabled"/>
+
+			<hbox align="center">
+				<label value="&tabcatalog.auto_show.tabbar.delay.show.before;"
+					control="tabcatalog.auto_show.tabbar.delay.show-textbox"/>
+				<textbox id="tabcatalog.auto_show.tabbar.delay.show-textbox"
+					preference="extensions.tabcatalog.auto_show.tabbar.show_delay"
+					style="width: 5em;"
+					type="number" min="0" increment="1"/>
+				<label value="&tabcatalog.auto_show.tabbar.delay.show.after;"
+					control="tabcatalog.auto_show.tabbar.delay.show-textbox"/>
+			</hbox>
+
+			<hbox align="center">
+				<label value="&tabcatalog.auto_show.tabbar.delay.hide.before;"
+					control="tabcatalog.auto_show.tabbar.delay.hide-textbox"/>
+				<textbox id="tabcatalog.auto_show.tabbar.delay.hide-textbox"
+					preference="extensions.tabcatalog.auto_show.tabbar.hide_delay"
+					style="width: 5em;"
+					type="number" min="0" increment="1"/>
+				<label value="&tabcatalog.auto_show.tabbar.delay.hide.after;"
+					control="tabcatalog.auto_show.tabbar.delay.hide-textbox"/>
+			</hbox>
+		</vbox>
+	</groupbox>
+</prefpane>
+
+<!--prefpane id="prefpane-about" label="&tabcatalog.tab.about;">
+	<preferences/>
+	<groupbox>
+		<caption label="&tabcatalog.about.title;"/>
+		<vbox>
+			<description value="&tabcatalog.about.name_before;&tabcatalog.version;&tabcatalog.about.name_after;"/>
+			<description value="&tabcatalog.about.destributed;"
+				href="&tabcatalog.about.destributed;"
+				onclick="loadURI(this.getAttribute('href'));"
+				class="text-link"/>
+		</vbox>
+	</groupbox>
+
+
+
+
+</prefpane-->
+
+<script src="keyParser.js" type="application/x-javascript"/>
+<script type="application/x-javascript"><![CDATA[
+
+const WindowManager = Components.classes['@mozilla.org/appshell/window-mediator;1'].getService(Components.interfaces.nsIWindowMediator);
+function opener()
+{
+	return WindowManager.getMostRecentWindow('navigator:browser');
+}
+
+function loadURI(uri)
+{
+	if (opener())
+		opener().loadURI(uri);
+	else
+		window.open(uri);
+}
+
+
+var shortcutShowHideCatalog;
+
+
+function setShortcut(aNode)
+{
+		window.openDialog(
+			'chrome://tabcatalog/content/keyDetecter.xul',
+			'_blank',
+			'chrome,modal,resizable=no,titlebar=no,centerscreen',
+			aNode.keyData,
+			shortcutShowHideCatalog.getAttribute('dialogMessage'),
+			shortcutShowHideCatalog.getAttribute('dialogButton')
+		);
+		if (aNode.keyData.modified) {
+			aNode.value = aNode.keyData.string;
+			var event = document.createEvent('UIEvents');
+			event.initUIEvent('input', true, false, window, 0);
+			aNode.dispatchEvent(event);
+		}
+}
+function clearShortcut(aNode)
+{
+	aNode.value = '';
+	aNode.keyData = TabCatalog_parseShortcut(aNode.value);
+	aNode.keyData.modified = true;
+
+	var event = document.createEvent('UIEvents');
+	event.initUIEvent('input', true, false, window, 0);
+	aNode.dispatchEvent(event);
+}
+
+
+]]></script>
+
+
+</prefwindow>
+

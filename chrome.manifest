@@ -1,0 +1,9 @@
+content	tabcatalog	jar:chrome/tabcatalog.jar!/content/tabcatalog/
+
+overlay	chrome://browser/content/browser.xul	chrome://tabcatalog/content/tabcatalog.xul
+overlay	chrome://global/content/customizeToolbar.xul	chrome://tabcatalog/content/tabcatalog.xul
+
+locale	tabcatalog	en-US	jar:chrome/tabcatalog.jar!/locale/en-US/tabcatalog/
+locale	tabcatalog	ja-JP	jar:chrome/tabcatalog.jar!/locale/ja-JP/tabcatalog/
+
+skin	tabcatalog	classic/1.0	jar:chrome/tabcatalog.jar!/skin/classic/tabcatalog/

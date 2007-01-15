@@ -1,0 +1,36 @@
+.dropshadow-tl,
+.dropshadow-tr,
+.dropshadow-bl,
+.dropshadow-br {
+	background: transparent url(tl.png) no-repeat 0 0;
+	min-width: 8px;
+	min-height: 8px;
+}
+.dropshadow-tr {
+	background-image: url(tr.png);
+}
+.dropshadow-bl {
+	background-image: url(bl.png);
+}
+.dropshadow-br {
+	background-image: url(br.png);
+}
+
+.dropshadow-l,
+.dropshadow-r {
+	background: transparent url(l.png) repeat-y 0 0;
+	min-width: 8px;
+}
+.dropshadow-r {
+	background-image: url(r.png);
+}
+
+.dropshadow-t,
+.dropshadow-b {
+	background: transparent url(t.png) repeat-x 0 0;
+	min-height: 8px;
+}
+.dropshadow-b {
+	background-image: url(b.png);
+}
+
