@@ -5,5 +5,6 @@ overlay	chrome://global/content/customizeToolbar.xul	chrome://tabcatalog/content
 
 locale	tabcatalog	en-US	jar:chrome/tabcatalog.jar!/locale/en-US/tabcatalog/
 locale	tabcatalog	ja-JP	jar:chrome/tabcatalog.jar!/locale/ja-JP/tabcatalog/
+locale	tabcatalog	de-DE	jar:chrome/tabcatalog.jar!/locale/de-DE/tabcatalog/
 
 skin	tabcatalog	classic/1.0	jar:chrome/tabcatalog.jar!/skin/classic/tabcatalog/

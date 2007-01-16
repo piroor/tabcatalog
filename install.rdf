@@ -7,12 +7,13 @@
                    em:name="Tab Catalog"
                    em:version="1.1.2006110601"
                    em:creator="SHIMODA Hiroshi"
-                   em:contributor="Ted Mielczarek"
                    em:description="Shows thumbnail-style catalog of tabs."
                    em:homepageURL="http://piro.sakura.ne.jp/xul/tabcatalog/"
                    em:iconURL="chrome://tabcatalog/content/icon.png"
                    em:optionsURL="chrome://tabcatalog/content/config.xul"
                    em:updateURL="http://piro.sakura.ne.jp/xul/xul.rdf.en">
+	<em:contributor>Ted Mielczarek</em:contributor>
+	<em:contributor>ReinekeFux (de-DE locale)</em:contributor>
     <em:targetApplication>
       <RDF:Description RDF:about="rdf:#$+oIke1"
                        em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"

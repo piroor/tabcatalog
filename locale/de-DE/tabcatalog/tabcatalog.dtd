@@ -1,0 +1,87 @@
+<!ENTITY tabcatalog.label       "Tab-Vorschau">
+<!ENTITY tabcatalog.tooltiptext "Zeigt eine Übersicht mit Vorschaubildern der Tab-Inhalte">
+
+<!ENTITY tabcatalog.popup.removeTabs  "Ausgewählte Tabs schließen">
+
+
+
+<!ENTITY tabcatalog.title "Tab Catalog - Einstellungen">
+
+
+
+<!ENTITY tabcatalog.tab.catalog   "Tab-Vorschau">
+
+<!ENTITY tabcatalog.override.caption      "Tab-Vorschau aufrufen">
+<!ENTITY tabcatalog.override.ctrltab      "Bei Tab-Wechsel mittels Tastaturkürzel Strg(Befehl)+Tabulator">
+<!ENTITY tabcatalog.override.allinonegest "Bei Mausrad-Navigation der Erweiterung &quot;All-in-One Gestures&quot;">
+
+<!ENTITY tabcatalog.override.shortcut                "Via Tastaturkürzel:">
+<!ENTITY tabcatalog.override.shortcut.set            "Ändern...">
+<!ENTITY tabcatalog.override.shortcut.clear          "Löschen">
+<!ENTITY tabcatalog.override.shortcut.dialog.message " Taste(n) für neues Kürzel drücken ">
+<!ENTITY tabcatalog.override.shortcut.dialog.button  "Abbrechen">
+
+<!ENTITY tabcatalog.override.bothclick       "Bei gleichzeitigem Drücken der linken und rechten Maustaste">
+
+
+<!ENTITY tabcatalog.panning.behavior         "Bildlauf-Modus für mittlere Maustaste">
+<!ENTITY tabcatalog.panning.behavior.0       "gegenläufig (wie Sroll-Leiste)">
+<!ENTITY tabcatalog.panning.behavior.1       "gleichläufig (in Bewegungsrichtung)">
+
+
+<!ENTITY tabcatalog.popupscale.caption       "Größe der Vorschaubilder">
+<!ENTITY tabcatalog.popupscale.before        "">
+<!ENTITY tabcatalog.popupscale.after         "&#x25;">
+
+<!ENTITY tabcatalog.rendering_quality.caption "Darstellungsqualität und Effekte">
+<!ENTITY tabcatalog.rendering_quality.low     "Niedrig (schnell, niedrige Qualität)">
+<!ENTITY tabcatalog.rendering_quality.middle  "Mittel">
+<!ENTITY tabcatalog.rendering_quality.high    "Hoch (langsam, hohe Qualität)">
+<!ENTITY tabcatalog.animation.scroll.enabled  "Sanften Bildlauf aktivieren">
+
+
+
+
+<!ENTITY tabcatalog.tab.thumbnail "Vorschaubilder">
+
+<!ENTITY tabcatalog.appearance.caption  "Einstellungen für Vorschaubilder">
+
+<!ENTITY tabcatalog.appearance.header   "Titelleiste anzeigen">
+<!ENTITY tabcatalog.appearance.closebox "Schließen-Schaltfläche anzeigen">
+<!ENTITY tabcatalog.appearance.min.before "Mindestgröße der Vorschaubilder: ">
+<!ENTITY tabcatalog.appearance.min.after  "Pixel">
+
+<!ENTITY tabcatalog.thumbnail.shortcut.enable   "Schnellzugriffstasten anzeigen">
+
+
+<!ENTITY tabcatalog.sort_by_focus  "Anordnen in der Reihefolge der letzten Benutzung">
+
+
+
+
+
+
+<!ENTITY tabcatalog.tab.auto_show "Automatische Anzeige">
+
+<!ENTITY tabcatalog.auto_show.caption  "Automatisches Einblenden der Vorschau für die Schaltfläche">
+<!ENTITY tabcatalog.auto_show.enabled "Beim Überfahren der Schaltfläche &quot;Tab-Vorschau&quot; mit der Maus">
+<!ENTITY tabcatalog.auto_show.delay.show.before "Anzeigen    ">
+<!ENTITY tabcatalog.auto_show.delay.show.after  "ms nach Berühren der Schaltfläche">
+<!ENTITY tabcatalog.auto_show.delay.hide.before "Ausblenden">
+<!ENTITY tabcatalog.auto_show.delay.hide.after  "ms nach Verlassen der Tab-Vorschau">
+
+<!ENTITY tabcatalog.auto_show.tabbar.caption  "Automatisches Einblenden der Vorschau für die Tab-Leiste">
+<!ENTITY tabcatalog.auto_show.tabbar.enabled "Beim Überfahren der Tab-Leiste mit der Maus">
+<!ENTITY tabcatalog.auto_show.tabbar.delay.show.before "Anzeigen    ">
+<!ENTITY tabcatalog.auto_show.tabbar.delay.show.after  "ms nach Berühren der Tab-Leiste">
+<!ENTITY tabcatalog.auto_show.tabbar.delay.hide.before "Ausblenden">
+<!ENTITY tabcatalog.auto_show.tabbar.delay.hide.after  "ms nach Verlassen der Tab-Vorschau">
+
+
+
+<!ENTITY tabcatalog.tab.about "Über">
+
+<!ENTITY tabcatalog.about.title       "Über Tab Catalog">
+<!ENTITY tabcatalog.about.name_before "Tab Catalog Version">
+<!ENTITY tabcatalog.about.name_after  " deutsch">
+<!ENTITY tabcatalog.about.destributed "http://www.erweiterungen.de/detail/Tab_Catalog/">
