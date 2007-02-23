@@ -1403,19 +1403,19 @@ var TabCatalog = {
 			}
 			box.childNodes[1].appendChild(canvas);
 
-			var div = document.createElementNS('http://www.w3.org/1999/xhtml', 'div');
-			div.posX = (offsetX + ((size.width + padding) * (colCount-1)));
-			div.posY = (offsetY + ((size.height + padding + header) * (rowCount-1)));
+			var thumbnail = document.createElement('thumbnail');
+			thumbnail.posX = (offsetX + ((size.width + padding) * (colCount-1)));
+			thumbnail.posY = (offsetY + ((size.height + padding + header) * (rowCount-1)));
 
-			div.style.position = 'absolute';
-			div.style.zIndex   = 65500;
-			div.style.left     = div.posX + 'px';
-			div.style.top      = div.posY + 'px';
+			thumbnail.style.position = 'absolute';
+			thumbnail.style.zIndex   = 65500;
+			thumbnail.style.left     = thumbnail.posX + 'px';
+			thumbnail.style.top      = thumbnail.posY + 'px';
 
-			div.setAttribute('class', 'tabcatalog-thumbnail-box');
-			div.appendChild(box);
+			thumbnail.setAttribute('class', 'tabcatalog-thumbnail-box');
+			thumbnail.appendChild(box);
 
-			this.catalog.appendChild(div);
+			this.catalog.appendChild(thumbnail);
 
 			if (
 				this.lastFocusedIndex == i ||
@@ -1424,7 +1424,7 @@ var TabCatalog = {
 					tabs[i] == gBrowser.selectedTab
 				)
 				) {
-				div.setAttribute('container-focused', true);
+				thumbnail.setAttribute('container-focused', true);
 				box.setAttribute('focused', true);
 				box.setAttribute('current', true);
 			}
@@ -1457,7 +1457,7 @@ var TabCatalog = {
 		this.catalog.scrollX    = 0;
 		this.catalog.scrollY    = 0;
 		this.catalog.maxScrollX = size.maxCol * (padding + size.width);
-		this.catalog.maxScrollY = div.posY + size.height - window.innerHeight + padding + header;
+		this.catalog.maxScrollY = thumbnail.posY + size.height - window.innerHeight + padding + header;
 
 		this.updateCanvas();
 	},

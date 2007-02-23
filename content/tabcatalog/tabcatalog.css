@@ -1,26 +1,25 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
-@namespace html url("http://www.w3.org/1999/xhtml");
 
 
-html|div[id="tabcatalog-thumbnail-container"]:not([show-thumbnail-header="true"]) .tabcatalog-thumbnail-header-box,
-html|div[id="tabcatalog-thumbnail-container"]:not([show-thumbnail-closebox="true"]) .tabcatalog-thumbnail-header-closebox,
-html|div[id="tabcatalog-thumbnail-container"]:not([show-thumbnail-shortcut="true"]) .tabcatalog-thumbnail-footer-box {
+#tabcatalog-thumbnail-container:not([show-thumbnail-header="true"]) .tabcatalog-thumbnail-header-box,
+#tabcatalog-thumbnail-container:not([show-thumbnail-closebox="true"]) .tabcatalog-thumbnail-header-closebox,
+#tabcatalog-thumbnail-container:not([show-thumbnail-shortcut="true"]) .tabcatalog-thumbnail-footer-box {
 	display: none;
 }
 
 
 
-html|div[id="tabcatalog-thumbnail-container"]:not([catalog-shown="true"]),
-html|div[id="tabcatalog-background"]:not([catalog-shown="true"]),
-html|div[id="tabcatalog-background-backup"]:not([catalog-shown="true"]),
-html|div[id="tabcatalog-background-canvas"]:not([catalog-shown="true"]) {
+#tabcatalog-thumbnail-container:not([catalog-shown="true"]),
+#tabcatalog-background:not([catalog-shown="true"]),
+#tabcatalog-background-backup:not([catalog-shown="true"]),
+#tabcatalog-background-canvas:not([catalog-shown="true"]) {
 	display: none;
 }
 
-html|div[id="tabcatalog-thumbnail-container"][catalog-shown="true"],
-html|div[id="tabcatalog-background"][catalog-shown="true"],
-html|div[id="tabcatalog-background-backup"][catalog-shown="true"],
-html|div[id="tabcatalog-background-canvas"][catalog-shown="true"] {
+#tabcatalog-thumbnail-container[catalog-shown="true"],
+#tabcatalog-background[catalog-shown="true"],
+#tabcatalog-background-backup[catalog-shown="true"],
+#tabcatalog-background-canvas[catalog-shown="true"] {
 	position: fixed;
 	top: 0;
 	left: 0;

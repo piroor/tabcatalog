@@ -51,13 +51,13 @@
 		onmouseover="TabCatalog.onMouseOver(event);">
 		<box id="tabcatalog-padding-size-box"/>
 		<box id="tabcatalog-header-size-box"/>
-		<html:div id="tabcatalog-background-canvas"/>
-		<html:div id="tabcatalog-background-backup"
+		<box id="tabcatalog-background-canvas"/>
+		<box id="tabcatalog-background-backup"
 			class="tabcatalog-background"/>
-		<html:div id="tabcatalog-background"
+		<box id="tabcatalog-background"
 			class="tabcatalog-background"
 			onclick="TabCatalog.hide();"/>
-		<html:div id="tabcatalog-thumbnail-container"/>
+		<box id="tabcatalog-thumbnail-container"/>
 	</hbox>
 	<data id="thumbnail-item-template">
 		<vbox class="tabcatalog-thumbnail"

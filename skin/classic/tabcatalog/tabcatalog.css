@@ -48,18 +48,18 @@ toolbar[iconsize="small"] #tabcatalog-button:hover {
 
 /* Thumbnails Container */
 
-html|div[id="tabcatalog-thumbnail-container"] > html|div {
+#tabcatalog-thumbnail-container > * {
 	border: 1px solid transparent !important;
 	-moz-binding: url(dropshadow.xml#only-box);
 	padding: 10px;
 	margin: -10px;
 }
-html|div[id="tabcatalog-thumbnail-container"] > html|div[container-focused="true"] {
+#tabcatalog-thumbnail-container > *[container-focused="true"] {
 	background: url(bg-focused.png) repeat !important;
 	border-color: #333 !important;
 }
 
-html|div[id="tabcatalog-thumbnail-container"][dropshadow="true"] > html|div {
+#tabcatalog-thumbnail-container[dropshadow="true"] > * {
 	-moz-binding: url(dropshadow.xml#dropshadow) !important;
 	padding: 0 2px 2px !important;
 	margin: -8px -10px -10px !important;
@@ -133,7 +133,7 @@ html|div[id="tabcatalog-thumbnail-container"][dropshadow="true"] > html|div {
 
 /* Background Screen */
 
-html|div.tabcatalog-background {
+.tabcatalog-background {
 	background: black;
 	opacity: 0.3;
 	margin: 0;
