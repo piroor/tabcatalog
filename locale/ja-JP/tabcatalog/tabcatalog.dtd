@@ -30,11 +30,6 @@
 <!ENTITY tabcatalog.panning.behavior.1       "画面をつかんだように動かす">
 
 
-<!ENTITY tabcatalog.popupscale.caption       "一覧のサイズ">
-<!ENTITY tabcatalog.popupscale.before        "">
-<!ENTITY tabcatalog.popupscale.after         "&#x25;">
-
-
 <!ENTITY tabcatalog.rendering_quality.caption "描画の画質と特殊効果">
 <!ENTITY tabcatalog.rendering_quality.low     "低（高速・見栄え劣）">
 <!ENTITY tabcatalog.rendering_quality.middle  "中">

@@ -18,7 +18,6 @@ pref("extensions.tabcatalog.thumbnail.header",   true);
 pref("extensions.tabcatalog.thumbnail.closebox", true);
 pref("extensions.tabcatalog.thumbnail.shortcut", false);
 
-pref("extensions.tabcatalog.thumbnail.scale",       80);
 pref("extensions.tabcatalog.thumbnail.min.enabled", true);
 pref("extensions.tabcatalog.thumbnail.min.size",    180);
 

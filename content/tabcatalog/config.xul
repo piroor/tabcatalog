@@ -47,10 +47,6 @@
 		<preference id="extensions.tabcatalog.rendering_quality"
 			name="extensions.tabcatalog.rendering_quality"
 			type="int"/>
-
-		<!--preference id="extensions.tabcatalog.thumbnail.scale"
-			name="extensions.tabcatalog.thumbnail.scale"
-			type="int"/-->
 	</preferences>
 
 	<groupbox>
@@ -109,20 +105,6 @@
 				preference="extensions.tabcatalog.animation.scroll.enabled"/>
 		</vbox>
 	</groupbox>
-
-	<!--groupbox>
-		<caption label="&tabcatalog.popupscale.caption;"/>
-		<hbox align="center">
-			<label value="&tabcatalog.popupscale.before;"
-				control="extensions.tabcatalog.thumbnail.scale-textbox"/>
-			<textbox id="extensions.tabcatalog.thumbnail.scale-textbox"
-				preference="extensions.tabcatalog.thumbnail.scale"
-				style="width: 5em;"
-				type="number" min="1" max="100" increment="1"/>
-			<label value="&tabcatalog.popupscale.after;"
-				control="extensions.tabcatalog.thumbnail.fix.scale-textbox"/>
-		</hbox>
-	</groupbox-->
 
 </prefpane>
 

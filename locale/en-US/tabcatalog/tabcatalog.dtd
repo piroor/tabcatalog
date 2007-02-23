@@ -29,10 +29,6 @@
 <!ENTITY tabcatalog.panning.behavior.1       "like grabbing Screen">
 
 
-<!ENTITY tabcatalog.popupscale.caption       "Size of the thumbnail list">
-<!ENTITY tabcatalog.popupscale.before        "">
-<!ENTITY tabcatalog.popupscale.after         "&#x25;">
-
 <!ENTITY tabcatalog.rendering_quality.caption "Rendering Quality and Effects">
 <!ENTITY tabcatalog.rendering_quality.low     "Low (rapid, looks unattractive)">
 <!ENTITY tabcatalog.rendering_quality.middle  "Middle">

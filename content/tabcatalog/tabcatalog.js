@@ -1486,11 +1486,10 @@ var TabCatalog = {
 		var boxObject = gBrowser.getBrowserForTab(gBrowser.selectedTab).boxObject;
 		var aspectRatio  = boxObject.height / boxObject.width;
 
-		var thumbnailScale = Math.min(Math.max(this.getPref('extensions.tabcatalog.thumbnail.scale'), 1), 100) / 100;
 		var minSize = this.getPref('extensions.tabcatalog.thumbnail.min.enabled') ? Math.min(this.getPref('extensions.tabcatalog.thumbnail.min.size'), (aspectRatio  < 1 ? boxObject.width : boxObject.height )) : -1;
 
-		var windowSize = ((w * h) / (tabNum / thumbnailScale));
-		var boxWidth = parseInt(Math.min(Math.sqrt(windowSize), window.outerWidth * 0.4)) - 4 - padding;
+		var thumbnailMaxSize = w * h * 0.8 / tabNum;
+		var boxWidth = parseInt(Math.min(Math.sqrt(thumbnailMaxSize), window.outerWidth * 0.4)) - 4 - padding;
 		var boxHeight = parseInt(boxWidth * aspectRatio );
 
 		var maxCol,

@@ -29,10 +29,6 @@
 <!ENTITY tabcatalog.panning.behavior.1       "gleichläufig (in Bewegungsrichtung)">
 
 
-<!ENTITY tabcatalog.popupscale.caption       "Größe der Vorschaubilder">
-<!ENTITY tabcatalog.popupscale.before        "">
-<!ENTITY tabcatalog.popupscale.after         "&#x25;">
-
 <!ENTITY tabcatalog.rendering_quality.caption "Darstellungsqualität und Effekte">
 <!ENTITY tabcatalog.rendering_quality.low     "Niedrig (schnell, niedrige Qualität)">
 <!ENTITY tabcatalog.rendering_quality.middle  "Mittel">

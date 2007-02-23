@@ -29,10 +29,6 @@
 <!ENTITY tabcatalog.panning.behavior.1       "jak przeciąganie ekranu">
 
 
-<!ENTITY tabcatalog.popupscale.caption       "Wielkość miniaturek">
-<!ENTITY tabcatalog.popupscale.before        "">
-<!ENTITY tabcatalog.popupscale.after         "&#x25;">
-
 <!ENTITY tabcatalog.rendering_quality.caption "Jakość miniaturek i efekty">
 <!ENTITY tabcatalog.rendering_quality.low     "Niska (szybkie, wygląda brzydko)">
 <!ENTITY tabcatalog.rendering_quality.middle  "Średnia">
