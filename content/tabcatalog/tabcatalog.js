@@ -1484,14 +1484,14 @@ var TabCatalog = {
 		var tabNum = this.tabs.length;
 
 		var boxObject = gBrowser.getBrowserForTab(gBrowser.selectedTab).boxObject;
-		var scale = boxObject.height / boxObject.width;
+		var aspectRatio  = boxObject.height / boxObject.width;
 
 		var thumbnailScale = Math.min(Math.max(this.getPref('extensions.tabcatalog.thumbnail.scale'), 1), 100) / 100;
-		var minSize = this.getPref('extensions.tabcatalog.thumbnail.min.enabled') ? Math.min(this.getPref('extensions.tabcatalog.thumbnail.min.size'), (scale < 1 ? boxObject.width : boxObject.height )) : -1;
+		var minSize = this.getPref('extensions.tabcatalog.thumbnail.min.enabled') ? Math.min(this.getPref('extensions.tabcatalog.thumbnail.min.size'), (aspectRatio  < 1 ? boxObject.width : boxObject.height )) : -1;
 
 		var windowSize = ((w * h) / (tabNum / thumbnailScale));
 		var boxWidth = parseInt(Math.min(Math.sqrt(windowSize), window.outerWidth * 0.4)) - 4 - padding;
-		var boxHeight = parseInt(boxWidth * scale);
+		var boxHeight = parseInt(boxWidth * aspectRatio );
 
 		var maxCol,
 			overflow = false;
@@ -1502,22 +1502,22 @@ var TabCatalog = {
 			) {
 			if (aRelative > 0) {
 				boxWidth = parseInt(Math.min(this.catalog.tnWidth * 1.2, boxObject.width));
-				boxHeight = parseInt(boxWidth * scale);
+				boxHeight = parseInt(boxWidth * aspectRatio );
 			}
 			else if (aRelative < 0) {
 				boxWidth = parseInt(Math.max(this.catalog.tnWidth * 0.8, header));
-				boxHeight = parseInt(boxWidth * scale);
+				boxHeight = parseInt(boxWidth * aspectRatio );
 			}
 			else {
-				if (scale < 1) {
+				if (aspectRatio  < 1) {
 					if (boxWidth <= minSize) {
 						boxWidth = minSize;
-						boxHeight = parseInt(boxWidth * scale);
+						boxHeight = parseInt(boxWidth * aspectRatio );
 					}
 				}
 				else if (boxHeight <= minSize) {
 					boxHeight = minSize;
-					boxWidth = parseInt(boxHeight / scale);
+					boxWidth = parseInt(boxHeight / aspectRatio );
 				}
 			}
 			maxCol = Math.max(1, Math.floor(w / (boxWidth + padding)));
@@ -1538,7 +1538,7 @@ var TabCatalog = {
 				maxRow = Math.ceil(tabNum/maxCol);
 				while ((boxHeight * maxRow) > h) {
 					boxWidth = parseInt(boxWidth * 0.9);
-					boxHeight = parseInt(boxWidth * scale);
+					boxHeight = parseInt(boxWidth * aspectRatio );
 				}
 			} while (boxWidthBackup != boxWidth);
 		}
