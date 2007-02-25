@@ -11,6 +11,8 @@
 
 <!ENTITY tabcatalog.tab.catalog   "Catalog">
 
+<!ENTITY tabcatalog.showAllWindows "Show all tabs in all windows">
+
 <!ENTITY tabcatalog.override.caption      "Show Thumbnail List for">
 <!ENTITY tabcatalog.override.ctrltab      "Ctrl(Command)-Tab to switch tabs">
 <!ENTITY tabcatalog.override.allinonegest "Scroll Wheel Navigation of &quot;All-In-One Gestures&quot; Extension">

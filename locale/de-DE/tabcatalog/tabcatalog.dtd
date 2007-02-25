@@ -11,6 +11,8 @@
 
 <!ENTITY tabcatalog.tab.catalog   "Tab-Vorschau">
 
+<!ENTITY tabcatalog.showAllWindows "Show all tabs in all windows">
+
 <!ENTITY tabcatalog.override.caption      "Tab-Vorschau aufrufen">
 <!ENTITY tabcatalog.override.ctrltab      "Bei Tab-Wechsel mittels Tastaturkürzel Strg(Befehl)+Tabulator">
 <!ENTITY tabcatalog.override.allinonegest "Bei Mausrad-Navigation der Erweiterung &quot;All-in-One Gestures&quot;">

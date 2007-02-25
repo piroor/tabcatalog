@@ -21,6 +21,14 @@
 		shortcutShowHideCatalog.keyData = TabCatalog_parseShortcut(shortcutShowHideCatalog.value);
 	">
 	<preferences>
+		<preference id="extensions.tabcatalog.showAllWindows"
+			name="extensions.tabcatalog.showAllWindows"
+			type="bool"/>
+
+		<preference id="extensions.tabcatalog.sort_by_focus"
+			name="extensions.tabcatalog.sort_by_focus"
+			type="bool"/>
+
 		<preference id="extensions.tabcatalog.bothclick.enabled"
 			name="extensions.tabcatalog.bothclick.enabled"
 			type="bool"/>
@@ -48,6 +56,14 @@
 			name="extensions.tabcatalog.rendering_quality"
 			type="int"/>
 	</preferences>
+
+	<checkbox id="tabcatalog.sort_by_focus-check"
+		label="&tabcatalog.sort_by_focus;"
+		preference="extensions.tabcatalog.sort_by_focus"/>
+
+	<checkbox id="extensions.tabcatalog.showAllWindows-check" flex="1"
+		label="&tabcatalog.showAllWindows;"
+		preference="extensions.tabcatalog.showAllWindows"/>
 
 	<groupbox>
 		<caption label="&tabcatalog.override.caption;"/>
@@ -110,10 +126,6 @@
 
 <prefpane id="prefpane-thumbnail" label="&tabcatalog.tab.thumbnail;">
 	<preferences>
-		<preference id="extensions.tabcatalog.sort_by_focus"
-			name="extensions.tabcatalog.sort_by_focus"
-			type="bool"/>
-
 		<preference id="extensions.tabcatalog.thumbnail.header"
 			name="extensions.tabcatalog.thumbnail.header"
 			type="bool"/>
@@ -130,13 +142,11 @@
 			type="int"/>
 	</preferences>
 
+<!--
 	<groupbox>
 		<caption label="&tabcatalog.appearance.caption;"/>
 		<vbox>
-			<checkbox id="tabcatalog.sort_by_focus-check"
-				label="&tabcatalog.sort_by_focus;"
-				preference="extensions.tabcatalog.sort_by_focus"/>
-
+-->
 			<checkbox id="tabcatalog.appearance.header-check" flex="1"
 				label="&tabcatalog.appearance.header;"
 				preference="extensions.tabcatalog.thumbnail.header"/>
@@ -159,8 +169,10 @@
 				<label value="&tabcatalog.appearance.min.after;"
 					control="extensions.tabcatalog.thumbnail.min.size-textbox"/>
 			</hbox>
+<!--
 		</vbox>
 	</groupbox>
+-->
 </prefpane>
 
 <prefpane id="prefpane-auto-show" label="&tabcatalog.tab.auto_show;">

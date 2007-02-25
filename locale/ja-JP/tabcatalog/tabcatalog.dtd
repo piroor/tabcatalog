@@ -12,6 +12,8 @@
 
 <!ENTITY tabcatalog.tab.catalog   "一覧表示">
 
+<!ENTITY tabcatalog.showAllWindows "すべてのウィンドウのタブを表示する">
+
 <!ENTITY tabcatalog.override.caption      "以下の場合にサムネイル一覧を表示する">
 <!ENTITY tabcatalog.override.ctrltab      "Ctrl(Command)-Tabでタブを切り替える時">
 <!ENTITY tabcatalog.override.allinonegest "&quot;All-In-One Gestures&quot;のスクロールホイールナビゲーションでタブを切り替える時">

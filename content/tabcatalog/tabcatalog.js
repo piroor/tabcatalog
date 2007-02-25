@@ -1753,7 +1753,8 @@ var TabCatalog = {
 		if (
 			!aForceUpdate &&
 			canvas.getAttribute('last-update-time') == this.catalog.getAttribute('last-shown-time') &&
-			canvas.getAttribute('current-uri') == aData.uri
+			canvas.getAttribute('current-uri') == aData.uri ||
+			!canvas.parentNode
 			)
 			return;
 
@@ -1776,12 +1777,7 @@ var TabCatalog = {
 			dump('TabCatalog Error: ' + e.message + '\n');
 		}
 
-		if (
-			aData.isMultiWindow &&
-			canvas.parentNode &&
-			tab.ownerDocument &&
-			tab.ownerDocument.defaultView
-			)
+		if (aData.isMultiWindow)
 			this.drawWindowIndicator(canvas, tab.ownerDocument.defaultView);
 
 		canvas.setAttribute('current-uri', aData.uri);

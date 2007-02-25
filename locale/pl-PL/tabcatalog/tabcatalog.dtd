@@ -7,6 +7,8 @@
 
 <!ENTITY tabcatalog.tab.catalog   "Katalog">
 
+<!ENTITY tabcatalog.showAllWindows "Show all tabs in all windows">
+
 <!ENTITY tabcatalog.override.caption      "Wyświetlanie katalogu miniatur">
 <!ENTITY tabcatalog.override.ctrltab      "Przełączaj pomiędzy kartami za pomocą Ctrl(Command)+Tab">
 <!ENTITY tabcatalog.override.allinonegest "Nawigacja kółkiem przewijania jak w rozszerzeniu &quot;All-In-One Gestures&quot;">
