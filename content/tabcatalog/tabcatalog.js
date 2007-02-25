@@ -88,8 +88,6 @@ var TabCatalog = {
 			var windows = this.browserWindows;
 			for (var i = 0; i < windows.length; i++)
 				tabs = tabs.concat(Array.prototype.slice.call(windows[i].gBrowser.mTabContainer.childNodes));
-
-			return tabs;
 		}
 		else {
 			tabs = gBrowser.mTabContainer.childNodes;
@@ -99,7 +97,8 @@ var TabCatalog = {
 		if (isSorted) {
 			var tmpTabs     = [];
 			var focusedTabs = [];
-			for (i = 0; i < max; i++)
+			var max = tabs.length;
+			for (var i = 0; i < max; i++)
 			{
 				if (tabs[i].__tabcatalog__lastSelectedTime)
 					focusedTabs.push(tabs[i]);
@@ -1325,10 +1324,12 @@ var TabCatalog = {
 	
 	show : function(aBase, aOnlyUpdate, aRelative) 
 	{
+		var tabs = this.tabs;
+
 		if (
 			this.callingAction ||
 			this.shown ||
-			this.tabs.length == 1 ||
+			tabs.length == 1 ||
 			this.isDisabled()
 			)
 			return;
@@ -1343,7 +1344,6 @@ var TabCatalog = {
 			this.hideTimer = null;
 		}
 
-		var tabs = this.tabs;
 		this.lastSelectedIndex = -1;
 		for (var i = 0, max = tabs.length; i < max; i++)
 		{
