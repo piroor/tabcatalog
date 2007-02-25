@@ -1,8 +1,8 @@
 var TabCatalog = { 
 	PREFROOT : 'extensions.{049952B3-A745-43bd-8D26-D1349B1ED944}',
-	
+	 
 /* Utilities */ 
-	
+	 
 /* elements */ 
 	
 	get button() { 
@@ -83,8 +83,93 @@ var TabCatalog = {
 	_tabSelectPopupMenu : null,
  
 	get tabs() { 
-		return gBrowser.mTabContainer.childNodes;
+		var tabs = [];
+		if (this.getPref('extensions.tabcatalog.showAllWindows')) {
+			var windows = this.browserWindows;
+			for (var i = 0; i < windows.length; i++)
+				tabs = tabs.concat(Array.prototype.slice.call(windows[i].gBrowser.mTabContainer.childNodes));
+
+			return tabs;
+		}
+		else {
+			tabs = gBrowser.mTabContainer.childNodes;
+		}
+
+		var isSorted = this.getPref('extensions.tabcatalog.sort_by_focus');
+		if (isSorted) {
+			var tmpTabs     = [];
+			var focusedTabs = [];
+			for (i = 0; i < max; i++)
+			{
+				if (tabs[i].__tabcatalog__lastSelectedTime)
+					focusedTabs.push(tabs[i]);
+				else
+					tmpTabs.push(tabs[i]);
+			}
+
+			focusedTabs.sort(
+				function(aTabA, aTabB)
+				{
+					return (aTabB.__tabcatalog__lastSelectedTime - aTabA.__tabcatalog__lastSelectedTime);
+				}
+			);
+
+			tabs = focusedTabs.concat(tmpTabs);
+		}
+
+		return tabs;
 	},
+ 
+	get browserWindows() 
+	{
+		var browserWindows = [];
+
+		var targets = this.WindowManager.getEnumerator('navigator:browser'),
+			target;
+		while (targets.hasMoreElements())
+		{
+			target = targets.getNext().QueryInterface(Components.interfaces.nsIDOMWindowInternal);
+			browserWindows.push(target);
+		}
+
+		// rearrange with z-order
+		var ordered = this.browserWindowsWithZOrder;
+		var results = [];
+		var i, j;
+		for (i in ordered)
+			for (j in browserWindows)
+				if (ordered[i] == browserWindows[j]) {
+					results.push(browserWindows[j]);
+					browserWindows.splice(j, 1);
+					break;
+				}
+
+		return results.concat(browserWindows); // result + rest windows (have not shown yet)
+	},
+ 
+	get browserWindowsWithZOrder() 
+	{
+		var browserWindows = [];
+
+		var targets = this.WindowManager.getZOrderDOMWindowEnumerator('navigator:browser', true),
+			target;
+		while (targets.hasMoreElements())
+		{
+			target = targets.getNext().QueryInterface(Components.interfaces.nsIDOMWindowInternal);
+			browserWindows.push(target);
+		}
+
+		return browserWindows;
+	},
+ 
+	get WindowManager() 
+	{
+		if (!this._WindowManager) {
+			this._WindowManager = Components.classes['@mozilla.org/appshell/window-mediator;1'].getService(Components.interfaces.nsIWindowMediator);
+		}
+		return this._WindowManager;
+	},
+	_WindowManager : null,
   
 /* state */ 
 	
@@ -224,7 +309,7 @@ var TabCatalog = {
  
 	getTabFromThumbnailItem : function(aItem) 
 	{
-		return this.tabs[parseInt(aItem.getAttribute('tabIndex'))];
+		return aItem.relatedTab;
 	},
  
 	getItemFromEvent : function(aEvent) 
@@ -323,8 +408,7 @@ var TabCatalog = {
 	{
 		var node = this.getItemFromEvent(aEvent);
 		if (node) {
-			var index = parseInt(node.getAttribute('tabIndex'));
-			document.popupNode = gBrowser.mTabContainer.childNodes[index];
+			document.popupNode = node.relatedTab;
 		}
 		else {
 			node = this.catalog;
@@ -370,9 +454,44 @@ var TabCatalog = {
 
 		return (title || uri) ? true : false ;
 	},
-  
+ 
+	drawWindowIndicator : function(aCanvas, aWindow) 
+	{
+		if (!aWindow.__tabcatalog__windowColor)
+			aWindow.__tabcatalog__windowColor = this.getRandomColor();
+
+		var box = aCanvas.parentNode.boxObject;
+		var size = Math.min(15, parseInt(Math.min(box.width, box.height) / 3));
+
+		try {
+			var ctx = aCanvas.getContext('2d');
+			ctx.save();
+			ctx.fillStyle = aWindow.__tabcatalog__windowColor;
+			ctx.beginPath();
+			ctx.moveTo(0, box.height - size);
+			ctx.lineTo(0, box.height);
+			ctx.lineTo(size, box.height);
+			ctx.fill();
+			ctx.restore();
+		}
+		catch(e) {
+			dump('TabCatalog Error: ' + e.message + '\n');
+		}
+	},
+ 
+	getRandomColor : function() 
+	{
+		var rgb = [0, 0, 0];
+		for (i in rgb)
+		{
+			rgb[i] = Math.floor(Math.random() * 256);
+		}
+
+		return 'rgba('+rgb.join(',')+', 0.75)';
+	},
+ 	 
 /* Initializing */ 
-	
+	 
 	init : function() 
 	{
 		if (!('gBrowser' in window)) return;
@@ -859,8 +978,9 @@ var TabCatalog = {
 						else {
 							var shortcutTarget = TabCatalog.catalog.parentNode.getElementsByAttribute('accesskey', String.fromCharCode(aEvent.charCode).toUpperCase());
 							if (shortcutTarget.length) {
-								gBrowser.selectedTab = TabCatalog.tabs[parseInt(shortcutTarget[0].getAttribute('tabIndex'))];
+								shortcutTarget[0].relatedTabBrowser.selectedTab = shortcutTarget[0].relatedTab;
 								TabCatalog.hide();
+								shortcutTarget[0].relatedTab.ownerDocument.defaultView.focus();
 								return;
 							}
 						}
@@ -921,8 +1041,8 @@ var TabCatalog = {
 
 		var focusedNode = TabCatalog.getFocusedItem();
 		if (focusedNode) {
-			var index = parseInt(focusedNode.getAttribute('tabIndex'));
-			gBrowser.selectedTab = TabCatalog.tabs[index];
+			focusedNode.relatedTabBrowser.selectedTab = focusedNode.relatedTab;
+			focusedNode.relatedTab.ownerDocument.defaultView.focus();
 		}
 
 		TabCatalog.hide();
@@ -949,7 +1069,7 @@ var TabCatalog = {
 			) */
 			) {
 			if (!this.ignoreMiddleClick && tab) {
-				gBrowser.removeTab(tab);
+				node.relatedTabBrowser.removeTab(tab);
 				if (this.getPref('extensions.tabcatalog.keep_open.closetab'))
 					this.updateUI();
 				else
@@ -971,7 +1091,8 @@ var TabCatalog = {
 		}
 		else {
 			if (tab) {
-				gBrowser.selectedTab = tab;
+				node.relatedTabBrowser.selectedTab = tab;
+				tab.ownerDocument.defaultView.focus();
 				this.hide();
 			}
 		}
@@ -994,8 +1115,7 @@ var TabCatalog = {
 		aEvent.preventDefault();
 		aEvent.stopPropagation();
 
-		var tab = this.getTabFromThumbnailItem(node);
-		gBrowser.removeTab(tab);
+		node.relatedTabBrowser.removeTab(node.relatedTab);
 		var base = this.callingAction;
 		if (this.getPref('extensions.tabcatalog.keep_open.closetab'))
 			this.updateUI();
@@ -1227,7 +1347,7 @@ var TabCatalog = {
 		this.lastSelectedIndex = -1;
 		for (var i = 0, max = tabs.length; i < max; i++)
 		{
-			if (tabs[i] == gBrowser.selectedTab) {
+			if (tabs[i] == tabs[i].ownerDocument.defaultView.gBrowser.selectedTab) {
 				this.lastSelectedIndex = i;
 				break;
 			}
@@ -1238,7 +1358,7 @@ var TabCatalog = {
 				!aOnlyUpdate &&
 				aRelative === void(0)
 			) ||
-			this.lastFocusedIndex >= this.tabs.length
+			this.lastFocusedIndex >= tabs.length
 			)
 			this.lastFocusedIndex = -1;
 
@@ -1309,7 +1429,7 @@ var TabCatalog = {
 
 
 		var focusedNode = this.getFocusedItem();
-		this.lastFocusedIndex = (focusedNode) ? parseInt(focusedNode.getAttribute('tabIndex')) : -1 ;
+		this.lastFocusedIndex = (focusedNode) ? parseInt(focusedNode.getAttribute('index')) : -1 ;
 
 		this.stopUpdateCanvas();
 		this.clear();
@@ -1361,30 +1481,6 @@ var TabCatalog = {
 		var tabs = this.tabs;
 		var max = tabs.length;
 
-		var isSorted = this.getPref('extensions.tabcatalog.sort_by_focus');
-		if (isSorted) {
-			var tmpTabs     = [];
-			var focusedTabs = [];
-			for (i = 0; i < max; i++)
-			{
-				tabs[i].__tabcatalog__index = i;
-				if (tabs[i].__tabcatalog__lastSelectedTime)
-					focusedTabs.push(tabs[i]);
-				else
-					tmpTabs.push(tabs[i]);
-			}
-
-			focusedTabs.sort(
-				function(aTabA, aTabB)
-				{
-					return (aTabB.__tabcatalog__lastSelectedTime - aTabA.__tabcatalog__lastSelectedTime);
-				}
-			);
-
-			tabs = focusedTabs.concat(tmpTabs);
-		}
-
-
 		var colCount = 0;
 		var rowCount = 1;
 
@@ -1401,9 +1497,12 @@ var TabCatalog = {
 					size.maxRow * (size.height + padding + header)
 				))/2) + (padding/2));
 
+		var isMultiWindow = this.getPref('extensions.tabcatalog.showAllWindows') && (this.browserWindows.length > 1);
+
+		var browser;
 		for (i = 0; i < max; i++)
 		{
-			var b   = gBrowser.getBrowserForTab(tabs[i]);
+			var b = tabs[i].linkedBrowser;
 
 			colCount++;
 			if (colCount > size.maxCol) {
@@ -1413,7 +1512,6 @@ var TabCatalog = {
 
 			var box = document.getElementById('thumbnail-item-template').firstChild.cloneNode(true);
 			box.setAttribute('index',    i);
-			box.setAttribute('tabIndex', isSorted ? tabs[i].__tabcatalog__index : i );
 			box.setAttribute('title',    b.contentDocument.title);
 			box.setAttribute('uri',      b.currentURI.spec);
 			box.setAttribute('width',    size.width);
@@ -1429,6 +1527,14 @@ var TabCatalog = {
 				box.lastChild.lastChild.setAttribute('value', accesskey);
 			}
 
+			box.relatedTab        = tabs[i];
+			box.relatedTabBrowser = tabs[i].__tabcatalog__relatedTabBrowser || tabs[i].parentNode;
+			while (box.relatedTabBrowser.localName != 'tabbrowser')
+			{
+				box.relatedTabBrowser = box.relatedTabBrowser.parentNode;
+				tabs[i].__tabcatalog__relatedTabBrowser = box.relatedTabBrowser;
+			}
+
 			// for Tabbrowser Extensions
 			var color = tabs[i].getAttribute('tab-color')
 			if (color && (color = color.split(':')[0]) != 'default')
@@ -1441,6 +1547,10 @@ var TabCatalog = {
 				canvas.setAttribute('mouseover', 'TabCatalog.updateOneCanvas(this.thumbnailData, true);');
 			}
 			box.childNodes[1].appendChild(canvas);
+			canvas.relatedBox = box;
+
+			if (isMultiWindow)
+				this.drawWindowIndicator(canvas, tabs[i].ownerDocument.defaultView);
 
 			var thumbnail = document.createElement('thumbnail');
 			thumbnail.posX = (offsetX + ((size.width + padding) * (colCount-1)));
@@ -1460,7 +1570,8 @@ var TabCatalog = {
 				this.lastFocusedIndex == i ||
 				(
 					this.lastFocusedIndex < 0 &&
-					tabs[i] == gBrowser.selectedTab
+					tabs[i] == tabs[i].__tabcatalog__relatedTabBrowser.selectedTab &&
+					tabs[i].ownerDocument.defaultView == window
 				)
 				) {
 				thumbnail.setAttribute('container-focused', true);
@@ -1471,11 +1582,13 @@ var TabCatalog = {
 			canvas.style.width  = canvas.style.maxWidth  = size.width+"px";
 			canvas.style.height = canvas.style.maxHeight = size.height+"px";
 			canvas.thumbnailData = {
-				index  : (isSorted ? tabs[i].__tabcatalog__index : i ),
+				tab    : tabs[i],
+				index  : i,
 				width  : size.width,
 				height : size.height,
 				canvas : canvas,
-				uri    : b.currentURI.spec
+				uri    : b.currentURI.spec,
+				isMultiWindow : isMultiWindow
 			};
 
 			this.updateThumbnail(box);
@@ -1502,8 +1615,8 @@ var TabCatalog = {
 	},
 	updateThumbnail : function(aThumbnailItem)
 	{
-		var tab = this.tabs[aThumbnailItem.getAttribute('tabIndex')];
-		var b   = gBrowser.getBrowserForTab(tab);
+		var tab = aThumbnailItem.relatedTab;
+		var b   = tab.linkedBrowser;
 		var w   = b.contentWindow;
 
 		aThumbnailItem.getElementsByAttribute('class', 'tabcatalog-thumbnail-header-label')[0].setAttribute('value', b.contentDocument.title);
@@ -1616,7 +1729,7 @@ var TabCatalog = {
 
 			var data   = cue[i];
 			var canvas = data.canvas;
-			var tab    = this.tabs[data.index];
+			var tab    = data.tab;
 
 			if (tab.getAttribute('busy')) {
 				newCue.push(data);
@@ -1647,21 +1760,29 @@ var TabCatalog = {
 		canvas.width  = canvas.maxWidth  = aData.width;
 		canvas.height = canvas.maxHeight = aData.height;
 
-		var tab = this.tabs[aData.index];
-		var b   = gBrowser.getBrowserForTab(tab);
+		var tab = aData.tab;
+		var b   = tab.linkedBrowser;
 		var w   = b.contentWindow;
 
 		try {
-			var ctx = canvas.getContext("2d");
+			var ctx = canvas.getContext('2d');
 			ctx.clearRect(0, 0, aData.width, aData.height);
 			ctx.save();
 			ctx.scale(aData.width/w.innerWidth, aData.height/w.innerHeight);
-			ctx.drawWindow(w, w.scrollX, w.scrollY, w.innerWidth, w.innerHeight, "rgb(255,255,255)");
+			ctx.drawWindow(w, w.scrollX, w.scrollY, w.innerWidth, w.innerHeight, 'rgb(255,255,255)');
 			ctx.restore();
 		}
 		catch(e) {
 			dump('TabCatalog Error: ' + e.message + '\n');
 		}
+
+		if (
+			aData.isMultiWindow &&
+			canvas.parentNode &&
+			tab.ownerDocument &&
+			tab.ownerDocument.defaultView
+			)
+			this.drawWindowIndicator(canvas, tab.ownerDocument.defaultView);
 
 		canvas.setAttribute('current-uri', aData.uri);
 		canvas.setAttribute('last-update-time', this.catalog.getAttribute('last-shown-time'));
@@ -1673,7 +1794,13 @@ var TabCatalog = {
 	{
 		var nodes = this.catalog.getElementsByTagNameNS('http://www.w3.org/1999/xhtml', 'canvas');
 		for (var i = nodes.length-1; i > -1; i--)
+		{
+			delete nodes[i].relatedBox.relatedTab;
+			delete nodes[i].relatedBox.relatedTabBrowser;
+			delete nodes[i].relatedBox;
+			delete nodes[i].thumbnailData;
 			nodes[i].parentNode.removeChild(nodes[i]);
+		}
 
 		var range = document.createRange();
 		range.selectNodeContents(this.catalog);
@@ -1864,12 +1991,8 @@ var TabCatalog = {
 			)
 			return;
 
-		var tabs = [];
-		for (i = 0; i < max; i++) {
-			tabs.push(this.getTabFromThumbnailItem(nodes.snapshotItem(i)));
-		}
 		for (i = max-1; i > -1; i--) {
-			gBrowser.removeTab(tabs[i]);
+			nodes.snapshotItem(i).relatedTabBrowser.removeTab(nodes.snapshotItem(i).relatedTab);
 		}
 
 		var base = this.callingAction;
@@ -1930,8 +2053,7 @@ var TabCatalog = {
 	{
 		var focusedNode = TabCatalog.getFocusedItem();
 		if (focusedNode) {
-			var index = parseInt(focusedNode.getAttribute('tabIndex'));
-			gBrowser.selectedTab = TabCatalog.tabs[index];
+			focusedNode.relatedTabBrowser.selectedTab = focusedNode.relatedTab;
 		}
 		TabCatalog.hide();
 		aioTabPU.closePopup('void(0)');

@@ -12,6 +12,8 @@ pref("extensions.tabcatalog.zoom.reverseWheelScrollDirection", false);
 
 pref("extensions.tabcatalog.rendering_quality", 1);
 
+pref("extensions.tabcatalog.showAllWindows", true);
+
 pref("extensions.tabcatalog.animation.scroll.enabled", true);
 pref("extensions.tabcatalog.animation.scroll.timeout", 150);
 
