@@ -227,7 +227,7 @@ var TabCatalog = {
 		return this.tabs[parseInt(aItem.getAttribute('tabIndex'))];
 	},
  
-	getActiveItemFromEvent : function(aEvent) 
+	getItemFromEvent : function(aEvent) 
 	{
 		var target;
 		try {
@@ -321,7 +321,7 @@ var TabCatalog = {
   
 	showPopupMenu : function(aEvent, aPopupMenu) 
 	{
-		var node = this.getActiveItemFromEvent(aEvent);
+		var node = this.getItemFromEvent(aEvent);
 		if (node) {
 			var index = parseInt(node.getAttribute('tabIndex'));
 			document.popupNode = gBrowser.mTabContainer.childNodes[index];
@@ -343,7 +343,7 @@ var TabCatalog = {
  
 	fillInTooltip : function(aNode) 
 	{
-		aNode = this.getActiveItemFromEvent({ target : aNode });
+		aNode = this.getItemFromEvent({ target : aNode });
 		if (!aNode) return false;
 
 		var tooltip = document.getElementById('tabcatalog-tooltip');
@@ -474,9 +474,17 @@ var TabCatalog = {
 	{
 		if (
 			TabCatalog.shown &&
+			aEvent.button == 2 &&
+			!TabCatalog.isDisabled() &&
+			!TabCatalog.isEventFiredInMenu(aEvent)
+			) {
+			TabCatalog.catalogZooming = true;
+		}
+		else if (
+			TabCatalog.shown &&
 			aEvent.button != 1 &&
 			!TabCatalog.isDisabled() &&
-			!TabCatalog.getActiveItemFromEvent(aEvent) &&
+			!TabCatalog.getItemFromEvent(aEvent) &&
 			!TabCatalog.isEventFiredInMenu(aEvent)
 			) {
 			TabCatalog.hide();
@@ -501,8 +509,8 @@ var TabCatalog = {
 	onMouseUp : function(aEvent) 
 	{
 		if (
-			!TabCatalog.isDisabled() &&
 			!TabCatalog.shown &&
+			!TabCatalog.isDisabled() &&
 			TabCatalog.getPref('extensions.tabcatalog.bothclick.enabled') &&
 			TabCatalog.button0Pressed && TabCatalog.button2Pressed
 			) {
@@ -517,6 +525,8 @@ var TabCatalog = {
 		}
 		else
 			window.setTimeout('TabCatalog.button'+aEvent.button+'Pressed = false;', TabCatalog.getPref('extensions.tabcatalog.bothclick.delay'));
+
+		window.setTimeout('TabCatalog.catalogZooming = false;');
 	},
  
 	onMouseOver : function(aEvent) 
@@ -528,7 +538,7 @@ var TabCatalog = {
 			this.isDisabled())
 			return;
 
-		var node = this.getActiveItemFromEvent(aEvent);
+		var node = this.getItemFromEvent(aEvent);
 		if (node == this.lastMouseOverThumbnail) return;
 		this.lastMouseOverThumbnail = node;
 
@@ -922,7 +932,7 @@ var TabCatalog = {
 	
 	onCatalogClick : function(aEvent) 
 	{
-		var node = this.getActiveItemFromEvent(aEvent);
+		var node = this.getItemFromEvent(aEvent);
 
 		var tab;
 		if (node)
@@ -970,9 +980,15 @@ var TabCatalog = {
 		aEvent.stopPropagation();
 	},
  
+	onBackgroundClick : function(aEvent) 
+	{
+		if (!this.catalogZooming)
+			this.hide();
+	},
+ 
 	onThumbnailCloseBoxClick : function(aEvent) 
 	{
-		var node = this.getActiveItemFromEvent(aEvent);
+		var node = this.getItemFromEvent(aEvent);
 		if (!node) return;
 
 		aEvent.preventDefault();
@@ -989,7 +1005,7 @@ var TabCatalog = {
  
 	onCatalogDragStart : function(aEvent) 
 	{
-		var node = TabCatalog.getActiveItemFromEvent(aEvent);
+		var node = TabCatalog.getItemFromEvent(aEvent);
 		TabCatalog.thumbnailDragging = true;
 		node.setAttribute('selected', true);
 	},
@@ -1006,15 +1022,37 @@ var TabCatalog = {
  
 	onWheelScroll : function(aEvent) 
 	{
-		var h = Math.max(
-				TabCatalog.catalog.tnHeight / 2,
-				window.innerHeight / 5
-			);
-		TabCatalog.scrollCatalogBy((aEvent.detail > 0 ? 1 : -1) * h);
+		if (TabCatalog.catalogZooming) {
+			var dir = aEvent.detail;
+			if (TabCatalog.getPref('extensions.tabcatalog.zoom.reverseWheelScrollDirection')) dir = -dir;
 
-		aEvent.preventDefault();
-		aEvent.stopPropagation();
+			if (
+				(dir > 0 && TabCatalog.scrollCounter < 0) ||
+				(dir < 0 && TabCatalog.scrollCounter > 0)
+				)
+				TabCatalog.scrollCounter = 0;
+
+			TabCatalog.scrollCounter += dir;
+			if (Math.abs(TabCatalog.scrollCounter) >= TabCatalog.scrollThreshold) {
+				TabCatalog.zoom(dir);
+				TabCatalog.scrollCounter = 0;
+			}
+
+			aEvent.preventDefault();
+			aEvent.stopPropagation();
+		}
+		else if (TabCatalog.catalog.overflow) {
+			var h = Math.max(
+					TabCatalog.catalog.tnHeight / 2,
+					window.innerHeight / 5
+				);
+			TabCatalog.scrollCatalogBy((aEvent.detail > 0 ? 1 : -1) * h);
+			aEvent.preventDefault();
+			aEvent.stopPropagation();
+		}
 	},
+	scrollCounter : 0,
+	scrollThreshold : 5,
  
 	onPanningScroll : function(aEvent) 
 	{
@@ -1211,9 +1249,9 @@ var TabCatalog = {
 		this.button1Pressed = false;
 		this.button2Pressed = false;
 
+		window.addEventListener('DOMMouseScroll', this.onWheelScroll, true);
 		if (this.catalog.overflow) {
-			window.addEventListener('DOMMouseScroll', this.onWheelScroll, true);
-			window.addEventListener('mousemove',      this.onPanningScroll, true);
+			window.addEventListener('mousemove', this.onPanningScroll, true);
 		}
 		window.addEventListener('resize', this.onCancel, true);
 		window.addEventListener('blur',   this.onCancel, true);
@@ -1257,9 +1295,9 @@ var TabCatalog = {
 
 		this.catalogHiding = true;
 
+		window.removeEventListener('DOMMouseScroll', this.onWheelScroll, true);
 		if (this.catalog.overflow) {
-			window.removeEventListener('DOMMouseScroll', this.onWheelScroll, true);
-			window.removeEventListener('mousemove',      this.onPanningScroll, true);
+			window.removeEventListener('mousemove', this.onPanningScroll, true);
 		}
 		window.removeEventListener('resize', this.onCancel, true);
 		window.removeEventListener('blur',   this.onCancel, true);
@@ -1279,6 +1317,7 @@ var TabCatalog = {
 		this.shown = false;
 
 		this.button0Pressed = false;
+		this.button1Pressed = false;
 		this.button2Pressed = false;
 
 		window.setTimeout('TabCatalog.tabSelectPopupMenu.hidePopup();', 10);
@@ -1488,11 +1527,12 @@ var TabCatalog = {
 
 		var minSize = this.getPref('extensions.tabcatalog.thumbnail.min.enabled') ? Math.min(this.getPref('extensions.tabcatalog.thumbnail.min.size'), (aspectRatio  < 1 ? boxObject.width : boxObject.height )) : -1;
 
-		var thumbnailMaxSize = w * h * 0.8 / tabNum;
-		var boxWidth = parseInt(Math.min(Math.sqrt(thumbnailMaxSize), window.outerWidth * 0.4)) - 4 - padding;
+		var thumbnailMaxSize = w * h * 0.9 / tabNum;
+		var boxWidth = parseInt(Math.min(Math.sqrt(thumbnailMaxSize), window.outerWidth * 0.5)) - padding;
 		var boxHeight = parseInt(boxWidth * aspectRatio );
 
 		var maxCol,
+			maxRow,
 			overflow = false;
 
 		if (
@@ -1500,11 +1540,11 @@ var TabCatalog = {
 			minSize > 0
 			) {
 			if (aRelative > 0) {
-				boxWidth = parseInt(Math.min(this.catalog.tnWidth * 1.2, boxObject.width));
+				boxWidth = parseInt(Math.min(this.catalog.tnWidth * 1.2, boxObject.width - padding - padding));
 				boxHeight = parseInt(boxWidth * aspectRatio );
 			}
 			else if (aRelative < 0) {
-				boxWidth = parseInt(Math.max(this.catalog.tnWidth * 0.8, header));
+				boxWidth = parseInt(Math.max(this.catalog.tnWidth * 0.7, header));
 				boxHeight = parseInt(boxWidth * aspectRatio );
 			}
 			else {
@@ -1519,35 +1559,39 @@ var TabCatalog = {
 					boxWidth = parseInt(boxHeight / aspectRatio );
 				}
 			}
-			maxCol = Math.max(1, Math.floor(w / (boxWidth + padding)));
-			overflow = ((boxHeight + padding + header) * Math.ceil(tabNum / maxCol)) > h ;
+			maxCol = Math.max(1, Math.floor((w - padding) / (boxWidth + padding)));
 		}
 		else {
-			var boxWidthBackup,
-				maxRow;
+			maxCol = Math.ceil(Math.sqrt(tabNum));
+			while (maxCol > 1 && ((boxWidth + padding) * maxCol + padding) >= w)
+			{
+				maxCol--;
+			}
 
 			do {
-				maxCol = Math.ceil(Math.sqrt(tabNum));
-				while (maxCol > 1 && (boxWidth * maxCol) > w) {
-					maxCol--;
-				}
-
-				boxWidthBackup = boxWidth;
-
 				maxRow = Math.ceil(tabNum/maxCol);
-				while ((boxHeight * maxRow) > h) {
-					boxWidth = parseInt(boxWidth * 0.9);
-					boxHeight = parseInt(boxWidth * aspectRatio );
+
+				if (((boxHeight + padding + header) * maxRow + padding) < h) {
+					break;
 				}
-			} while (boxWidthBackup != boxWidth);
+
+				boxWidth = parseInt(boxWidth * 0.9);
+				boxHeight = parseInt(boxWidth * aspectRatio );
+
+				if (((boxWidth + padding) * (maxCol + 1) + padding) < w)
+					maxCol++;
+			} while (true);
 		}
 
+		maxCol = Math.min(maxCol, tabNum);
+		maxRow = Math.max(1, Math.ceil(tabNum / maxCol));
+		overflow = ((boxHeight + padding + header) * maxRow + padding) > h ;
 
 		return {
 			width    : boxWidth,
 			height   : boxHeight,
 			maxCol   : maxCol,
-			maxRow   : Math.ceil(tabNum / maxCol),
+			maxRow   : maxRow,
 			overflow : overflow
 		};
 	},

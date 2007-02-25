@@ -6,7 +6,9 @@ pref("extensions.tabcatalog.shortcut", "F8");
 pref("extensions.tabcatalog.override.ctrltab", true);
 pref("extensions.tabcatalog.override.allinonegest", true);
 
-pref("extensions.tabcatalog.sort_by_focus", false);
+pref("extensions.tabcatalog.bothclick.delay",   100);
+
+pref("extensions.tabcatalog.zoom.reverseWheelScrollDirection", false);
 
 pref("extensions.tabcatalog.rendering_quality", 1);
 

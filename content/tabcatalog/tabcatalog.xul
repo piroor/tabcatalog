@@ -56,7 +56,7 @@
 			class="tabcatalog-background"/>
 		<box id="tabcatalog-background"
 			class="tabcatalog-background"
-			onclick="TabCatalog.hide();"/>
+			onclick="TabCatalog.onBackgroundClick();"/>
 		<box id="tabcatalog-thumbnail-container"/>
 	</hbox>
 	<data id="thumbnail-item-template">

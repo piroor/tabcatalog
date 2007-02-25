@@ -1,83 +1,74 @@
-<!ENTITY tabcatalog.label       "Katalog kart">
-<!ENTITY tabcatalog.tooltiptext "Pokaż miniaturki otwartych stron">
+<!ENTITY tabcatalog.label       "Miniatury">
+<!ENTITY tabcatalog.tooltiptext "Wyświetla katalog miniatur otwartych w kartach stron">
 
 <!ENTITY tabcatalog.popup.removeTabs  "Zamknij zaznaczone karty">
 
-
-
-<!ENTITY tabcatalog.title "Konfiguracja Katalogu kart">
-
-
+<!ENTITY tabcatalog.title "Tab Catalog - ustawienia">
 
 <!ENTITY tabcatalog.tab.catalog   "Katalog">
 
-<!ENTITY tabcatalog.override.caption      "Pokaż listę miniatur dla">
-<!ENTITY tabcatalog.override.ctrltab      "Ctrl-Tab">
-<!ENTITY tabcatalog.override.allinonegest "Nawigacji kółkiem dostępnej z rozszerzenia &quot;All-In-One Gestures&quot;">
+<!ENTITY tabcatalog.override.caption      "Wyświetlanie katalogu miniatur">
+<!ENTITY tabcatalog.override.ctrltab      "Przełączaj pomiędzy kartami za pomocą Ctrl(Command)+Tab">
+<!ENTITY tabcatalog.override.allinonegest "Nawigacja kółkiem przewijania jak w rozszerzeniu &quot;All-In-One Gestures&quot;">
 
 <!ENTITY tabcatalog.override.shortcut                "Skrót klawiaturowy:">
 <!ENTITY tabcatalog.override.shortcut.set            "Ustaw">
 <!ENTITY tabcatalog.override.shortcut.clear          "Wyczyść">
-<!ENTITY tabcatalog.override.shortcut.dialog.message "Naciśnij skrót">
+<!ENTITY tabcatalog.override.shortcut.dialog.message "Naciśnij nową kombinację klawiszy">
 <!ENTITY tabcatalog.override.shortcut.dialog.button  "Anuluj">
 
-<!ENTITY tabcatalog.override.bothclick       "Kliknięcia jednocześnie lewego i prawego przycisku myszy">
+<!ENTITY tabcatalog.override.bothclick       "Podwójne kliknięcie (naciśnięcie jednocześnie prawego i lewego przycisku myszy)">
 
 
-<!ENTITY tabcatalog.panning.behavior         "Przewijanie panoramiczne">
+<!ENTITY tabcatalog.panning.behavior         "Płynne przwijanie">
 <!ENTITY tabcatalog.panning.behavior.0       "jak przeciąganie paska przewijania">
 <!ENTITY tabcatalog.panning.behavior.1       "jak przeciąganie ekranu">
 
 
-<!ENTITY tabcatalog.rendering_quality.caption "Jakość miniaturek i efekty">
-<!ENTITY tabcatalog.rendering_quality.low     "Niska (szybkie, wygląda brzydko)">
-<!ENTITY tabcatalog.rendering_quality.middle  "Średnia">
-<!ENTITY tabcatalog.rendering_quality.high    "Wysoka (wolne, wygląda ładnie)">
-<!ENTITY tabcatalog.animation.scroll.enabled  "Płynnie przewijaj listę miniatur">
+<!ENTITY tabcatalog.popupscale.caption       "Wielkość katalogu miniatur">
+<!ENTITY tabcatalog.popupscale.before        "">
+<!ENTITY tabcatalog.popupscale.after         "&#x25;">
 
-
-
+<!ENTITY tabcatalog.rendering_quality.caption "Jakość efektów i renderowania">
+<!ENTITY tabcatalog.rendering_quality.low     "niska (szybka, mało atrakcyjny wygląd)">
+<!ENTITY tabcatalog.rendering_quality.middle  "średnia">
+<!ENTITY tabcatalog.rendering_quality.high    "wysoka (wolno, atrakcyjny wygląd)">
+<!ENTITY tabcatalog.animation.scroll.enabled  "Płynne przewijanie katalogu miniatur">
 
 <!ENTITY tabcatalog.tab.thumbnail "Miniatury">
 
 <!ENTITY tabcatalog.appearance.caption  "Opcje miniatur">
 
-<!ENTITY tabcatalog.appearance.header   "Pokazuj pasek tytułu karty">
-<!ENTITY tabcatalog.appearance.closebox "Pokazuj przycisk zamknięcia karty">
-<!ENTITY tabcatalog.appearance.min.before "Pokazuj każdą miniaturkę większą niż">
-<!ENTITY tabcatalog.appearance.min.after  "piksel(e/i)">
+<!ENTITY tabcatalog.appearance.header   "Wyświetl pasek tytułu dla każdej miniatury">
+<!ENTITY tabcatalog.appearance.closebox "Wyświetl przycisk zamykania na każdej miniaturze">
+<!ENTITY tabcatalog.appearance.min.before "Wielkość wyświetlanych miniatur nie mniejsza niż">
+<!ENTITY tabcatalog.appearance.min.after  "pikseli">
 
-<!ENTITY tabcatalog.thumbnail.shortcut.enable   "Przypisz każdej miniaturce skrót klawiszowy">
+<!ENTITY tabcatalog.thumbnail.shortcut.enable   "Przypisz każdej mniaturze skrót klawiaturowy">
 
+<!ENTITY tabcatalog.sort_by_focus  "Wyświetl w kolejności najczęściej oglądanych">
 
-<!ENTITY tabcatalog.sort_by_focus  "Sortuj w kolejności użycia">
+<!ENTITY tabcatalog.tab.auto_show "Wyświetlanie">
 
+<!ENTITY tabcatalog.auto_show.caption  "Automatyczne wyświetlanie katalogu miniatur">
+<!ENTITY tabcatalog.auto_show.enabled "Wyświetl katalog miniatur po wskazaniu przycisku &quot;Miniatury&quot; wskaźnikiem myszy">
+<!ENTITY tabcatalog.auto_show.delay.show.before "Wyświetl katalog po">
+<!ENTITY tabcatalog.auto_show.delay.show.after  "msek po wskazaniu przycisku">
+<!ENTITY tabcatalog.auto_show.delay.hide.before "Ukryj katalog po">
+<!ENTITY tabcatalog.auto_show.delay.hide.after  "msek od momentu przesunięcia wskaźnika poza katalog">
 
-
-
-
-
-<!ENTITY tabcatalog.tab.auto_show "Automatyczne wyskakiwanie">
-
-<!ENTITY tabcatalog.auto_show.caption  "Autowyskakiwanie miniatur po najechaniu na przycisk Katalogu Kart">
-<!ENTITY tabcatalog.auto_show.enabled "Gdy myszka znajdzie się na przycisku Katalogu kart, uruchom Katalog automatycznie">
-<!ENTITY tabcatalog.auto_show.delay.show.before "Pokaż listę w">
-<!ENTITY tabcatalog.auto_show.delay.show.after  "milisekund po najechaniu myszką na przycisk.">
-<!ENTITY tabcatalog.auto_show.delay.hide.before "Ukryj listę w">
-<!ENTITY tabcatalog.auto_show.delay.hide.after  "milisekund po odjechaniu myszką.">
-
-<!ENTITY tabcatalog.auto_show.tabbar.caption  "Autowyskakiwanie miniatur po najechaniu na pasek kart">
-<!ENTITY tabcatalog.auto_show.tabbar.enabled "Gdy myszka znajduje się na pasku kart, uruchom Katalog automatycznie">
-<!ENTITY tabcatalog.auto_show.tabbar.delay.show.before "Pokaż listę w">
-<!ENTITY tabcatalog.auto_show.tabbar.delay.show.after  "milisekund po najechaniu myszką na karty.">
-<!ENTITY tabcatalog.auto_show.tabbar.delay.hide.before "Ukryj listę w">
-<!ENTITY tabcatalog.auto_show.tabbar.delay.hide.after  "milisekund po odjechaniu myszką.">
+<!ENTITY tabcatalog.auto_show.tabbar.caption  "Automatyczne wyświetlanie katalogu miniatur po wskazaniu paska kart">
+<!ENTITY tabcatalog.auto_show.tabbar.enabled "Wyświetl katalog miniatur po wskazaniu wskaźnikiem myszy paska kart">
+<!ENTITY tabcatalog.auto_show.tabbar.delay.show.before "Wyświetl katalog po">
+<!ENTITY tabcatalog.auto_show.tabbar.delay.show.after  "msek po wskazaniu wskaźnikiem myszy paska kart">
+<!ENTITY tabcatalog.auto_show.tabbar.delay.hide.before "Ukryj katalog po">
+<!ENTITY tabcatalog.auto_show.tabbar.delay.hide.after  "msek od momentu przesunięcia wskaźnika poza pasek">
 
 
 
-<!ENTITY tabcatalog.tab.about "O">
+<!ENTITY tabcatalog.tab.about "Informacje">
 
-<!ENTITY tabcatalog.about.title       "O Katalogu kart">
-<!ENTITY tabcatalog.about.name_before "Katalog kart, wersja ">
+<!ENTITY tabcatalog.about.title       "O Tab Catalog">
+<!ENTITY tabcatalog.about.name_before "Tab Catalog wer.">
 <!ENTITY tabcatalog.about.name_after  "">
 <!ENTITY tabcatalog.about.destributed "http://piro.sakura.ne.jp/">
