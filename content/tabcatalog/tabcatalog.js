@@ -587,15 +587,22 @@ var TabCatalog = {
 	{
 		if (!this.getPref('extensions.tabcatalog.renderingInBackground')) return;
 
-		var originalAddTab = aTabBrowser.addTab;
-		aTabBrowser.addTab = function() {
+		var addTabMethod = 'addTab';
+		var removeTabMethod = 'removeTab';
+		if (aTabBrowser.__tabextensions__addTab) {
+			addTabMethod = '__tabextensions__addTab';
+			removeTabMethod = '__tabextensions__removeTab';
+		}
+
+		var originalAddTab = aTabBrowser[addTabMethod];
+		aTabBrowser[addTabMethod] = function() {
 			var tab = originalAddTab.apply(this, arguments);
-			var canvas = TabCatalog.getCanvasForTab(tab);
+			TabCatalog.getCanvasForTab(tab);
 			return tab;
 		};
 
-		var originalRemoveTab = aTabBrowser.removeTab;
-		aTabBrowser.removeTab = function(aTab) {
+		var originalRemoveTab = aTabBrowser[removeTabMethod];
+		aTabBrowser[removeTabMethod] = function(aTab) {
 			var retVal = originalRemoveTab.apply(this, arguments);
 			if (!aTab.parentNode) {
 				aTab.linkedBrowser.webProgress.removeProgressListener(aTab.cachedCanvas.progressFilter);
@@ -612,6 +619,9 @@ var TabCatalog = {
 		{
 			this.getCanvasForTab(tabs[i]);
 		}
+
+		delete addTabMethod;
+		delete removeTabMethod;
 		delete i;
 		delete maxi;
 		delete tabs;
