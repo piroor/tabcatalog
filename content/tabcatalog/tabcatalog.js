@@ -603,14 +603,17 @@ var TabCatalog = {
 
 		var originalRemoveTab = aTabBrowser[removeTabMethod];
 		aTabBrowser[removeTabMethod] = function(aTab) {
+			aTab.linkedBrowser.webProgress.removeProgressListener(aTab.cachedCanvas.progressFilter);
+			aTab.cachedCanvas.progressFilter.removeProgressListener(aTab.cachedCanvas.progressListener);
+			delete aTab.cachedCanvas.progressFilter;
+			delete aTab.cachedCanvas.progressListener;
+			delete aTab.cachedCanvas;
+
 			var retVal = originalRemoveTab.apply(this, arguments);
-			if (!aTab.parentNode) {
-				aTab.linkedBrowser.webProgress.removeProgressListener(aTab.cachedCanvas.progressFilter);
-				aTab.cachedCanvas.progressFilter.removeProgressListener(aTab.cachedCanvas.progressListener);
-				delete aTab.cachedCanvas.progressFilter;
-				delete aTab.cachedCanvas.progressListener;
-				delete aTab.cachedCanvas;
-			}
+
+			if (aTab.parentNode)
+				TabCatalog.getCanvasForTab(tab);
+
 			return retVal;
 		};
 
