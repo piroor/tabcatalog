@@ -119,17 +119,15 @@ var TabCatalog = {
 		return tabs;
 	},
  
+	get isMultiWindow()
+	{
+		return this.getPref('extensions.tabcatalog.showAllWindows') &&
+				(this.browserWindowsRaw.length > 1);
+	},
+ 
 	get browserWindows() 
 	{
-		var browserWindows = [];
-
-		var targets = this.WindowManager.getEnumerator('navigator:browser'),
-			target;
-		while (targets.hasMoreElements())
-		{
-			target = targets.getNext().QueryInterface(Components.interfaces.nsIDOMWindowInternal);
-			browserWindows.push(target);
-		}
+		var browserWindows = this.browserWindowsRaw;
 
 		// rearrange with z-order
 		var ordered = this.browserWindowsWithZOrder;
@@ -144,6 +142,21 @@ var TabCatalog = {
 				}
 
 		return results.concat(browserWindows); // result + rest windows (have not shown yet)
+	},
+ 
+	get browserWindowsRaw() 
+	{
+		var browserWindows = [];
+
+		var targets = this.WindowManager.getEnumerator('navigator:browser'),
+			target;
+		while (targets.hasMoreElements())
+		{
+			target = targets.getNext().QueryInterface(Components.interfaces.nsIDOMWindowInternal);
+			browserWindows.push(target);
+		}
+
+		return browserWindows;
 	},
  
 	get browserWindowsWithZOrder() 
@@ -514,10 +527,15 @@ var TabCatalog = {
 		gTabCatalogPrefListener.observe(null, 'nsPref:changed', 'extensions.tabcatalog.thumbnail.closebox');
 		gTabCatalogPrefListener.observe(null, 'nsPref:changed', 'extensions.tabcatalog.thumbnail.shortcut');
 
-		window.addEventListener('unload', function() { TabCatalog.destruct(); }, false);
+		window.addEventListener('unload', function() {
+			window.removeEventListener('unload', arguments.callee, false);
+			TabCatalog.destroy();
+		}, false);
 
 		gBrowser.mTabContainer.addEventListener('select', this.onTabSelect, true);
 		gBrowser.selectedTab.__tabcatalog__lastSelectedTime = (new Date()).getTime();
+
+		this.updateTabBrowser(gBrowser);
 
 		var nullPointer = this.tabContextMenu;
 
@@ -565,8 +583,41 @@ var TabCatalog = {
 				BrowserToolboxCustomizeDone(true);
 		}
 	},
+	updateTabBrowser : function(aTabBrowser)
+	{
+		if (!this.getPref('extensions.tabcatalog.renderingInBackground')) return;
+
+		var originalAddTab = aTabBrowser.addTab;
+		aTabBrowser.addTab = function() {
+			var tab = originalAddTab.apply(this, arguments);
+			var canvas = TabCatalog.getCanvasForTab(tab);
+			return tab;
+		};
+
+		var originalRemoveTab = aTabBrowser.removeTab;
+		aTabBrowser.removeTab = function(aTab) {
+			var retVal = originalRemoveTab.apply(this, arguments);
+			if (!aTab.parentNode) {
+				aTab.linkedBrowser.webProgress.removeProgressListener(aTab.cachedCanvas.progressFilter);
+				aTab.cachedCanvas.progressFilter.removeProgressListener(aTab.cachedCanvas.progressListener);
+				delete aTab.cachedCanvas.progressFilter;
+				delete aTab.cachedCanvas.progressListener;
+				delete aTab.cachedCanvas;
+			}
+			return retVal;
+		};
+
+		var tabs = aTabBrowser.mTabContainer.childNodes;
+		for (var i = 0, maxi = tabs.length; i < maxi; i++)
+		{
+			this.getCanvasForTab(tabs[i]);
+		}
+		delete i;
+		delete maxi;
+		delete tabs;
+	},
  
-	destruct : function() 
+	destroy : function() 
 	{
 		window.removeEventListener('keydown',   this.onKeyDown,    true);
 		window.removeEventListener('keyup',     this.onKeyRelease, true);
@@ -582,6 +633,20 @@ var TabCatalog = {
 		this.removePrefListener(gTabCatalogPrefListener);
 
 		gBrowser.mTabContainer.removeEventListener('select', this.onTabSelect, true);
+
+		if (this.getPref('extensions.tabcatalog.renderingInBackground')) {
+			var tabs = gBrowser.mTabContainer.childNodes;
+			for (var i = 0, maxi = tabs.length; i < maxi; i++)
+			{
+				if (!tabs[i].cachedCanvas) continue;
+
+				tabs[i].linkedBrowser.webProgress.removeProgressListener(tabs[i].cachedCanvas.progressFilter);
+				tabs[i].cachedCanvas.progressFilter.removeProgressListener(tabs[i].cachedCanvas.progressListener);
+				delete tabs[i].cachedCanvas.progressFilter;
+				delete tabs[i].cachedCanvas.progressListener;
+				delete tabs[i].cachedCanvas;
+			}
+		}
 	},
   
 /* Event Handling */ 
@@ -1497,7 +1562,7 @@ var TabCatalog = {
 					size.maxRow * (size.height + padding + header)
 				))/2) + (padding/2));
 
-		var isMultiWindow = this.getPref('extensions.tabcatalog.showAllWindows') && (this.browserWindows.length > 1);
+		var isMultiWindow = this.isMultiWindow;
 
 		var browser;
 		for (i = 0; i < max; i++)
@@ -1540,12 +1605,7 @@ var TabCatalog = {
 			if (color && (color = color.split(':')[0]) != 'default')
 				box.style.outlineColor = color;
 
-			var canvas = tabs[i].cachedCanvas;
-			if (!canvas) {
-				canvas = document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas');
-				tabs[i].cachedCanvas = canvas;
-				canvas.setAttribute('mouseover', 'TabCatalog.updateOneCanvas(this.thumbnailData, true);');
-			}
+			var canvas = this.getCanvasForTab(tabs[i]);
 			box.childNodes[1].appendChild(canvas);
 			canvas.relatedBox = box;
 
@@ -1583,7 +1643,6 @@ var TabCatalog = {
 			canvas.style.height = canvas.style.maxHeight = size.height+"px";
 			canvas.thumbnailData = {
 				tab    : tabs[i],
-				index  : i,
 				width  : size.width,
 				height : size.height,
 				canvas : canvas,
@@ -1613,7 +1672,75 @@ var TabCatalog = {
 
 		this.updateCanvas();
 	},
-	updateThumbnail : function(aThumbnailItem)
+ 
+	getCanvasForTab : function(aTab) 
+	{
+		if (aTab.cachedCanvas) return aTab.cachedCanvas;
+
+		var canvas = document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas');
+		canvas.setAttribute('mouseover', 'TabCatalog.updateOneCanvas(this.thumbnailData, true);');
+
+		if (this.getPref('extensions.tabcatalog.renderingInBackground')) {
+			var filter = Components.classes['@mozilla.org/appshell/component/browser-status-filter;1'].createInstance(Components.interfaces.nsIWebProgress);
+			var listener = this.createProgressListener(aTab, aTab.linkedBrowser);
+			filter.addProgressListener(listener, Components.interfaces.nsIWebProgress.NOTIFY_ALL);
+			aTab.linkedBrowser.webProgress.addProgressListener(filter, Components.interfaces.nsIWebProgress.NOTIFY_ALL);
+
+			canvas.progressListener = listener;
+			canvas.progressFilter   = filter;
+		}
+
+		aTab.cachedCanvas = canvas;
+
+		return canvas;
+	},
+ 
+	createProgressListener : function(aTab, aBrowser)
+	{
+		return {
+			mTab           : aTab,
+			mBrowser       : aBrowser,
+			onProgressChange: function (aWebProgress, aRequest, aCurSelfProgress, aMaxSelfProgress, aCurTotalProgress, aMaxTotalProgress)
+			{
+			},
+			onStateChange : function(aWebProgress, aRequest, aStateFlags, aStatus)
+			{
+				const nsIWebProgressListener = Components.interfaces.nsIWebProgressListener;
+				if (
+					aStateFlags & nsIWebProgressListener.STATE_STOP &&
+					aStateFlags & nsIWebProgressListener.STATE_IS_NETWORK &&
+					this.mTab.cachedCanvas
+					) {
+					TabCatalog.updateOneCanvas({
+						tab    : this.mTab,
+						canvas : this.mTab.cachedCanvas,
+						uri    : aWebProgress.DOMWindow.location.href,
+						isMultiWindow : TabCatalog.isMultiWindow
+					}, true);
+				}
+			},
+			onLocationChange : function(aWebProgress, aRequest, aLocation)
+			{
+			},
+			onStatusChange : function(aWebProgress, aRequest, aStatus, aMessage)
+			{
+			},
+			onSecurityChange : function(aWebProgress, aRequest, aState)
+			{
+			},
+			QueryInterface : function(aIID)
+			{
+				if (aIID.equals(Components.interfaces.nsIWebProgressListener) ||
+					aIID.equals(Components.interfaces.nsISupportsWeakReference) ||
+					aIID.equals(Components.interfaces.nsISupports))
+					return this;
+				throw Components.results.NS_NOINTERFACE;
+			}
+
+		};
+	},
+ 
+	updateThumbnail : function(aThumbnailItem) 
 	{
 		var tab = aThumbnailItem.relatedTab;
 		var b   = tab.linkedBrowser;
@@ -1673,8 +1800,11 @@ var TabCatalog = {
 				}
 			}
 			maxCol = Math.max(1, Math.floor((w - padding) / (boxWidth + padding)));
+			maxRow = Math.max(1, Math.ceil(tabNum / maxCol));
+			overflow = ((boxHeight + padding + header) * maxRow + padding) > h ;
 		}
-		else {
+
+		if (aRelative === void(0) && (!maxCol || overflow)) {
 			maxCol = Math.ceil(Math.sqrt(tabNum));
 			while (maxCol > 1 && ((boxWidth + padding) * maxCol + padding) >= w)
 			{
@@ -1694,11 +1824,11 @@ var TabCatalog = {
 				if (((boxWidth + padding) * (maxCol + 1) + padding) < w)
 					maxCol++;
 			} while (true);
-		}
 
-		maxCol = Math.min(maxCol, tabNum);
-		maxRow = Math.max(1, Math.ceil(tabNum / maxCol));
-		overflow = ((boxHeight + padding + header) * maxRow + padding) > h ;
+			maxCol = Math.min(maxCol, tabNum);
+			maxRow = Math.max(1, Math.ceil(tabNum / maxCol));
+			overflow = ((boxHeight + padding + header) * maxRow + padding) > h ;
+		}
 
 		return {
 			width    : boxWidth,
@@ -1753,23 +1883,25 @@ var TabCatalog = {
 		if (
 			!aForceUpdate &&
 			canvas.getAttribute('last-update-time') == this.catalog.getAttribute('last-shown-time') &&
-			canvas.getAttribute('current-uri') == aData.uri ||
-			!canvas.parentNode
+			canvas.getAttribute('current-uri') == aData.uri
 			)
 			return;
-
-		canvas.width  = canvas.maxWidth  = aData.width;
-		canvas.height = canvas.maxHeight = aData.height;
 
 		var tab = aData.tab;
 		var b   = tab.linkedBrowser;
 		var w   = b.contentWindow;
 
+		var width  = aData.width || w.innerWidth;
+		var height = aData.height || w.innerHeight;
+
+		canvas.width  = canvas.maxWidth  = width;
+		canvas.height = canvas.maxHeight = height;
+
 		try {
 			var ctx = canvas.getContext('2d');
-			ctx.clearRect(0, 0, aData.width, aData.height);
+			ctx.clearRect(0, 0, width, height);
 			ctx.save();
-			ctx.scale(aData.width/w.innerWidth, aData.height/w.innerHeight);
+			ctx.scale(width/w.innerWidth, height/w.innerHeight);
 			ctx.drawWindow(w, w.scrollX, w.scrollY, w.innerWidth, w.innerHeight, 'rgb(255,255,255)');
 			ctx.restore();
 		}
@@ -1783,7 +1915,8 @@ var TabCatalog = {
 		canvas.setAttribute('current-uri', aData.uri);
 		canvas.setAttribute('last-update-time', this.catalog.getAttribute('last-shown-time'));
 
-		this.updateThumbnail(canvas.parentNode.parentNode);
+		if (canvas.parentNode)
+			this.updateThumbnail(canvas.parentNode.parentNode);
 	},
  
 	clear : function() 

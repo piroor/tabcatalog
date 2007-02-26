@@ -11,6 +11,7 @@ pref("extensions.tabcatalog.bothclick.delay",   100);
 pref("extensions.tabcatalog.zoom.reverseWheelScrollDirection", false);
 
 pref("extensions.tabcatalog.rendering_quality", 1);
+pref("extensions.tabcatalog.renderingInBackground", true);
 
 pref("extensions.tabcatalog.showAllWindows", true);
 
