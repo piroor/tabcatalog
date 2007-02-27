@@ -597,17 +597,25 @@ var TabCatalog = {
 		var originalAddTab = aTabBrowser[addTabMethod];
 		aTabBrowser[addTabMethod] = function() {
 			var tab = originalAddTab.apply(this, arguments);
-			TabCatalog.getCanvasForTab(tab);
+			try {
+				TabCatalog.getCanvasForTab(tab);
+			}
+			catch(e) {
+			}
 			return tab;
 		};
 
 		var originalRemoveTab = aTabBrowser[removeTabMethod];
 		aTabBrowser[removeTabMethod] = function(aTab) {
-			aTab.linkedBrowser.webProgress.removeProgressListener(aTab.cachedCanvas.progressFilter);
-			aTab.cachedCanvas.progressFilter.removeProgressListener(aTab.cachedCanvas.progressListener);
-			delete aTab.cachedCanvas.progressFilter;
-			delete aTab.cachedCanvas.progressListener;
-			delete aTab.cachedCanvas;
+			try {
+				aTab.linkedBrowser.webProgress.removeProgressListener(aTab.cachedCanvas.progressFilter);
+				aTab.cachedCanvas.progressFilter.removeProgressListener(aTab.cachedCanvas.progressListener);
+				delete aTab.cachedCanvas.progressFilter;
+				delete aTab.cachedCanvas.progressListener;
+				delete aTab.cachedCanvas;
+			}
+			catch(e) {
+			}
 
 			var retVal = originalRemoveTab.apply(this, arguments);
 
