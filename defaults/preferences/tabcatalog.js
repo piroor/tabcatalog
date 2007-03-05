@@ -4,6 +4,8 @@ pref("extensions.tabcatalog.window.sort_by_focus", false);
 pref("extensions.tabcatalog.showAllWindows", true);
 pref("extensions.tabcatalog.split_by_window", true);
 
+pref("extensions.tabcatalog.show_scrollbar",  true);
+
 pref("extensions.tabcatalog.bothclick.enabled", true);
 pref("extensions.tabcatalog.bothclick.delay",   100);
 pref("extensions.tabcatalog.bothclick.delay",   100);

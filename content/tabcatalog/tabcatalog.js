@@ -9,6 +9,10 @@ var TabCatalog = {
 		return document.getElementById('tabcatalog-button');
 	},
  
+	get scrollbar() { 
+		return document.getElementById('tabcatalog-scrollbar');
+	},
+ 
 	get catalog() { 
 		return document.getElementById('tabcatalog-thumbnail-container');
 	},
@@ -278,6 +282,18 @@ var TabCatalog = {
 		return this._splitter;
 	},
 	_splitter : -1,
+	get scrollbarSize() {
+		if (this._scrollbarSize < 0) {
+			var style = window.getComputedStyle(document.getElementById('tabcatalog-scrollbar-size-box'), null);
+			this._scrollbarSize = Math.max(
+				parseInt(style.minWidth.match(/[0-9]+/) || 0),
+				parseInt(style.maxWidth.match(/[0-9]+/) || 0),
+				parseInt(style.width.match(/[0-9]+/) || 0)
+			);
+		}
+		return this._scrollbarSize;
+	},
+	_scrollbarSize : -1,
 	get shortcut() {
 		if (!this._shortcut) {
 			this._shortcut = TabCatalog_parseShortcut(this.getPref('extensions.tabcatalog.shortcut'));
@@ -702,14 +718,19 @@ var TabCatalog = {
 			!TabCatalog.getItemFromEvent(aEvent) &&
 			!TabCatalog.isEventFiredInMenu(aEvent)
 			) {
-			TabCatalog.hide();
+			if (aEvent.target.id == 'tabcatalog-scrollbar') {
+				TabCatalog.catalogPanning = true;
+				TabCatalog.catalogPanningByScrollbar = true;
+				TabCatalog.panStartX = aEvent.screenX;
+				TabCatalog.panStartY = aEvent.screenY;
+			}
+			else
+				TabCatalog.hide();
 		}
 		else {
-			if (
-				TabCatalog.shown &&
-				aEvent.button == 1
-				) {
+			if (TabCatalog.shown && aEvent.button == 1) {
 				TabCatalog.catalogPanning = true;
+				TabCatalog.catalogPanningByScrollbar = false;
 				TabCatalog.panStartX = aEvent.screenX;
 				TabCatalog.panStartY = aEvent.screenY;
 			}
@@ -734,7 +755,7 @@ var TabCatalog = {
 			TabCatalog.show(TabCatalog.CALLED_BY_BOTH_CLICK);
 		}
 
-		if (TabCatalog.shown && aEvent.button == 1) {
+		if (TabCatalog.shown && TabCatalog.catalogPanning) {
 			TabCatalog.button1Pressed = false;
 			TabCatalog.exitPanningScroll();
 		}
@@ -1272,17 +1293,16 @@ var TabCatalog = {
  
 	onPanningScroll : function(aEvent) 
 	{
-		var behavior = TabCatalog.getPref('extensions.tabcatalog.panning.scrollBehavior');
 		if (
 			!TabCatalog.catalogPanning ||
-			behavior < 0 ||
+			TabCatalog.catalogPanningBehavior < 0 ||
 			!TabCatalog.enterPanningScroll(aEvent)
 			)
 			return;
 
 		var pos;
 
-		switch (behavior) {
+		switch (TabCatalog.catalogPanningBehavior) {
 			default:
 			case 0:
 				var padding = window.innerHeight / 5;
@@ -1323,6 +1343,8 @@ var TabCatalog = {
 		this.catalogScrolling  = true;
 		this.catalogPanning    = true;
 		this.ignoreMiddleClick = true;
+
+		this.catalogPanningBehavior = this.catalogPanningByScrollbar ? 0 : TabCatalog.getPref('extensions.tabcatalog.panning.scrollBehavior') ;
 
 		return true;
 	},
@@ -1718,7 +1740,41 @@ var TabCatalog = {
 		this.catalog.maxScrollX = matrixData.maxCol * (padding + matrixData.width);
 		this.catalog.maxScrollY = thumbnail.posY + matrixData.height - window.innerHeight + padding + header;
 
+		if (matrixData.overflow &&
+			this.getPref('extensions.tabcatalog.show_scrollbar')) {
+			var bar = document.createElement('box');
+			bar.setAttribute('class', 'tabcatalog-scrollbar');
+			bar.setAttribute('id',    'tabcatalog-scrollbar');
+			this.catalog.appendChild(bar);
+
+			bar.style.position = 'fixed';
+			bar.style.left = (window.innerWidth - this.scrollbarSize)+'px';
+			bar.style.zIndex = 165000;
+			bar.style.width = this.scrollbarSize+'px';
+
+			bar.style.height = this.getPref('extensions.tabcatalog.scrollbar.min'), parseInt(window.innerHeight * window.innerHeight / (window.innerHeight + this.catalog.maxScrollY))+'px';
+
+			this.catalog.scrollbar = bar;
+
+			this.updateScrollbar();
+		}
+		else
+			this.catalog.scrollbar = null;
+
 		this.updateCanvas();
+	},
+ 
+	updateScrollbar : function(aCurrent) 
+	{
+		if (!this.catalog.scrollbar) return;
+
+		var curPos = aCurrent;
+		if (curPos === void(0))
+			curPos = this.catalog.scrollY;
+
+		curPos = Math.max(Math.min(curPos, TabCatalog.catalog.maxScrollY), 0);
+
+		this.catalog.scrollbar.style.top = parseInt((window.innerHeight - this.catalog.scrollbar.boxObject.height) * (curPos / this.catalog.maxScrollY))+'px';
 	},
  
 	getCanvasForTab : function(aTab) 
@@ -1838,6 +1894,9 @@ var TabCatalog = {
 					minBoxHeight = parseInt(minBoxWidth * aspectRatio);
 				else
 					minBoxWidth = parseInt(minBoxHeight / aspectRatio);
+
+				boxWidth = Math.max(minBoxWidth, boxWidth);
+				boxHeight = Math.max(minBoxHeight, parseInt(boxWidth * aspectRatio));
 			}
 
 			do {
@@ -2011,7 +2070,7 @@ var TabCatalog = {
 		range.detach();
 	},
   
-	animate : function(aTarget, aProp, aStart, aEnd, aInterval, aCallbackFunc) 
+	animate : function(aTarget, aProp, aStart, aEnd, aInterval, aCallbackFunc, aEndCallbackFunc) 
 	{
 		this.animateStop();
 
@@ -2020,7 +2079,8 @@ var TabCatalog = {
 		this.animateCurrent  = aStart;
 		this.animateEnd      = aEnd;
 		this.animateStep     = (aEnd - aStart) / 5;
-		this.animateRegisteredCallbackFunc = aCallbackFunc;
+		this.animateRegisteredCallbackFunc    = aCallbackFunc;
+		this.animateRegisteredEndCallbackFunc = aEndCallbackFunc;
 
 		aTarget[aProp] = parseInt(aStart) + 'px';
 		this.animateTimer  = window.setInterval(this.animateCallback, Math.max(1, Math.max(1, aInterval)/5), this);
@@ -2037,6 +2097,14 @@ var TabCatalog = {
 		}
 
 		aThis.animateTarget[aThis.animateProp] = parseInt(aThis.animateCurrent) + 'px';
+
+		try {
+			if (aThis.animateRegisteredCallbackFunc &&
+				typeof aThis.animateRegisteredCallbackFunc == 'function')
+				aThis.animateRegisteredCallbackFunc(aThis.animateCurrent);
+		}
+		catch(e) {
+		}
 	},
 	animateStop : function()
 	{
@@ -2049,13 +2117,14 @@ var TabCatalog = {
 			this.animateTarget = null;
 		}
 		try {
-			if (this.animateRegisteredCallbackFunc &&
-				typeof this.animateRegisteredCallbackFunc == 'function')
-				this.animateRegisteredCallbackFunc();
+			if (this.animateRegisteredEndCallbackFunc &&
+				typeof this.animateRegisteredEndCallbackFunc == 'function')
+				this.animateRegisteredEndCallbackFunc();
 		}
 		catch(e) {
 		}
 		this.animateRegisteredCallbackFunc = null;
+		this.animateRegisteredEndCallbackFunc = null;
 	},
   
 /* Commands */ 
@@ -2145,7 +2214,8 @@ var TabCatalog = {
 		if (aDoNotAnimate || !this.getPref('extensions.tabcatalog.animation.scroll.enabled')) {
 			this.catalog.scrollY = -this.catalog.posY;
 			this.catalog.style.top = this.catalog.posY + 'px';
-			window.setTimeout(this.scrollCatalogByAnimationCallback, 100);
+			this.updateScrollbar();
+			window.setTimeout(this.scrollCatalogByAnimationEndCallback, 100);
 		}
 		else {
 			this.animate(
@@ -2154,13 +2224,19 @@ var TabCatalog = {
 				originalY,
 				this.catalog.posY,
 				this.getPref('extensions.tabcatalog.animation.scroll.timeout'),
-				this.scrollCatalogByAnimationCallback
+				this.scrollCatalogByAnimationCallback,
+				this.scrollCatalogByAnimationEndCallback
 			);
 		}
 	},
-	scrollCatalogByAnimationCallback : function()
+	scrollCatalogByAnimationCallback : function(aCurPos)
+	{
+		TabCatalog.updateScrollbar(-parseInt(aCurPos));
+	},
+	scrollCatalogByAnimationEndCallback : function()
 	{
 		TabCatalog.catalog.scrollY = -TabCatalog.catalog.posY;
+		TabCatalog.updateScrollbar();
 		TabCatalog.catalogScrolling = false;
 	},
  

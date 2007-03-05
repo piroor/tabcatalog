@@ -29,6 +29,14 @@
 			name="extensions.tabcatalog.sort_by_focus"
 			type="bool"/>
 
+		<preference id="extensions.tabcatalog.split_by_window"
+			name="extensions.tabcatalog.split_by_window"
+			type="bool"/>
+
+		<preference id="extensions.tabcatalog.show_scrollbar"
+			name="extensions.tabcatalog.show_scrollbar"
+			type="bool"/>
+
 		<preference id="extensions.tabcatalog.bothclick.enabled"
 			name="extensions.tabcatalog.bothclick.enabled"
 			type="bool"/>
@@ -64,6 +72,16 @@
 	<checkbox id="extensions.tabcatalog.showAllWindows-check" flex="1"
 		label="&tabcatalog.showAllWindows;"
 		preference="extensions.tabcatalog.showAllWindows"/>
+	<hbox>
+		<spacer style="width:1em;"/>
+		<checkbox id="extensions.tabcatalog.split_by_window-check" flex="1"
+			label="&tabcatalog.split_by_window;"
+			preference="extensions.tabcatalog.split_by_window"/>
+	</hbox>
+
+	<checkbox id="extensions.tabcatalog.show_scrollbar-check" flex="1"
+		label="&tabcatalog.show_scrollbar;"
+		preference="extensions.tabcatalog.show_scrollbar"/>
 
 	<groupbox>
 		<caption label="&tabcatalog.override.caption;"/>

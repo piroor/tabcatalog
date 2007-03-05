@@ -20,7 +20,7 @@
 
 :root[tabcatalog-panning="true"],
 :root[tabcatalog-panning="true"] .tabcatalog-thumbnail {
-	cursor: move;
+	cursor: -moz-grab;
 }
 
 .tabcatalog-thumbnail {
@@ -135,6 +135,25 @@ toolbar[iconsize="small"] #tabcatalog-button:hover {
 
 .tabcatalog-splitter {
 	border-top: 1px solid white;
+}
+
+
+
+
+/* scrollbar, slider */
+
+#tabcatalog-scrollbar-size-box {
+	width: 1em !important;
+}
+
+.tabcatalog-scrollbar {
+	background: white;
+	border: 1px gray solid;
+	opacity: 0.6;
+	-moz-opacity: 0.6;
+	-moz-box-sizing: border-box;
+	cursor: -moz-grab;
+	min-height: 2em;
 }
 
 
