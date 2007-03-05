@@ -1752,7 +1752,7 @@ var TabCatalog = {
 			bar.style.zIndex = 165000;
 			bar.style.width = this.scrollbarSize+'px';
 
-			bar.style.height = this.getPref('extensions.tabcatalog.scrollbar.min'), parseInt(window.innerHeight * window.innerHeight / (window.innerHeight + this.catalog.maxScrollY))+'px';
+			bar.style.height = parseInt(window.innerHeight * window.innerHeight / (window.innerHeight + this.catalog.maxScrollY))+'px';
 
 			this.catalog.scrollbar = bar;
 
