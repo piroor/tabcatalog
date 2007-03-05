@@ -11,9 +11,10 @@
 
 <!ENTITY tabcatalog.tab.catalog   "Catalog">
 
+<!ENTITY tabcatalog.sort_by_focus  "Sort tabs in order recently focused">
 <!ENTITY tabcatalog.showAllWindows "Show all tabs in all windows">
 
-<!ENTITY tabcatalog.override.caption      "Show Thumbnail List for">
+<!ENTITY tabcatalog.override.caption      "Show Catalog of Tabs for">
 <!ENTITY tabcatalog.override.ctrltab      "Ctrl(Command)-Tab to switch tabs">
 <!ENTITY tabcatalog.override.allinonegest "Scroll Wheel Navigation of &quot;All-In-One Gestures&quot; Extension">
 
@@ -35,7 +36,7 @@
 <!ENTITY tabcatalog.rendering_quality.low     "Low (rapid, looks unattractive)">
 <!ENTITY tabcatalog.rendering_quality.middle  "Middle">
 <!ENTITY tabcatalog.rendering_quality.high    "High (slow, looks attractive)">
-<!ENTITY tabcatalog.animation.scroll.enabled  "Scroll thumbnail list smoothly">
+<!ENTITY tabcatalog.animation.scroll.enabled  "Scroll smoothly">
 
 
 
@@ -52,7 +53,6 @@
 <!ENTITY tabcatalog.thumbnail.shortcut.enable   "Assign shortcut key for each thumbnail">
 
 
-<!ENTITY tabcatalog.sort_by_focus  "Sort in order recently focused">
 
 
 
@@ -62,18 +62,18 @@
 <!ENTITY tabcatalog.tab.auto_show "Auto Popup">
 
 <!ENTITY tabcatalog.auto_show.caption  "Auto Popup of Thumbnail View for the &quot;Thumbnail View&quot; button">
-<!ENTITY tabcatalog.auto_show.enabled "When point the &quot;Thumbnail View&quot; button, popup the thumbnail list automatically.">
-<!ENTITY tabcatalog.auto_show.delay.show.before "Show the list">
+<!ENTITY tabcatalog.auto_show.enabled "When point the &quot;Thumbnail View&quot; button, popup catalog automatically.">
+<!ENTITY tabcatalog.auto_show.delay.show.before "Show catalog">
 <!ENTITY tabcatalog.auto_show.delay.show.after  "msec after the pointer enters on the button.">
-<!ENTITY tabcatalog.auto_show.delay.hide.before "Hide the list">
-<!ENTITY tabcatalog.auto_show.delay.hide.after  "msec after the pointer exits from the list.">
+<!ENTITY tabcatalog.auto_show.delay.hide.before "Hide catalog">
+<!ENTITY tabcatalog.auto_show.delay.hide.after  "msec after the pointer exits from catalog.">
 
 <!ENTITY tabcatalog.auto_show.tabbar.caption  "Auto Popup of Thumbnail View for the Tab Bar">
-<!ENTITY tabcatalog.auto_show.tabbar.enabled "When point the tab bar, popup the thumbnail list automatically.">
-<!ENTITY tabcatalog.auto_show.tabbar.delay.show.before "Show the list">
+<!ENTITY tabcatalog.auto_show.tabbar.enabled "When point the tab bar, popup catalog automatically.">
+<!ENTITY tabcatalog.auto_show.tabbar.delay.show.before "Show catalog">
 <!ENTITY tabcatalog.auto_show.tabbar.delay.show.after  "msec after the pointer enters on the bar.">
-<!ENTITY tabcatalog.auto_show.tabbar.delay.hide.before "Hide the list">
-<!ENTITY tabcatalog.auto_show.tabbar.delay.hide.after  "msec after the pointer exits from the list.">
+<!ENTITY tabcatalog.auto_show.tabbar.delay.hide.before "Hide catalog">
+<!ENTITY tabcatalog.auto_show.tabbar.delay.hide.after  "msec after the pointer exits from catalog.">
 
 
 

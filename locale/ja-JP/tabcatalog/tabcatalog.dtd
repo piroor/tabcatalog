@@ -12,9 +12,11 @@
 
 <!ENTITY tabcatalog.tab.catalog   "一覧表示">
 
+
+<!ENTITY tabcatalog.sort_by_focus  "最近表示されたタブの順番で表示する">
 <!ENTITY tabcatalog.showAllWindows "すべてのウィンドウのタブを表示する">
 
-<!ENTITY tabcatalog.override.caption      "以下の場合にサムネイル一覧を表示する">
+<!ENTITY tabcatalog.override.caption      "以下の場合にタブの一覧を表示する">
 <!ENTITY tabcatalog.override.ctrltab      "Ctrl(Command)-Tabでタブを切り替える時">
 <!ENTITY tabcatalog.override.allinonegest "&quot;All-In-One Gestures&quot;のスクロールホイールナビゲーションでタブを切り替える時">
 
@@ -50,9 +52,6 @@
 <!ENTITY tabcatalog.appearance.min.after  "ピクセル以上の大きさで表示する">
 
 <!ENTITY tabcatalog.thumbnail.shortcut.enable   "サムネイルごとにショートカットキーを割り振る">
-
-
-<!ENTITY tabcatalog.sort_by_focus  "最近表示した順番に並べる">
 
 
 
