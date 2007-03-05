@@ -15,6 +15,8 @@
 
 <!ENTITY tabcatalog.sort_by_focus  "最近表示されたタブの順番で表示する">
 <!ENTITY tabcatalog.showAllWindows "すべてのウィンドウのタブを表示する">
+<!ENTITY tabcatalog.split_by_window "ウィンドウごとに分けて表示する">
+<!ENTITY tabcatalog.show_scrollbar "スクロールバーを表示する">
 
 <!ENTITY tabcatalog.override.caption      "以下の場合にタブの一覧を表示する">
 <!ENTITY tabcatalog.override.ctrltab      "Ctrl(Command)-Tabでタブを切り替える時">

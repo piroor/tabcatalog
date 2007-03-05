@@ -7,7 +7,10 @@
 
 <!ENTITY tabcatalog.tab.catalog   "Katalog">
 
+<!ENTITY tabcatalog.sort_by_focus  "Wyświetl w kolejności najczęściej oglądanych">
 <!ENTITY tabcatalog.showAllWindows "Wyświetl wszystkie karty ze wszystkich okien">
+<!ENTITY tabcatalog.split_by_window "Split for each window">
+<!ENTITY tabcatalog.show_scrollbar "Show scrollbar">
 
 <!ENTITY tabcatalog.override.caption      "Wyświetl katalog miniatur za pomocą:">
 <!ENTITY tabcatalog.override.ctrltab      "Skrótu [Ctrl(Command)+Tab] (wyświetlenie i przełączanie pomiędzy kartami)">
@@ -45,7 +48,6 @@
 <!ENTITY tabcatalog.thumbnail.shortcut.enable   "Przypisz każdej miniaturze skrót klawiaturowy">
 
 
-<!ENTITY tabcatalog.sort_by_focus  "Wyświetl w kolejności najczęściej oglądanych">
 
 <!ENTITY tabcatalog.tab.auto_show "Wyświetlanie">
 

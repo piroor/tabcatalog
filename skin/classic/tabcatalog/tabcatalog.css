@@ -10,6 +10,9 @@
 #tabcatalog-header-size-box {
 	width: 1.5em !important; /* the width of this box is parsed as the height of titlebar of thumbnails. */
 }
+#tabcatalog-splitter-size-box {
+	width: 1.2em !important;
+}
 
 #tabcatalog-tooltip {
 	max-width: 40em;
@@ -17,7 +20,7 @@
 
 :root[tabcatalog-panning="true"],
 :root[tabcatalog-panning="true"] .tabcatalog-thumbnail {
-	cursor: move;
+	cursor: -moz-grab;
 }
 
 .tabcatalog-thumbnail {
@@ -48,18 +51,18 @@ toolbar[iconsize="small"] #tabcatalog-button:hover {
 
 /* Thumbnails Container */
 
-#tabcatalog-thumbnail-container > * {
+#tabcatalog-thumbnail-container > thumbnail {
 	border: 1px solid transparent !important;
 	-moz-binding: url(dropshadow.xml#only-box);
 	padding: 10px;
 	margin: -10px;
 }
-#tabcatalog-thumbnail-container > *[container-focused="true"] {
+#tabcatalog-thumbnail-container > thumbnail[container-focused="true"] {
 	background: url(bg-focused.png) repeat !important;
 	border-color: #333 !important;
 }
 
-#tabcatalog-thumbnail-container[dropshadow="true"] > * {
+#tabcatalog-thumbnail-container[dropshadow="true"] > thumbnail {
 	-moz-binding: url(dropshadow.xml#dropshadow) !important;
 	padding: 0 2px 2px !important;
 	margin: -8px -10px -10px !important;
@@ -128,6 +131,30 @@ toolbar[iconsize="small"] #tabcatalog-button:hover {
 }
 
 
+
+
+.tabcatalog-splitter {
+	border-top: 1px solid white;
+}
+
+
+
+
+/* scrollbar, slider */
+
+#tabcatalog-scrollbar-size-box {
+	width: 1em !important;
+}
+
+.tabcatalog-scrollbar {
+	background: white;
+	border: 1px gray solid;
+	opacity: 0.6;
+	-moz-opacity: 0.6;
+	-moz-box-sizing: border-box;
+	cursor: -moz-grab;
+	min-height: 2em;
+}
 
 
 

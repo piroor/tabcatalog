@@ -13,6 +13,8 @@
 
 <!ENTITY tabcatalog.sort_by_focus  "Sort tabs in order recently focused">
 <!ENTITY tabcatalog.showAllWindows "Show all tabs in all windows">
+<!ENTITY tabcatalog.split_by_window "Split for each window">
+<!ENTITY tabcatalog.show_scrollbar "Show scrollbar">
 
 <!ENTITY tabcatalog.override.caption      "Show Catalog of Tabs for">
 <!ENTITY tabcatalog.override.ctrltab      "Ctrl(Command)-Tab to switch tabs">

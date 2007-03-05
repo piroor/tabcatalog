@@ -11,7 +11,10 @@
 
 <!ENTITY tabcatalog.tab.catalog   "Tab-Vorschau">
 
+<!ENTITY tabcatalog.sort_by_focus  "Anordnen in der Reihefolge der letzten Benutzung">
 <!ENTITY tabcatalog.showAllWindows "Show all tabs in all windows">
+<!ENTITY tabcatalog.split_by_window "Split for each window">
+<!ENTITY tabcatalog.show_scrollbar "Show scrollbar">
 
 <!ENTITY tabcatalog.override.caption      "Tab-Vorschau aufrufen">
 <!ENTITY tabcatalog.override.ctrltab      "Bei Tab-Wechsel mittels Tastaturkürzel Strg(Befehl)+Tabulator">
@@ -51,8 +54,6 @@
 
 <!ENTITY tabcatalog.thumbnail.shortcut.enable   "Schnellzugriffstasten anzeigen">
 
-
-<!ENTITY tabcatalog.sort_by_focus  "Anordnen in der Reihefolge der letzten Benutzung">
 
 
 
