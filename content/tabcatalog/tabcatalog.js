@@ -85,7 +85,7 @@ var TabCatalog = {
 	get tabs() { 
 		var tabs = [];
 		if (this.getPref('extensions.tabcatalog.showAllWindows')) {
-			var windows = this.browserWindows;
+			var windows = this.getPref('extensions.tabcatalog.window.sort_by_focus') ? this.browserWindowsWithFocusedOrder : this.browserWindowsWithOpenedOrder ;
 			for (var i = 0; i < windows.length; i++)
 				tabs = tabs.concat(Array.prototype.slice.call(windows[i].gBrowser.mTabContainer.childNodes));
 		}
@@ -122,29 +122,10 @@ var TabCatalog = {
 	get isMultiWindow()
 	{
 		return this.getPref('extensions.tabcatalog.showAllWindows') &&
-				(this.browserWindowsRaw.length > 1);
+				(this.browserWindowsWithOpenedOrder.length > 1);
 	},
  
-	get browserWindows() 
-	{
-		var browserWindows = this.browserWindowsRaw;
-
-		// rearrange with z-order
-		var ordered = this.browserWindowsWithZOrder;
-		var results = [];
-		var i, j;
-		for (i in ordered)
-			for (j in browserWindows)
-				if (ordered[i] == browserWindows[j]) {
-					results.push(browserWindows[j]);
-					browserWindows.splice(j, 1);
-					break;
-				}
-
-		return results.concat(browserWindows); // result + rest windows (have not shown yet)
-	},
- 
-	get browserWindowsRaw() 
+	get browserWindowsWithOpenedOrder() 
 	{
 		var browserWindows = [];
 
@@ -159,19 +140,28 @@ var TabCatalog = {
 		return browserWindows;
 	},
  
-	get browserWindowsWithZOrder() 
+	get browserWindowsWithFocusedOrder() 
 	{
-		var browserWindows = [];
+		var browserWindows = this.browserWindowsWithOpenedOrder;
 
+		// rearrange with z-order
+		var results = [];
 		var targets = this.WindowManager.getZOrderDOMWindowEnumerator('navigator:browser', true),
-			target;
+			target,
+			i;
 		while (targets.hasMoreElements())
 		{
 			target = targets.getNext().QueryInterface(Components.interfaces.nsIDOMWindowInternal);
-			browserWindows.push(target);
+			for (i in browserWindows)
+			{
+				if (target != browserWindows[i]) continue;
+				results.push(browserWindows[i]);
+				browserWindows.splice(i, 1);
+				break;
+			}
 		}
 
-		return browserWindows;
+		return results.concat(browserWindows); // result + rest windows (have not shown yet)
 	},
  
 	get WindowManager() 
