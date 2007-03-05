@@ -51,6 +51,8 @@
 		onmouseover="TabCatalog.onMouseOver(event);">
 		<box id="tabcatalog-padding-size-box"/>
 		<box id="tabcatalog-header-size-box"/>
+		<box id="tabcatalog-splitter-size-box"/>
+
 		<box id="tabcatalog-background-canvas"/>
 		<box id="tabcatalog-background-backup"
 			class="tabcatalog-background"/>

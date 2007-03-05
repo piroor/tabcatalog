@@ -125,6 +125,13 @@ var TabCatalog = {
 				(this.browserWindowsWithOpenedOrder.length > 1);
 	},
  
+	get splitByWindow()
+	{
+		return this.getPref('extensions.tabcatalog.showAllWindows') &&
+				!this.getPref('extensions.tabcatalog.sort_by_focus') &&
+				this.getPref('extensions.tabcatalog.split_by_window');
+	},
+ 
 	get browserWindowsWithOpenedOrder() 
 	{
 		var browserWindows = [];
@@ -259,6 +266,18 @@ var TabCatalog = {
 		return this.getPref('extensions.tabcatalog.thumbnail.header') ? this._header : 0 ;
 	},
 	_header : -1,
+	get splitter() {
+		if (this._splitter < 0) {
+			var style = window.getComputedStyle(document.getElementById('tabcatalog-splitter-size-box'), null);
+			this._splitter = Math.max(
+				parseInt(style.minWidth.match(/[0-9]+/) || 0),
+				parseInt(style.maxWidth.match(/[0-9]+/) || 0),
+				parseInt(style.width.match(/[0-9]+/) || 0)
+			);
+		}
+		return this._splitter;
+	},
+	_splitter : -1,
 	get shortcut() {
 		if (!this._shortcut) {
 			this._shortcut = TabCatalog_parseShortcut(this.getPref('extensions.tabcatalog.shortcut'));
@@ -459,6 +478,8 @@ var TabCatalog = {
  
 	drawWindowIndicator : function(aCanvas, aWindow) 
 	{
+		if (!aCanvas.parentNode) return;
+
 		if (!aWindow.__tabcatalog__windowColor)
 			aWindow.__tabcatalog__windowColor = this.getRandomColor();
 
@@ -1551,10 +1572,10 @@ var TabCatalog = {
 		this.clear();
 
 
-		var size = this.calculateThumbnailSize(aRelative);
+		var tabs = this.tabs;
+		var matrixData = this.getThumbnailMatrix(tabs, aRelative);
 
 		var i;
-		var tabs = this.tabs;
 		var max = tabs.length;
 
 		var colCount = 0;
@@ -1562,41 +1583,57 @@ var TabCatalog = {
 
 		this.updateCanvasCue = [];
 
-		var padding = this.padding;
-		var header  = this.header;
+		var padding         = this.padding;
+		var header          = this.header;
+		var splitterHeight  = this.splitter;
 
 		var offsetX = parseInt(((window.innerWidth-(
-					size.maxCol * (size.width + padding)
+					matrixData.maxCol * (matrixData.width + padding)
 				))/2) + (padding/2));
-		var offsetY = size.overflow ? padding :
+
+		var offsetY = matrixData.overflow ? padding :
 				parseInt(((window.innerHeight-(
-					size.maxRow * (size.height + padding + header)
+					(matrixData.maxRow * (matrixData.height + padding + header)) + matrixData.offsetY
 				))/2) + (padding/2));
 
 		var isMultiWindow = this.isMultiWindow;
 
+		var splitByWindow = this.splitByWindow;
+		var splitter;
+		var splitterHeight  = this.splitter;
+
 		var browser;
 		for (i = 0; i < max; i++)
 		{
-			var b = tabs[i].linkedBrowser;
+			if (
+				i > 0 &&
+				splitByWindow && 
+				tabs[i].ownerDocument != tabs[i-1].ownerDocument
+				) {
+				var splitter = document.createElement('box');
+				splitter.setAttribute('class', 'tabcatalog-splitter');
+				this.catalog.appendChild(splitter);
 
-			colCount++;
-			if (colCount > size.maxCol) {
-				rowCount++;
-				colCount = 1;
+				splitter.style.position = 'absolute';
+				splitter.style.zIndex   = 65500;
+				splitter.style.left     = (offsetX - padding) + 'px !important';
+				splitter.style.top      = parseInt(thumbnail.posY + matrixData.height + padding + padding + ((splitterHeight) / 2)) + 'px !important';
+				splitter.style.width    = (window.innerWidth - ((offsetX - padding) * 2)) + 'px';
 			}
+
+			var b = tabs[i].linkedBrowser;
 
 			var box = document.getElementById('thumbnail-item-template').firstChild.cloneNode(true);
 			box.setAttribute('index',    i);
 			box.setAttribute('title',    b.contentDocument.title);
 			box.setAttribute('uri',      b.currentURI.spec);
-			box.setAttribute('width',    size.width);
-			box.setAttribute('height',   size.height);
-			box.setAttribute('x',        colCount);
-			box.setAttribute('y',        rowCount);
-			box.setAttribute('thumbnail-position', colCount+'/'+rowCount);
-			box.style.maxWidth  = size.width+'px';
-			box.style.maxHeight = size.height+'px';
+			box.setAttribute('width',    matrixData.width);
+			box.setAttribute('height',   matrixData.height);
+			box.setAttribute('x',        matrixData.matrix[i].x);
+			box.setAttribute('y',        matrixData.matrix[i].y);
+			box.setAttribute('thumbnail-position', matrixData.matrix[i].x+'/'+matrixData.matrix[i].y);
+			box.style.maxWidth  = matrixData.width+'px';
+			box.style.maxHeight = matrixData.height+'px';
 			if (i < 36) {
 				var accesskey = Number(i).toString(36).toUpperCase();
 				box.setAttribute('accesskey', accesskey);
@@ -1624,8 +1661,8 @@ var TabCatalog = {
 				this.drawWindowIndicator(canvas, tabs[i].ownerDocument.defaultView);
 
 			var thumbnail = document.createElement('thumbnail');
-			thumbnail.posX = (offsetX + ((size.width + padding) * (colCount-1)));
-			thumbnail.posY = (offsetY + ((size.height + padding + header) * (rowCount-1)));
+			thumbnail.posX = offsetX + matrixData.matrix[i].posX;
+			thumbnail.posY = offsetY + matrixData.matrix[i].posY;
 
 			thumbnail.style.position = 'absolute';
 			thumbnail.style.zIndex   = 65500;
@@ -1650,12 +1687,12 @@ var TabCatalog = {
 				box.setAttribute('current', true);
 			}
 
-			canvas.style.width  = canvas.style.maxWidth  = size.width+"px";
-			canvas.style.height = canvas.style.maxHeight = size.height+"px";
+			canvas.style.width  = canvas.style.maxWidth  = matrixData.width+"px";
+			canvas.style.height = canvas.style.maxHeight = matrixData.height+"px";
 			canvas.thumbnailData = {
 				tab    : tabs[i],
-				width  : size.width,
-				height : size.height,
+				width  : matrixData.width,
+				height : matrixData.height,
 				canvas : canvas,
 				uri    : b.currentURI.spec,
 				isMultiWindow : isMultiWindow
@@ -1670,16 +1707,16 @@ var TabCatalog = {
 		this.catalog.style.left = 0;
 		this.catalog.style.top  = 0;
 
-		this.catalog.maxX       = size.maxCol;
-		this.catalog.maxY       = size.maxRow;
-		this.catalog.tnWidth    = size.width;
-		this.catalog.tnHeight   = size.height;
-		this.catalog.overflow   = size.overflow;
+		this.catalog.maxX       = matrixData.maxCol;
+		this.catalog.maxY       = matrixData.maxRow;
+		this.catalog.tnWidth    = matrixData.width;
+		this.catalog.tnHeight   = matrixData.height;
+		this.catalog.overflow   = matrixData.overflow;
 
 		this.catalog.scrollX    = 0;
 		this.catalog.scrollY    = 0;
-		this.catalog.maxScrollX = size.maxCol * (padding + size.width);
-		this.catalog.maxScrollY = thumbnail.posY + size.height - window.innerHeight + padding + header;
+		this.catalog.maxScrollX = matrixData.maxCol * (padding + matrixData.width);
+		this.catalog.maxScrollY = thumbnail.posY + matrixData.height - window.innerHeight + padding + header;
 
 		this.updateCanvas();
 	},
@@ -1763,33 +1800,26 @@ var TabCatalog = {
 			aThumbnailItem.getElementsByAttribute('class', 'tabcatalog-thumbnail-header-favicon')[0].setAttribute('src', tab.getAttribute('image'));
 	},
 	
-	calculateThumbnailSize : function(aRelative) 
+	getThumbnailMatrix : function(aTabs, aRelative) 
 	{
-		var w = window.innerWidth;
-		var h = window.innerHeight;
-
 		var padding = this.padding;
 		var header  = this.header;
 
-		var tabNum = this.tabs.length;
+		var tabs = aTabs || this.tabs;
+		var tabNum = tabs.length;
 
 		var boxObject = gBrowser.getBrowserForTab(gBrowser.selectedTab).boxObject;
 		var aspectRatio  = boxObject.height / boxObject.width;
 
 		var minSize = this.getPref('extensions.tabcatalog.thumbnail.min.enabled') ? Math.min(this.getPref('extensions.tabcatalog.thumbnail.min.size'), (aspectRatio  < 1 ? boxObject.width : boxObject.height )) : -1;
 
-		var thumbnailMaxSize = w * h * 0.9 / tabNum;
+		var thumbnailMaxSize = window.innerWidth * window.innerHeight * 0.9 / tabNum;
 		var boxWidth = parseInt(Math.min(Math.sqrt(thumbnailMaxSize), window.outerWidth * 0.5)) - padding;
 		var boxHeight = parseInt(boxWidth * aspectRatio );
 
-		var maxCol,
-			maxRow,
-			overflow = false;
+		var matrixData;
 
-		if (
-			aRelative !== void(0) ||
-			minSize > 0
-			) {
+		if (aRelative !== void(0)) {
 			if (aRelative > 0) {
 				boxWidth = parseInt(Math.min(this.catalog.tnWidth * 1.2, boxObject.width - padding - padding));
 				boxHeight = parseInt(boxWidth * aspectRatio );
@@ -1798,55 +1828,88 @@ var TabCatalog = {
 				boxWidth = parseInt(Math.max(this.catalog.tnWidth * 0.7, header));
 				boxHeight = parseInt(boxWidth * aspectRatio );
 			}
-			else {
-				if (aspectRatio  < 1) {
-					if (boxWidth <= minSize) {
-						boxWidth = minSize;
-						boxHeight = parseInt(boxWidth * aspectRatio );
-					}
-				}
-				else if (boxHeight <= minSize) {
-					boxHeight = minSize;
-					boxWidth = parseInt(boxHeight / aspectRatio );
-				}
-			}
-			maxCol = Math.max(1, Math.floor((w - padding) / (boxWidth + padding)));
-			maxRow = Math.max(1, Math.ceil(tabNum / maxCol));
-			overflow = ((boxHeight + padding + header) * maxRow + padding) > h ;
+			matrixData = this.getThumbnailMatrixSub(boxWidth, boxHeight, tabs);
 		}
-
-		if (aRelative === void(0) && (!maxCol || overflow)) {
-			maxCol = Math.ceil(Math.sqrt(tabNum));
-			while (maxCol > 1 && ((boxWidth + padding) * maxCol + padding) >= w)
-			{
-				maxCol--;
+		else {
+			var minBoxWidth = minSize,
+				minBoxHeight = minSize;
+			if (minSize > -1) {
+				if (aspectRatio  < 1)
+					minBoxHeight = parseInt(minBoxWidth * aspectRatio);
+				else
+					minBoxWidth = parseInt(minBoxHeight / aspectRatio);
 			}
 
 			do {
-				maxRow = Math.ceil(tabNum/maxCol);
-
-				if (((boxHeight + padding + header) * maxRow + padding) < h) {
+				matrixData = this.getThumbnailMatrixSub(boxWidth, boxHeight, tabs);
+				if (
+					!matrixData.overflow ||
+					boxWidth == minBoxWidth ||
+					boxHeight == minBoxHeight
+					)
 					break;
-				}
 
-				boxWidth = parseInt(boxWidth * 0.9);
-				boxHeight = parseInt(boxWidth * aspectRatio );
-
-				if (((boxWidth + padding) * (maxCol + 1) + padding) < w)
-					maxCol++;
+				boxWidth = Math.max(minBoxWidth, parseInt(boxWidth * 0.9));
+				boxHeight = Math.max(minBoxHeight, parseInt(boxWidth * aspectRatio));
 			} while (true);
-
-			maxCol = Math.min(maxCol, tabNum);
-			maxRow = Math.max(1, Math.ceil(tabNum / maxCol));
-			overflow = ((boxHeight + padding + header) * maxRow + padding) > h ;
 		}
 
 		return {
 			width    : boxWidth,
 			height   : boxHeight,
+			maxCol   : matrixData.maxCol,
+			maxRow   : matrixData.maxRow,
+			matrix   : matrixData.matrix,
+			offsetY  : matrixData.offsetY,
+			overflow : matrixData.overflow
+		};
+	},
+ 
+	getThumbnailMatrixSub : function(aWidth, aHeight, aTabs) 
+	{
+		var tabs = aTabs || this.tabs;
+		var tabNum = tabs.length;
+
+		var padding = this.padding;
+		var header  = this.header;
+		var splitterHeight  = this.splitter;
+
+		var splitByWindow = this.splitByWindow;
+
+		var maxCol = Math.max(1, Math.floor((window.innerWidth - padding) / (aWidth + padding)));
+
+		var matrix = [],
+			offsetY = 0,
+			colCount = 0,
+			rowCount = 1;
+
+		for (var i = 0; i < tabNum; i++)
+		{
+			colCount++;
+			split = (
+				i > 0 &&
+				splitByWindow && 
+				tabs[i].ownerDocument != tabs[i-1].ownerDocument
+			);
+			if ((colCount > maxCol) || split) {
+				rowCount++;
+				colCount = 1;
+				if (split)
+					offsetY += (padding + splitterHeight);
+			}
+			matrix.push({
+				x : colCount,
+				y : rowCount,
+				posX : ((aWidth + padding) * (colCount - 1)),
+				posY : (offsetY + ((aHeight + padding + header) * (rowCount-1)))
+			});
+		}
+		return {
+			matrix   : matrix,
+			offsetY  : offsetY,
 			maxCol   : maxCol,
-			maxRow   : maxRow,
-			overflow : overflow
+			maxRow   : rowCount,
+			overflow : (((aHeight + padding + header) * rowCount + padding + offsetY) > window.innerHeight)
 		};
 	},
  
