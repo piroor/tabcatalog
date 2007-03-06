@@ -647,7 +647,7 @@ var TabCatalog = {
 			var retVal = originalRemoveTab.apply(this, arguments);
 
 			if (aTab.parentNode)
-				TabCatalog.getCanvasForTab(tab);
+				TabCatalog.getCanvasForTab(aTab);
 
 			return retVal;
 		};
