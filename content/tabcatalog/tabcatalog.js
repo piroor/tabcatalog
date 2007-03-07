@@ -9,10 +9,6 @@ var TabCatalog = {
 		return document.getElementById('tabcatalog-button');
 	},
  
-	get scrollbar() { 
-		return document.getElementById('tabcatalog-scrollbar');
-	},
- 
 	get catalog() { 
 		return document.getElementById('tabcatalog-thumbnail-container');
 	},
@@ -724,6 +720,9 @@ var TabCatalog = {
 				TabCatalog.panStartX = aEvent.screenX;
 				TabCatalog.panStartY = aEvent.screenY;
 			}
+			else if (aEvent.target.id == 'tabcatalog-scrollbar-slider') {
+				TabCatalog.onSliderClick(aEvent);
+			}
 			else
 				TabCatalog.hide();
 		}
@@ -1240,6 +1239,18 @@ var TabCatalog = {
 			this.hide();
 	},
  
+	onSliderClick : function(aEvent) 
+	{
+		var box = this.catalog.scrollbar.boxObject;
+
+		if (aEvent.screenY < box.screenY)
+			TabCatalog.scrollCatalogBy(-(window.innerHeight / 3 * 2));
+		else if (aEvent.screenY > box.screenY + box.height)
+			TabCatalog.scrollCatalogBy(window.innerHeight / 3 * 2);
+
+		aEvent.stopPropagation();
+	},
+ 
 	onCatalogDragStart : function(aEvent) 
 	{
 		var node = TabCatalog.getItemFromEvent(aEvent);
@@ -1742,6 +1753,17 @@ var TabCatalog = {
 
 		if (matrixData.overflow &&
 			this.getPref('extensions.tabcatalog.show_scrollbar')) {
+			var slider = document.createElement('box');
+			slider.setAttribute('class', 'tabcatalog-scrollbar-slider');
+			slider.setAttribute('id',    'tabcatalog-scrollbar-slider');
+			this.catalog.appendChild(slider);
+
+			slider.style.position = 'fixed';
+			slider.style.left = (window.innerWidth - this.scrollbarSize)+'px';
+			slider.style.zIndex = 135000;
+			slider.style.width = this.scrollbarSize+'px';
+			slider.style.height = (window.innerHeight + this.catalog.maxScrollY)+'px';
+
 			var bar = document.createElement('box');
 			bar.setAttribute('class', 'tabcatalog-scrollbar');
 			bar.setAttribute('id',    'tabcatalog-scrollbar');
