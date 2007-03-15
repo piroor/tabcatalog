@@ -119,13 +119,13 @@ var TabCatalog = {
 		return tabs;
 	},
  
-	get isMultiWindow()
+	get isMultiWindow() 
 	{
 		return this.getPref('extensions.tabcatalog.showAllWindows') &&
 				(this.browserWindowsWithOpenedOrder.length > 1);
 	},
  
-	get splitByWindow()
+	get splitByWindow() 
 	{
 		return this.getPref('extensions.tabcatalog.showAllWindows') &&
 				!this.getPref('extensions.tabcatalog.sort_by_focus') &&
@@ -524,6 +524,57 @@ var TabCatalog = {
 
 		return 'rgba('+rgb.join(',')+', 0.75)';
 	},
+ 
+	removeTab : function(aTab, aOnlyRemove) 
+	{
+		var mode = this.getPref('extensions.tabcatalog.closeTabActionForLastTab');
+		if (aTab.__tabcatalog__relatedTabBrowser.mTabContainer.childNodes.length == 1 &&
+			mode != this.LAST_TAB_ACTION_CLOSE_TAB) {
+			if (mode == this.LAST_TAB_ACTION_CLOSE_TAB_AND_WINDOW)
+				aTab.__tabcatalog__relatedTabBrowser.removeTab(aTab);
+
+			var win = aTab.ownerDocument.defaultView;
+			if ('BrowserTryToCloseWindow' in win)
+				win.setTimeout('BrowserTryToCloseWindow();', 0);
+			else if ('TryToCloseWindow' in win)
+				win.setTimeout('TryToCloseWindow();', 0);
+			else
+				win.setTimeout('window.close();', 0);
+
+			if (win == window) {
+				var base = this.callingAction;
+				this.hide();
+				if (this.getPref('extensions.tabcatalog.keep_open.closetab')) {
+					var windows = this.browserWindowsWithFocusedOrder;
+					for (var i in windows)
+						if (windows[i] != win) {
+							windows[i].focus();
+							var count = 0;
+							windows[i].setTimeout(function(aWindow) {
+								if (win.closed)
+									aWindow.TabCatalog.show(base);
+								else if (count++ < 1000)
+									aWindow.setTimeout(arguments.callee, 10, aWindow);
+							}, 10, windows[i]);
+							return;
+						}
+				}
+			}
+		}
+		else {
+			aTab.__tabcatalog__relatedTabBrowser.removeTab(aTab);
+		}
+
+		if (aOnlyRemove) return;
+
+		if (this.getPref('extensions.tabcatalog.keep_open.closetab'))
+			window.setTimeout('TabCatalog.updateUI();', 0);
+		else
+			this.hide();
+	},
+	LAST_TAB_ACTION_CLOSE_TAB            : 0,
+	LAST_TAB_ACTION_CLOSE_TAB_AND_WINDOW : 1,
+	LAST_TAB_ACTION_CLOSE_WINDOW         : 2,
  	 
 /* Initializing */ 
 	 
@@ -1184,13 +1235,8 @@ var TabCatalog = {
 				)
 			) */
 			) {
-			if (!this.ignoreMiddleClick && tab) {
-				node.relatedTabBrowser.removeTab(tab);
-				if (this.getPref('extensions.tabcatalog.keep_open.closetab'))
-					this.updateUI();
-				else
-					this.hide();
-			}
+			if (!this.ignoreMiddleClick && tab)
+				this.removeTab(tab);
 		}
 		else if (
 				aEvent.button == 0 &&
@@ -1231,12 +1277,7 @@ var TabCatalog = {
 		aEvent.preventDefault();
 		aEvent.stopPropagation();
 
-		node.relatedTabBrowser.removeTab(node.relatedTab);
-		var base = this.callingAction;
-		if (this.getPref('extensions.tabcatalog.keep_open.closetab'))
-			this.updateUI();
-		else
-			this.hide();
+		this.removeTab(node.relatedTab);
 	},
  
 	onSliderClick : function(aEvent) 
@@ -1640,7 +1681,7 @@ var TabCatalog = {
 		{
 			if (
 				i > 0 &&
-				splitByWindow && 
+				splitByWindow &&
 				tabs[i].ownerDocument != tabs[i-1].ownerDocument
 				) {
 				var splitter = document.createElement('box');
@@ -1821,7 +1862,7 @@ var TabCatalog = {
 		return canvas;
 	},
  
-	createProgressListener : function(aTab, aBrowser)
+	createProgressListener : function(aTab, aBrowser) 
 	{
 		return {
 			mTab           : aTab,
@@ -1969,7 +2010,7 @@ var TabCatalog = {
 			colCount++;
 			split = (
 				i > 0 &&
-				splitByWindow && 
+				splitByWindow &&
 				tabs[i].ownerDocument != tabs[i-1].ownerDocument
 			);
 			if ((colCount > maxCol) || split) {
@@ -2293,7 +2334,7 @@ var TabCatalog = {
 			return;
 
 		for (i = max-1; i > -1; i--) {
-			nodes.snapshotItem(i).relatedTabBrowser.removeTab(nodes.snapshotItem(i).relatedTab);
+			this.removeTab(nodes.snapshotItem(i).relatedTab, true);
 		}
 
 		var base = this.callingAction;
