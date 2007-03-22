@@ -7,17 +7,17 @@
 
 <!ENTITY tabcatalog.tab.catalog   "Katalog">
 
-<!ENTITY tabcatalog.sort_by_focus  "Wyświetl w kolejności najczęściej oglądanych">
-<!ENTITY tabcatalog.showAllWindows "Wyświetl wszystkie karty ze wszystkich okien">
-<!ENTITY tabcatalog.split_by_window "Split for each window">
-<!ENTITY tabcatalog.show_scrollbar "Show scrollbar">
+<!ENTITY tabcatalog.sort_by_focus  "Rozmieść karty wg najczęściej oglądanych">
+<!ENTITY tabcatalog.showAllWindows "Wyświetl miniatury wszystkich karty ze wszystkich okien">
+<!ENTITY tabcatalog.split_by_window "Podziel dla każdego okna">
+<!ENTITY tabcatalog.show_scrollbar "Wyświetl pasek przewijania">
 
 <!ENTITY tabcatalog.override.caption      "Wyświetl katalog miniatur za pomocą:">
 <!ENTITY tabcatalog.override.ctrltab      "Skrótu [Ctrl(Command)+Tab] (wyświetlenie i przełączanie pomiędzy kartami)">
 <!ENTITY tabcatalog.override.allinonegest "Nawigacja kółkiem myszy tak jak w rozszerzeniu &quot;All-In-One Gestures&quot;">
 
 <!ENTITY tabcatalog.override.shortcut                "Skrótu klawiaturowego:">
-<!ENTITY tabcatalog.override.shortcut.set            "Ustaw">
+<!ENTITY tabcatalog.override.shortcut.set            "Określ">
 <!ENTITY tabcatalog.override.shortcut.clear          "Wyczyść">
 <!ENTITY tabcatalog.override.shortcut.dialog.message "Naciśnij nową kombinację klawiszy">
 <!ENTITY tabcatalog.override.shortcut.dialog.button  "Anuluj">
@@ -25,7 +25,7 @@
 <!ENTITY tabcatalog.override.bothclick       "Podwójnego kliknięcia (naciśnięcie jednocześnie prawego i lewego przycisku myszy)">
 
 
-<!ENTITY tabcatalog.panning.behavior         "Płynne przewijanie">
+<!ENTITY tabcatalog.panning.behavior         "Przewijanie">
 <!ENTITY tabcatalog.panning.behavior.0       "jak przeciąganie paska przewijania">
 <!ENTITY tabcatalog.panning.behavior.1       "jak przeciąganie ekranu">
 
@@ -34,7 +34,7 @@
 <!ENTITY tabcatalog.rendering_quality.low     "niska (szybko, mało atrakcyjny wygląd)">
 <!ENTITY tabcatalog.rendering_quality.middle  "średnia">
 <!ENTITY tabcatalog.rendering_quality.high    "wysoka (wolno, atrakcyjny wygląd)">
-<!ENTITY tabcatalog.animation.scroll.enabled  "Płynne przewijanie katalogu miniatur">
+<!ENTITY tabcatalog.animation.scroll.enabled  "Przewijaj płynnie">
 
 <!ENTITY tabcatalog.tab.thumbnail "Miniatury">
 
@@ -52,7 +52,7 @@
 <!ENTITY tabcatalog.tab.auto_show "Wyświetlanie">
 
 <!ENTITY tabcatalog.auto_show.caption  "Automatyczne wyświetlanie katalogu miniatur">
-<!ENTITY tabcatalog.auto_show.enabled "Wyświetlaj katalog miniatur po umieszczeniu wskaźnika myszy na przycisku &quot;Miniatury&quot;">
+<!ENTITY tabcatalog.auto_show.enabled "Wyświetlaj katalog po umieszczeniu wskaźnika myszy na przycisku &quot;Miniatury&quot;">
 <!ENTITY tabcatalog.auto_show.delay.show.before "Wyświetl po">
 <!ENTITY tabcatalog.auto_show.delay.show.after  "msek od momentu umieszczenia wskaźnikia na przycisku">
 <!ENTITY tabcatalog.auto_show.delay.hide.before "Ukryj po">

@@ -11,10 +11,10 @@
 
 <!ENTITY tabcatalog.tab.catalog   "Tab-Vorschau">
 
-<!ENTITY tabcatalog.sort_by_focus  "Anordnen in der Reihefolge der letzten Benutzung">
-<!ENTITY tabcatalog.showAllWindows "Show all tabs in all windows">
-<!ENTITY tabcatalog.split_by_window "Split for each window">
-<!ENTITY tabcatalog.show_scrollbar "Show scrollbar">
+<!ENTITY tabcatalog.sort_by_focus  "In der Reihefolge der letzten Tab-Benutzung anordnen">
+<!ENTITY tabcatalog.showAllWindows "Alle Tabs für alle offenen Fenster anzeigen">
+<!ENTITY tabcatalog.split_by_window "Anzeige nach Fenstern unterteilen">
+<!ENTITY tabcatalog.show_scrollbar "Scroll-Leiste anzeigen">
 
 <!ENTITY tabcatalog.override.caption      "Tab-Vorschau aufrufen">
 <!ENTITY tabcatalog.override.ctrltab      "Bei Tab-Wechsel mittels Tastaturkürzel Strg(Befehl)+Tabulator">
@@ -30,7 +30,7 @@
 
 
 <!ENTITY tabcatalog.panning.behavior         "Bildlauf-Modus für mittlere Maustaste">
-<!ENTITY tabcatalog.panning.behavior.0       "gegenläufig (wie Sroll-Leiste)">
+<!ENTITY tabcatalog.panning.behavior.0       "gegenläufig (wie Scroll-Leiste)">
 <!ENTITY tabcatalog.panning.behavior.1       "gleichläufig (in Bewegungsrichtung)">
 
 
