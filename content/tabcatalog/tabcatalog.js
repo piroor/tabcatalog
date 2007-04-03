@@ -1707,11 +1707,11 @@ var TabCatalog = {
 		var header          = this.header;
 		var splitterHeight  = this.splitter;
 
-		matrixData.offsetX = parseInt(((window.innerWidth-(
+		var offsetX = parseInt(((window.innerWidth-(
 					matrixData.maxCol * (matrixData.width + padding)
 				))/2) + (padding/2));
 
-		matrixData.offsetY = matrixData.overflow ? padding :
+		var offsetY = matrixData.overflow ? padding :
 				parseInt(((window.innerHeight-(
 					(matrixData.maxRow * (matrixData.height + padding + header)) + matrixData.offsetY
 				))/2) + (padding/2));
@@ -1733,12 +1733,19 @@ var TabCatalog = {
 
 				splitter.style.position = 'absolute';
 				splitter.style.zIndex   = 65500;
-				splitter.style.left     = (matrixData.offsetX - padding) + 'px !important';
-				splitter.style.top      = parseInt(thumbnail.posY + matrixData.height + padding + padding + ((splitterHeight) / 2)) + 'px !important';
-				splitter.style.width    = (window.innerWidth - ((matrixData.offsetX - padding) * 2)) + 'px';
+				splitter.style.left     = (offsetX - padding) + 'px !important';
+				splitter.style.top      = parseInt(thumbnail.posYBase + matrixData.height + padding + padding + ((splitterHeight) / 2)) + 'px !important';
+				splitter.style.width    = (window.innerWidth - ((offsetX - padding) * 2)) + 'px';
 			}
 
 			var b = tabs[i].linkedBrowser;
+
+			matrixData.matrix[i].width  = matrixData.width;
+			matrixData.matrix[i].height = matrixData.height;
+			if (matrixData.matrix[i].aspectRatio < 1)
+				matrixData.matrix[i].height = matrixData.width * matrixData.matrix[i].aspectRatio;
+			else
+				matrixData.matrix[i].width = matrixData.height / matrixData.matrix[i].aspectRatio;
 
 			var box = document.getElementById('thumbnail-item-template').firstChild.cloneNode(true);
 			box.setAttribute('index',    i);
@@ -1748,8 +1755,8 @@ var TabCatalog = {
 			box.setAttribute('y',        matrixData.matrix[i].y);
 			box.setAttribute('thumbnail-position', matrixData.matrix[i].x+'/'+matrixData.matrix[i].y);
 
-			box.childNodes[1].style.width  = box.childNodes[1].style.maxWidth  = matrixData.width+'px';
-			box.childNodes[1].style.height = box.childNodes[1].style.maxHeight = matrixData.height+'px';
+			box.childNodes[1].style.width  = box.childNodes[1].style.maxWidth  = matrixData.matrix[i].width+'px';
+			box.childNodes[1].style.height = box.childNodes[1].style.maxHeight = matrixData.matrix[i].height+'px';
 
 			if (i < 36) {
 				var accesskey = Number(i).toString(36).toUpperCase();
@@ -1771,8 +1778,11 @@ var TabCatalog = {
 				box.style.outlineColor = color;
 
 			var thumbnail = document.createElement('thumbnail');
-			thumbnail.posX = matrixData.offsetX + matrixData.matrix[i].posX;
-			thumbnail.posY = matrixData.offsetY + matrixData.matrix[i].posY;
+			thumbnail.posXBase = offsetX + matrixData.matrix[i].posX;
+			thumbnail.posYBase = offsetY + matrixData.matrix[i].posY;
+
+			thumbnail.posX = thumbnail.posXBase + ((matrixData.width - matrixData.matrix[i].width) / 2);
+			thumbnail.posY = thumbnail.posYBase + ((matrixData.height - matrixData.matrix[i].height) / 2);
 
 			thumbnail.style.position = 'absolute';
 			thumbnail.style.zIndex   = 65500;
@@ -1840,7 +1850,7 @@ var TabCatalog = {
 		this.catalog.scrollX    = 0;
 		this.catalog.scrollY    = 0;
 		this.catalog.maxScrollX = matrixData.maxCol * (padding + matrixData.width);
-		this.catalog.maxScrollY = matrixData.offsetY + matrixData.matrix[max-1].posY + matrixData.height - window.innerHeight + padding + header;
+		this.catalog.maxScrollY = offsetY + matrixData.matrix[max-1].posY + matrixData.height - window.innerHeight + padding + header;
 
 		if (matrixData.overflow &&
 			this.getPref('extensions.tabcatalog.show_scrollbar')) {
@@ -1905,9 +1915,12 @@ var TabCatalog = {
 	createCanvasTimer : null,
 	createOneCanvas : function(aIndex, aTab, aMatrixData, aBox)
 	{
+		var width = aMatrixData.matrix[aIndex].width;
+		var height = aMatrixData.matrix[aIndex].height;
+
 		var canvas = this.getCanvasForTab(aTab);
-		canvas.style.width  = canvas.style.maxWidth  = aMatrixData.width+"px";
-		canvas.style.height = canvas.style.maxHeight = aMatrixData.height+"px";
+		canvas.style.width  = canvas.style.maxWidth  = width+"px";
+		canvas.style.height = canvas.style.maxHeight = height+"px";
 
 		aBox.childNodes[1].appendChild(canvas);
 		canvas.relatedBox = aBox;
@@ -2125,11 +2138,16 @@ var TabCatalog = {
 				if (split)
 					offsetY += (padding + splitterHeight);
 			}
+
+			var boxObject   = tabs[i].linkedBrowser.boxObject;
+			var aspectRatio = boxObject.height / boxObject.width;
+
 			matrix.push({
 				x : colCount,
 				y : rowCount,
 				posX : ((aWidth + padding) * (colCount - 1)),
-				posY : (offsetY + ((aHeight + padding + header) * (rowCount-1)))
+				posY : (offsetY + ((aHeight + padding + header) * (rowCount-1))),
+				aspectRatio : aspectRatio
 			});
 		}
 		return {
@@ -2191,8 +2209,8 @@ var TabCatalog = {
 			return;
 
 		var tab = aData.tab;
-		var b   = tab.linkedBrowser;
-		var w   = b.contentWindow;
+		var b = tab.linkedBrowser;
+		var w = b.contentWindow;
 
 		var width  = aData.width || w.innerWidth;
 		var height = aData.height || w.innerHeight;
