@@ -87,7 +87,11 @@ var TabCatalog = {
 		if (this.getPref('extensions.tabcatalog.showAllWindows')) {
 			var windows = this.getPref('extensions.tabcatalog.window.sort_by_focus') ? this.browserWindowsWithFocusedOrder : this.browserWindowsWithOpenedOrder ;
 			for (var i = 0; i < windows.length; i++)
+			{
 				tabs = tabs.concat(Array.prototype.slice.call(windows[i].gBrowser.mTabContainer.childNodes));
+				if (this.shouldRebuild(windows[i]))
+					this.rebuildRequest = true;
+			}
 		}
 		else {
 			tabs = gBrowser.mTabContainer.childNodes;
@@ -181,7 +185,7 @@ var TabCatalog = {
 	_WindowManager : null,
   
 /* state */ 
-	
+	 
 	get backgroundShown() { 
 		return this.background.getAttribute('catalog-shown') == 'true';
 	},
@@ -301,6 +305,26 @@ var TabCatalog = {
 		return this.shortcut;
 	},
 	_shortcut : null,
+ 
+	set rebuildRequest(val) 
+	{
+		if (val) {
+			this.mRebuildRequestDate = (new Date()).getTime();
+//dump('REQUEST AT '+this.mRebuildRequestDate+'\n');
+		}
+		else {
+			this.mLastRebuildDate = (new Date()).getTime();
+		}
+		return this.rebuildRequest;
+	},
+	mRebuildRequestDate : (new Date()).getTime(),
+	mLastRebuildDate    : -1,
+ 	
+	shouldRebuild : function(aWindow) 
+	{
+		if (!aWindow) aWindow = window;
+		return aWindow.TabCatalog.mRebuildRequestDate > this.mLastRebuildDate;
+	},
   
 /* get items */ 
 	
@@ -614,7 +638,7 @@ var TabCatalog = {
 	LAST_TAB_ACTION_CLOSE_TAB            : 0,
 	LAST_TAB_ACTION_CLOSE_TAB_AND_WINDOW : 1,
 	LAST_TAB_ACTION_CLOSE_WINDOW         : 2,
- 	 
+  
 /* Initializing */ 
 	 
 	init : function() 
@@ -627,6 +651,7 @@ var TabCatalog = {
 		window.addEventListener('keypress',  this.onKeyRelease, true);
 		window.addEventListener('mousedown', this.onMouseDown,  true);
 		window.addEventListener('mouseup',   this.onMouseUp,    true);
+		window.addEventListener('resize',    this.onResize,     true);
 
 		gBrowser.addEventListener('mouseover', this.onTabBarMouseOver, true);
 		gBrowser.addEventListener('mouseout',  this.onTabBarMouseOut,  true);
@@ -710,6 +735,7 @@ var TabCatalog = {
 		var originalAddTab = aTabBrowser[addTabMethod];
 		aTabBrowser[addTabMethod] = function() {
 			var tab = originalAddTab.apply(this, arguments);
+			TabCatalog.rebuildRequest = true;
 			try {
 				TabCatalog.getCanvasForTab(tab);
 			}
@@ -735,6 +761,8 @@ var TabCatalog = {
 			if (aTab.parentNode)
 				TabCatalog.getCanvasForTab(aTab);
 
+			TabCatalog.rebuildRequest = true;
+
 			return retVal;
 		};
 
@@ -758,6 +786,7 @@ var TabCatalog = {
 		window.removeEventListener('keypress',  this.onKeyRelease, true);
 		window.removeEventListener('mousedown', this.onMouseDown,  true);
 		window.removeEventListener('mouseup',   this.onMouseUp,    true);
+		window.removeEventListener('resize',    this.onResize,     true);
 
 		gBrowser.removeEventListener('mouseover', this.onTabBarMouseOver, true);
 		gBrowser.removeEventListener('mouseout',  this.onTabBarMouseOut,  true);
@@ -781,10 +810,13 @@ var TabCatalog = {
 				delete tabs[i].cachedCanvas;
 			}
 		}
+
+		this.updateCanvasCue = [];
+		this.createCanvasCue = [];
 	},
   
 /* Event Handling */ 
-	
+	 
 /* General */ 
 	
 	onMouseDown : function(aEvent) 
@@ -942,11 +974,17 @@ var TabCatalog = {
 		}
 	},
   
-	onCancel : function(aEvent) 
+	onResize : function(aEvent) 
 	{
-		if (aEvent.type == 'resize' && aEvent.target != document)
+		if (aEvent.target != document)
 			return;
 
+		TabCatalog.rebuildRequest = true;
+		TabCatalog.hide();
+	},
+ 
+	onBlur : function(aEvent) 
+	{
 		TabCatalog.hide();
 	},
  
@@ -1541,7 +1579,7 @@ var TabCatalog = {
 	},
   
 /* Catarog Operations */ 
-	
+	 
 	show : function(aBase, aOnlyUpdate, aRelative) 
 	{
 		var tabs = this.tabs;
@@ -1585,6 +1623,9 @@ var TabCatalog = {
 		this.callingAction = aBase || this.callingAction || this.CALLED_BY_UNKNOWN ;
 		this.initUI(aRelative);
 
+		var items = this.getItems();
+		this.moveFocusToItem(items[this.lastFocusedIndex], true);
+
 		this.button0Pressed = false;
 		this.button1Pressed = false;
 		this.button2Pressed = false;
@@ -1593,8 +1634,7 @@ var TabCatalog = {
 		if (this.catalog.overflow) {
 			window.addEventListener('mousemove', this.onPanningScroll, true);
 		}
-		window.addEventListener('resize', this.onCancel, true);
-		window.addEventListener('blur',   this.onCancel, true);
+		window.addEventListener('blur', this.onBlur, true);
 
 		if (this.getPref('extensions.tabcatalog.rendering_quality') > 0)
 			this.catalog.setAttribute('dropshadow', true);
@@ -1641,8 +1681,7 @@ var TabCatalog = {
 		if (this.catalog.overflow) {
 			window.removeEventListener('mousemove', this.onPanningScroll, true);
 		}
-		window.removeEventListener('resize', this.onCancel, true);
-		window.removeEventListener('blur',   this.onCancel, true);
+		window.removeEventListener('blur', this.onBlur, true);
 
 		this.animateStop();
 
@@ -1655,7 +1694,7 @@ var TabCatalog = {
 
 		this.stopCreateCanvas();
 		this.stopUpdateCanvas();
-		this.clear();
+//		this.clear();
 		this.contextMenuShwon = false;
 		this.shown = false;
 
@@ -1695,6 +1734,37 @@ var TabCatalog = {
  
 	initUI : function(aRelative) 
 	{
+//dump('REBUILD ? '+this.shouldRebuild()+'\n');
+		if (!this.shouldRebuild()) {
+			var tabs = this.tabs;
+			for (var i = 0, max = tabs.length; i < max; i++)
+			{
+				if (
+					this.lastFocusedIndex == i ||
+					(
+						this.lastFocusedIndex < 0 &&
+						tabs[i] == tabs[i].__tabcatalog__relatedTabBrowser.selectedTab &&
+						tabs[i].ownerDocument.defaultView == window
+					)
+					) {
+					this.lastFocusedIndex = i;
+				}
+			}
+
+			var nodes = this.getSelectedTabItems();
+			if (nodes.snapshotLength) {
+				for (i = nodes.snapshotLength-1; i > -1; i--)
+					nodes.snapshotItem(i).removeAttribute('selected');
+			}
+
+			this.createCanvas();
+			this.updateCanvas();
+
+			return;
+		}
+
+		this.rebuildRequest = false;
+
 		this.clear();
 
 		var tabs = this.tabs;
@@ -1802,9 +1872,7 @@ var TabCatalog = {
 					tabs[i].ownerDocument.defaultView == window
 				)
 				) {
-				thumbnail.setAttribute('container-focused', true);
-				box.setAttribute('focused', true);
-				box.setAttribute('current', true);
+				this.lastFocusedIndex = i;
 				current = i;
 			}
 
@@ -1818,23 +1886,36 @@ var TabCatalog = {
 			});
 		}
 
-		if (this.callingAction & this.CALLED_FOR_SWITCHING) {
+		/*
+			現在のタブを中心にして、前後のタブのサムネイルから更新していく。
+			一覧の左上から更新していくのに比べて、体感的にはこっちの方が
+			「待たされている」感が少なくてすむ……はず。
+		*/
+//		if (this.callingAction & this.CALLED_FOR_SWITCHING) {
+			this.createOneCanvas(this.createCanvasCue[current]);
 			var newCue = [];
-			newCue.push(this.createCanvasCue[current]);
 			var nextCue = current;
 			var prevCue = current;
 			var max = this.createCanvasCue.length;
-			while (newCue.length < max)
+			var checked = {};
+			while (newCue.length < max-1)
 			{
-				if (++nextCue < max)
+				nextCue = (nextCue + 1) % max;
+				if (!(nextCue in checked)) {
 					newCue.push(this.createCanvasCue[nextCue]);
-				if (--prevCue > -1)
+					checked[nextCue] = true;
+				}
+				prevCue = (prevCue - 1 + max) % max;
+				if (!(prevCue in checked)) {
 					newCue.push(this.createCanvasCue[prevCue]);
+					checked[prevCue] = true;
+				}
 			}
 			this.createCanvasCue = newCue;
-		}
+//		}
 
 		this.createCanvas();
+		this.updateCanvas();
 
 		this.catalog.posX       = 0;
 		this.catalog.posY       = 0;
@@ -1883,8 +1964,6 @@ var TabCatalog = {
 		}
 		else
 			this.catalog.scrollbar = null;
-
-		this.updateCanvas();
 	},
  
 	createCanvas : function() 
@@ -1898,13 +1977,18 @@ var TabCatalog = {
 			window.clearTimeout(this.createCanvasTimer);
 			this.createCanvasTimer = null;
 		}
-		this.createCanvasCue = [];
+//		this.createCanvasCue = [];
 	},
 	createCanvasCallback : function()
 	{
+		if (!this.createCanvasCue.length) {
+			this.stopCreateCanvas();
+			return;
+		}
+
 		var cue = this.createCanvasCue[0];
 		this.createCanvasCue.splice(0, 1);
-		this.createOneCanvas(cue.index, cue.tab, cue.matrixData, cue.box);
+		this.createOneCanvas(cue);
 
 		if (!this.createCanvasCue.length)
 			this.stopCreateCanvas();
@@ -1913,31 +1997,36 @@ var TabCatalog = {
 	},
 	createCanvasCue : [],
 	createCanvasTimer : null,
-	createOneCanvas : function(aIndex, aTab, aMatrixData, aBox)
+	createOneCanvas : function(aCue)
 	{
-		var width = aMatrixData.matrix[aIndex].width;
-		var height = aMatrixData.matrix[aIndex].height;
+		var index      = aCue.index;
+		var tab        = aCue.tab;
+		var matrixData = aCue.matrixData;
+		var box        = aCue.box;
 
-		var canvas = this.getCanvasForTab(aTab);
+		var width  = matrixData.matrix[index].width;
+		var height = matrixData.matrix[index].height;
+
+		var canvas = this.getCanvasForTab(tab);
 		canvas.style.width  = canvas.style.maxWidth  = width+"px";
 		canvas.style.height = canvas.style.maxHeight = height+"px";
 
-		aBox.childNodes[1].appendChild(canvas);
-		canvas.relatedBox = aBox;
+		box.childNodes[1].appendChild(canvas);
+		canvas.relatedBox = box;
 
-		if (aMatrixData.isMultiWindow)
-			this.drawWindowIndicator(canvas, aTab.ownerDocument.defaultView);
+		if (matrixData.isMultiWindow)
+			this.drawWindowIndicator(canvas, tab.ownerDocument.defaultView);
 
 		canvas.thumbnailData = {
-			tab    : aTab,
-			width  : aMatrixData.width,
-			height : aMatrixData.height,
+			tab    : tab,
+			width  : matrixData.width,
+			height : matrixData.height,
 			canvas : canvas,
-			uri    : aTab.linkedBrowser.currentURI.spec,
-			isMultiWindow : aMatrixData.isMultiWindow
+			uri    : tab.linkedBrowser.currentURI.spec,
+			isMultiWindow : matrixData.isMultiWindow
 		};
 
-		if (aTab.getAttribute('busy')) {
+		if (tab.getAttribute('busy')) {
 			this.updateCanvasCue.push(canvas.thumbnailData);
 			this.updateCanvas();
 		}
@@ -2170,10 +2259,15 @@ var TabCatalog = {
 			window.clearTimeout(this.updateCanvasTimer);
 			this.updateCanvasTimer = null;
 		}
-		this.updateCanvasCue = [];
+//		this.updateCanvasCue = [];
 	},
 	updateCanvasCallback : function()
 	{
+		if (!this.updateCanvasCue.length) {
+			this.stopUpdateCanvas();
+			return;
+		}
+
 		var cue    = this.updateCanvasCue;
 		var newCue = [];
 		for (var i = 0, max = cue.length; i < max; i++) {
@@ -2372,7 +2466,7 @@ var TabCatalog = {
 
 		this.moveFocusToItem(focusedNode[0]);
 	},
-	moveFocusToItem : function(aItem)
+	moveFocusToItem : function(aItem, aSetCurrent)
 	{
 		var focusedNode = this.getFocusedItem();
 		if (focusedNode) {
@@ -2381,6 +2475,14 @@ var TabCatalog = {
 		}
 		aItem.parentNode.setAttribute('container-focused', true);
 		aItem.setAttribute('focused', true);
+
+		if (aSetCurrent) {
+			var current = this.catalog.parentNode.getElementsByAttribute('current', 'true');
+			if (current.length)
+				current[0].removeAttribute('current');
+			aItem.setAttribute('current', true);
+		}
+
 		this.scrollCatalogToItem(aItem);
 	},
 	SCROLL_VERTICAL   : 1,
