@@ -552,13 +552,23 @@ var TabCatalog = {
 							var count = 0;
 							windows[i].setTimeout(function(aWindow) {
 								if (win.closed)
-									aWindow.TabCatalog.show(base);
+									TabCatalog.show(base);
 								else if (count++ < 1000)
 									aWindow.setTimeout(arguments.callee, 10, aWindow);
 							}, 10, windows[i]);
 							return;
 						}
 				}
+			}
+			else {
+				window.focus();
+				var count = 0;
+				window.setTimeout(function(aWindow) {
+					if (win.closed)
+						TabCatalog.show(base);
+					else if (count++ < 1000)
+						window.setTimeout(arguments.callee, 10);
+				}, 10);
 			}
 		}
 		else {
@@ -1602,6 +1612,7 @@ var TabCatalog = {
 		var focusedNode = this.getFocusedItem();
 		this.lastFocusedIndex = (focusedNode) ? parseInt(focusedNode.getAttribute('index')) : -1 ;
 
+		this.stopCreateThumbnail();
 		this.stopUpdateCanvas();
 		this.clear();
 		this.contextMenuShwon = false;
@@ -1645,43 +1656,33 @@ var TabCatalog = {
 	{
 		this.clear();
 
-
 		var tabs = this.tabs;
 		var matrixData = this.getThumbnailMatrix(tabs, aRelative);
 
-		var i;
-		var max = tabs.length;
-
-		var colCount = 0;
-		var rowCount = 1;
-
 		this.updateCanvasCue = [];
+		this.createCanvasCue = [];
 
 		var padding         = this.padding;
 		var header          = this.header;
 		var splitterHeight  = this.splitter;
 
-		var offsetX = parseInt(((window.innerWidth-(
+		matrixData.offsetX = parseInt(((window.innerWidth-(
 					matrixData.maxCol * (matrixData.width + padding)
 				))/2) + (padding/2));
 
-		var offsetY = matrixData.overflow ? padding :
+		matrixData.offsetY = matrixData.overflow ? padding :
 				parseInt(((window.innerHeight-(
 					(matrixData.maxRow * (matrixData.height + padding + header)) + matrixData.offsetY
 				))/2) + (padding/2));
 
-		var isMultiWindow = this.isMultiWindow;
+		matrixData.isMultiWindow = this.isMultiWindow;
+		matrixData.splitByWindow = this.splitByWindow;
 
-		var splitByWindow = this.splitByWindow;
-		var splitter;
-		var splitterHeight  = this.splitter;
-
-		var browser;
-		for (i = 0; i < max; i++)
+		for (var i = 0, max = tabs.length; i < max; i++)
 		{
 			if (
 				i > 0 &&
-				splitByWindow &&
+				matrixData.splitByWindow &&
 				tabs[i].ownerDocument != tabs[i-1].ownerDocument
 				) {
 				var splitter = document.createElement('box');
@@ -1690,9 +1691,9 @@ var TabCatalog = {
 
 				splitter.style.position = 'absolute';
 				splitter.style.zIndex   = 65500;
-				splitter.style.left     = (offsetX - padding) + 'px !important';
+				splitter.style.left     = (matrixData.offsetX - padding) + 'px !important';
 				splitter.style.top      = parseInt(thumbnail.posY + matrixData.height + padding + padding + ((splitterHeight) / 2)) + 'px !important';
-				splitter.style.width    = (window.innerWidth - ((offsetX - padding) * 2)) + 'px';
+				splitter.style.width    = (window.innerWidth - ((matrixData.offsetX - padding) * 2)) + 'px';
 			}
 
 			var b = tabs[i].linkedBrowser;
@@ -1701,13 +1702,13 @@ var TabCatalog = {
 			box.setAttribute('index',    i);
 			box.setAttribute('title',    b.contentDocument.title);
 			box.setAttribute('uri',      b.currentURI.spec);
-			box.setAttribute('width',    matrixData.width);
-			box.setAttribute('height',   matrixData.height);
 			box.setAttribute('x',        matrixData.matrix[i].x);
 			box.setAttribute('y',        matrixData.matrix[i].y);
 			box.setAttribute('thumbnail-position', matrixData.matrix[i].x+'/'+matrixData.matrix[i].y);
-			box.style.maxWidth  = matrixData.width+'px';
-			box.style.maxHeight = matrixData.height+'px';
+
+			box.childNodes[1].style.width  = box.childNodes[1].style.maxWidth  = matrixData.width+'px';
+			box.childNodes[1].style.height = box.childNodes[1].style.maxHeight = matrixData.height+'px';
+
 			if (i < 36) {
 				var accesskey = Number(i).toString(36).toUpperCase();
 				box.setAttribute('accesskey', accesskey);
@@ -1727,16 +1728,9 @@ var TabCatalog = {
 			if (color && (color = color.split(':')[0]) != 'default')
 				box.style.outlineColor = color;
 
-			var canvas = this.getCanvasForTab(tabs[i]);
-			box.childNodes[1].appendChild(canvas);
-			canvas.relatedBox = box;
-
-			if (isMultiWindow)
-				this.drawWindowIndicator(canvas, tabs[i].ownerDocument.defaultView);
-
 			var thumbnail = document.createElement('thumbnail');
-			thumbnail.posX = offsetX + matrixData.matrix[i].posX;
-			thumbnail.posY = offsetY + matrixData.matrix[i].posY;
+			thumbnail.posX = matrixData.offsetX + matrixData.matrix[i].posX;
+			thumbnail.posY = matrixData.offsetY + matrixData.matrix[i].posY;
 
 			thumbnail.style.position = 'absolute';
 			thumbnail.style.zIndex   = 65500;
@@ -1761,20 +1755,16 @@ var TabCatalog = {
 				box.setAttribute('current', true);
 			}
 
-			canvas.style.width  = canvas.style.maxWidth  = matrixData.width+"px";
-			canvas.style.height = canvas.style.maxHeight = matrixData.height+"px";
-			canvas.thumbnailData = {
-				tab    : tabs[i],
-				width  : matrixData.width,
-				height : matrixData.height,
-				canvas : canvas,
-				uri    : b.currentURI.spec,
-				isMultiWindow : isMultiWindow
-			};
-
 			this.updateThumbnail(box);
-			this.updateCanvasCue.push(canvas.thumbnailData);
+
+			this.createCanvasCue.push({
+				index      : i,
+				tab        : tabs[i],
+				matrixData : matrixData,
+				box        : box
+			});
 		}
+		this.createCanvas();
 
 		this.catalog.posX       = 0;
 		this.catalog.posY       = 0;
@@ -1790,7 +1780,7 @@ var TabCatalog = {
 		this.catalog.scrollX    = 0;
 		this.catalog.scrollY    = 0;
 		this.catalog.maxScrollX = matrixData.maxCol * (padding + matrixData.width);
-		this.catalog.maxScrollY = thumbnail.posY + matrixData.height - window.innerHeight + padding + header;
+		this.catalog.maxScrollY = matrixData.offsetY + matrixData.matrix[max-1].posY + matrixData.height - window.innerHeight + padding + header;
 
 		if (matrixData.overflow &&
 			this.getPref('extensions.tabcatalog.show_scrollbar')) {
@@ -1825,6 +1815,62 @@ var TabCatalog = {
 			this.catalog.scrollbar = null;
 
 		this.updateCanvas();
+	},
+ 
+	createCanvas : function() 
+	{
+		if (this.createCanvasTimer) return;
+		window.setTimeout('TabCatalog.createCanvasCallback()', 0);
+	},
+	stopCreateThumbnail : function()
+	{
+		if (this.createCanvasTimer) {
+			window.clearTimeout(this.createCanvasTimer);
+			this.createCanvasTimer = null;
+		}
+		this.createCanvasCue = [];
+	},
+	createCanvasCallback : function()
+	{
+		var cue = this.createCanvasCue[0];
+		this.createCanvasCue.splice(0, 1);
+		this.createOneCanvas(cue.index, cue.tab, cue.matrixData, cue.box);
+
+		if (!this.createCanvasCue.length)
+			this.stopCreateThumbnail();
+		else
+			this.createCanvasTimer = window.setTimeout('TabCatalog.createCanvasCallback()', 0);
+	},
+	createCanvasCue : [],
+	createCanvasTimer : null,
+	createOneCanvas : function(aIndex, aTab, aMatrixData, aBox)
+	{
+		var canvas = this.getCanvasForTab(aTab);
+		canvas.style.width  = canvas.style.maxWidth  = aMatrixData.width+"px";
+		canvas.style.height = canvas.style.maxHeight = aMatrixData.height+"px";
+
+		aBox.childNodes[1].appendChild(canvas);
+		canvas.relatedBox = aBox;
+
+		if (aMatrixData.isMultiWindow)
+			this.drawWindowIndicator(canvas, aTab.ownerDocument.defaultView);
+
+		canvas.thumbnailData = {
+			tab    : aTab,
+			width  : aMatrixData.width,
+			height : aMatrixData.height,
+			canvas : canvas,
+			uri    : aTab.linkedBrowser.currentURI.spec,
+			isMultiWindow : aMatrixData.isMultiWindow
+		};
+
+		if (aTab.getAttribute('busy')) {
+			this.updateCanvasCue.push(canvas.thumbnailData);
+			this.updateCanvas();
+		}
+		else {
+			this.updateOneCanvas(canvas.thumbnailData);
+		}
 	},
  
 	updateScrollbar : function(aCurrent) 
@@ -2037,7 +2083,7 @@ var TabCatalog = {
  
 	updateCanvas : function() 
 	{
-		this.stopUpdateCanvas();
+		if (this.updateCanvasTimer) return;
 		window.setTimeout('TabCatalog.updateCanvasCallback()', 0);
 	},
 	stopUpdateCanvas : function()
@@ -2046,6 +2092,7 @@ var TabCatalog = {
 			window.clearTimeout(this.updateCanvasTimer);
 			this.updateCanvasTimer = null;
 		}
+		this.updateCanvasCue = [];
 	},
 	updateCanvasCallback : function()
 	{

@@ -69,7 +69,6 @@
 			onclick="TabCatalog.onCatalogClick(event);"
 			ondraggesture="TabCatalog.onCatalogDragStart(event);">
 			<hbox class="tabcatalog-thumbnail-header-box"
-				flex="1"
 				align="center">
 				<image class="tabcatalog-thumbnail-header-favicon"/>
 				<label class="tabcatalog-thumbnail-header-label"
@@ -80,7 +79,7 @@
 					oncommand="TabCatalog.onThumbnailCloseBoxClick(event);"
 					onclick="event.stopPropagation(); event.preventDefault();"/>
 			</hbox>
-			<vbox class="tabcatalog-thumbnail-canvas-box"/>
+			<vbox class="tabcatalog-thumbnail-canvas-box" flex="1"/>
 			<hbox class="tabcatalog-thumbnail-footer-box"
 				flex="1"
 				align="center">
