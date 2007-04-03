@@ -766,6 +766,13 @@ var TabCatalog = {
 			return retVal;
 		};
 
+		var originalMoveTabTo = aTabBrowser.moveTabTo;
+		aTabBrowser.moveTabTo = function() {
+			var tab = originalMoveTabTo.apply(this, arguments);
+			TabCatalog.rebuildRequest = true;
+			return tab;
+		};
+
 		var tabs = aTabBrowser.mTabContainer.childNodes;
 		for (var i = 0, maxi = tabs.length; i < maxi; i++)
 		{
