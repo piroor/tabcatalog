@@ -18,6 +18,10 @@
 
 <!ENTITY tabcatalog.override.caption      "Tab-Vorschau aufrufen">
 <!ENTITY tabcatalog.override.ctrltab      "Bei Tab-Wechsel mittels Tastaturkürzel Strg(Befehl)+Tabulator">
+<!ENTITY tabcatalog.override.ctrltab.delay.disabled "Show Catalog just the moment I use the keys">
+<!ENTITY tabcatalog.override.ctrltab.delay.enabled  "Show Catalog after a delay:">
+<!ENTITY tabcatalog.override.ctrltab.delay.before   "">
+<!ENTITY tabcatalog.override.ctrltab.delay.after    "msec.">
 <!ENTITY tabcatalog.override.allinonegest "Bei Mausrad-Navigation der Erweiterung &quot;All-in-One Gestures&quot;">
 
 <!ENTITY tabcatalog.override.shortcut                "Via Tastaturkürzel:">
@@ -34,18 +38,11 @@
 <!ENTITY tabcatalog.panning.behavior.1       "gleichläufig (in Bewegungsrichtung)">
 
 
-<!ENTITY tabcatalog.rendering_quality.caption "Darstellungsqualität und Effekte">
-<!ENTITY tabcatalog.rendering_quality.low     "Niedrig (schnell, niedrige Qualität)">
-<!ENTITY tabcatalog.rendering_quality.middle  "Mittel">
-<!ENTITY tabcatalog.rendering_quality.high    "Hoch (langsam, hohe Qualität)">
-<!ENTITY tabcatalog.animation.scroll.enabled  "Sanften Bildlauf aktivieren">
 
 
+<!ENTITY tabcatalog.tab.appearance "Vorschaubilder">
 
-
-<!ENTITY tabcatalog.tab.thumbnail "Vorschaubilder">
-
-<!ENTITY tabcatalog.appearance.caption  "Einstellungen für Vorschaubilder">
+<!ENTITY tabcatalog.appearance.thumbnail.caption  "Einstellungen für Vorschaubilder">
 
 <!ENTITY tabcatalog.appearance.header   "Titelleiste anzeigen">
 <!ENTITY tabcatalog.appearance.closebox "Schließen-Schaltfläche anzeigen">
@@ -53,6 +50,13 @@
 <!ENTITY tabcatalog.appearance.min.after  "Pixel">
 
 <!ENTITY tabcatalog.thumbnail.shortcut.enable   "Schnellzugriffstasten anzeigen">
+
+
+<!ENTITY tabcatalog.rendering_quality.caption "Darstellungsqualität und Effekte">
+<!ENTITY tabcatalog.rendering_quality.low     "Niedrig (schnell, niedrige Qualität)">
+<!ENTITY tabcatalog.rendering_quality.middle  "Mittel">
+<!ENTITY tabcatalog.rendering_quality.high    "Hoch (langsam, hohe Qualität)">
+<!ENTITY tabcatalog.animation.scroll.enabled  "Sanften Bildlauf aktivieren">
 
 
 

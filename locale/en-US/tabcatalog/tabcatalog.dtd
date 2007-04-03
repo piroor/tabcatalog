@@ -18,6 +18,10 @@
 
 <!ENTITY tabcatalog.override.caption      "Show Catalog of Tabs for">
 <!ENTITY tabcatalog.override.ctrltab      "Ctrl(Command)-Tab to switch tabs">
+<!ENTITY tabcatalog.override.ctrltab.delay.disabled "Show Catalog just the moment I use the keys">
+<!ENTITY tabcatalog.override.ctrltab.delay.enabled  "Show Catalog after a delay:">
+<!ENTITY tabcatalog.override.ctrltab.delay.before   "">
+<!ENTITY tabcatalog.override.ctrltab.delay.after    "msec.">
 <!ENTITY tabcatalog.override.allinonegest "Scroll Wheel Navigation of &quot;All-In-One Gestures&quot; Extension">
 
 <!ENTITY tabcatalog.override.shortcut                "Shortcut key:">
@@ -34,18 +38,11 @@
 <!ENTITY tabcatalog.panning.behavior.1       "like grabbing Screen">
 
 
-<!ENTITY tabcatalog.rendering_quality.caption "Rendering Quality and Effects">
-<!ENTITY tabcatalog.rendering_quality.low     "Low (rapid, looks unattractive)">
-<!ENTITY tabcatalog.rendering_quality.middle  "Middle">
-<!ENTITY tabcatalog.rendering_quality.high    "High (slow, looks attractive)">
-<!ENTITY tabcatalog.animation.scroll.enabled  "Scroll smoothly">
 
 
+<!ENTITY tabcatalog.tab.appearance "Appearance">
 
-
-<!ENTITY tabcatalog.tab.thumbnail "Thumbnails">
-
-<!ENTITY tabcatalog.appearance.caption  "Thumbnail Options">
+<!ENTITY tabcatalog.appearance.thumbnail.caption  "Thumbnail Options">
 
 <!ENTITY tabcatalog.appearance.header   "Show titlebar for each thumbnail">
 <!ENTITY tabcatalog.appearance.closebox "Show close box for each thumbnail">
@@ -53,6 +50,13 @@
 <!ENTITY tabcatalog.appearance.min.after  "pixel(s)">
 
 <!ENTITY tabcatalog.thumbnail.shortcut.enable   "Assign shortcut key for each thumbnail">
+
+
+<!ENTITY tabcatalog.rendering_quality.caption "Rendering Quality and Effects">
+<!ENTITY tabcatalog.rendering_quality.low     "Low (rapid, looks unattractive)">
+<!ENTITY tabcatalog.rendering_quality.middle  "Middle">
+<!ENTITY tabcatalog.rendering_quality.high    "High (slow, looks attractive)">
+<!ENTITY tabcatalog.animation.scroll.enabled  "Scroll smoothly">
 
 
 

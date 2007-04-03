@@ -16,6 +16,8 @@ pref("extensions.tabcatalog.bothclick.delay",   100);
 pref("extensions.tabcatalog.shortcut", "F8");
 
 pref("extensions.tabcatalog.override.ctrltab", true);
+pref("extensions.tabcatalog.override.ctrltab.delay", 1000);
+pref("extensions.tabcatalog.override.ctrltab.delay.enabled", false);
 pref("extensions.tabcatalog.override.allinonegest", true);
 
 pref("extensions.tabcatalog.zoom.reverseWheelScrollDirection", false);

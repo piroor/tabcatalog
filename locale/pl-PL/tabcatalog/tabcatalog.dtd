@@ -14,6 +14,10 @@
 
 <!ENTITY tabcatalog.override.caption      "Wyświetl katalog miniatur za pomocą:">
 <!ENTITY tabcatalog.override.ctrltab      "Skrótu [Ctrl(Command)+Tab] (wyświetlenie i przełączanie pomiędzy kartami)">
+<!ENTITY tabcatalog.override.ctrltab.delay.disabled "Show Catalog just the moment I use the keys">
+<!ENTITY tabcatalog.override.ctrltab.delay.enabled  "Show Catalog after a delay:">
+<!ENTITY tabcatalog.override.ctrltab.delay.before   "">
+<!ENTITY tabcatalog.override.ctrltab.delay.after    "msec.">
 <!ENTITY tabcatalog.override.allinonegest "Nawigacja kółkiem myszy tak jak w rozszerzeniu &quot;All-In-One Gestures&quot;">
 
 <!ENTITY tabcatalog.override.shortcut                "Skrótu klawiaturowego:">
@@ -30,15 +34,10 @@
 <!ENTITY tabcatalog.panning.behavior.1       "jak przeciąganie ekranu">
 
 
-<!ENTITY tabcatalog.rendering_quality.caption "Jakość i szybkość wyświetlania miniatur ">
-<!ENTITY tabcatalog.rendering_quality.low     "niska (szybko, mało atrakcyjny wygląd)">
-<!ENTITY tabcatalog.rendering_quality.middle  "średnia">
-<!ENTITY tabcatalog.rendering_quality.high    "wysoka (wolno, atrakcyjny wygląd)">
-<!ENTITY tabcatalog.animation.scroll.enabled  "Przewijaj płynnie">
 
-<!ENTITY tabcatalog.tab.thumbnail "Miniatury">
+<!ENTITY tabcatalog.tab.appearance "Miniatury">
 
-<!ENTITY tabcatalog.appearance.caption  "Opcje miniatur">
+<!ENTITY tabcatalog.appearance.thumbnail.caption  "Opcje miniatur">
 
 <!ENTITY tabcatalog.appearance.header   "Wyświetl pasek tytułu dla każdej miniatury">
 <!ENTITY tabcatalog.appearance.closebox "Wyświetl przycisk zamykania na każdej miniaturze">
@@ -46,6 +45,13 @@
 <!ENTITY tabcatalog.appearance.min.after  "pikseli">
 
 <!ENTITY tabcatalog.thumbnail.shortcut.enable   "Przypisz każdej miniaturze skrót klawiaturowy">
+
+
+<!ENTITY tabcatalog.rendering_quality.caption "Jakość i szybkość wyświetlania miniatur ">
+<!ENTITY tabcatalog.rendering_quality.low     "niska (szybko, mało atrakcyjny wygląd)">
+<!ENTITY tabcatalog.rendering_quality.middle  "średnia">
+<!ENTITY tabcatalog.rendering_quality.high    "wysoka (wolno, atrakcyjny wygląd)">
+<!ENTITY tabcatalog.animation.scroll.enabled  "Przewijaj płynnie">
 
 
 

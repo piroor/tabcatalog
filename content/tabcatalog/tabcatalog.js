@@ -436,6 +436,35 @@ var TabCatalog = {
 	{
 		return (document.getElementById('cmd_CustomizeToolbars').getAttribute('disabled') == 'true');
 	},
+ 
+	isDelayed : function(aEvent) 
+	{
+
+		if (
+			this.getPref('extensions.tabcatalog.override.ctrltab.delay.enabled') &&
+			!aEvent.altKey &&
+			(navigator.platform.match(/mac/i) ? aEvent.metaKey : aEvent.ctrlKey ) &&
+			(
+				aEvent.keyCode == aEvent.DOM_VK_TAB ||
+				aEvent.keyCode == aEvent.DOM_VK_PAGE_DOWN ||
+				aEvent.keyCode == aEvent.DOM_VK_PAGE_UP ||
+				aEvent.keyCode == aEvent.DOM_VK_SHIFT
+			)
+			) {
+			var nowTime = (new Date()).getTime();
+			if (aEvent.type == 'keydown' && this.delayedKeydownTime < 0)
+				this.delayedKeydownTime = nowTime;
+
+			if (nowTime - this.delayedKeydownTime <= this.getPref('extensions.tabcatalog.override.ctrltab.delay'))
+				return true;
+
+			return false;
+		}
+
+		this.delayedKeydownTime = -1;
+		return false;
+	},
+	delayedKeydownTime : -1,
   
 	showPopupMenu : function(aEvent, aPopupMenu) 
 	{
@@ -931,7 +960,10 @@ var TabCatalog = {
 	
 	onKeyDown : function(aEvent) 
 	{
-		if (TabCatalog.isDisabled()) return;
+		if (
+			TabCatalog.isDisabled() ||
+			TabCatalog.isDelayed(aEvent)
+			) return;
 
 		var isCharCursorKeys = false;
 		if (
@@ -1025,7 +1057,10 @@ var TabCatalog = {
  
 	onKeyRelease : function(aEvent) 
 	{
-		if (TabCatalog.isDisabled()) return;
+		if (
+			TabCatalog.isDisabled() ||
+			TabCatalog.isDelayed(aEvent)
+			) return;
 
 		var keyChar;
 

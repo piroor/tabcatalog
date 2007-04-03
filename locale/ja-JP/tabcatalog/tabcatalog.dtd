@@ -20,6 +20,10 @@
 
 <!ENTITY tabcatalog.override.caption      "以下の場合にタブの一覧を表示する">
 <!ENTITY tabcatalog.override.ctrltab      "Ctrl(Command)-Tabでタブを切り替える時">
+<!ENTITY tabcatalog.override.ctrltab.delay.disabled "すぐに表示する">
+<!ENTITY tabcatalog.override.ctrltab.delay.enabled  "以下の秒数が経過した後に表示する：">
+<!ENTITY tabcatalog.override.ctrltab.delay.before "">
+<!ENTITY tabcatalog.override.ctrltab.delay.after  "ミリ秒">
 <!ENTITY tabcatalog.override.allinonegest "&quot;All-In-One Gestures&quot;のスクロールホイールナビゲーションでタブを切り替える時">
 
 <!ENTITY tabcatalog.override.shortcut                "次のキーが押された時：">
@@ -36,17 +40,10 @@
 <!ENTITY tabcatalog.panning.behavior.1       "画面をつかんだように動かす">
 
 
-<!ENTITY tabcatalog.rendering_quality.caption "描画の画質と特殊効果">
-<!ENTITY tabcatalog.rendering_quality.low     "低（高速・見栄え劣）">
-<!ENTITY tabcatalog.rendering_quality.middle  "中">
-<!ENTITY tabcatalog.rendering_quality.high    "高（低速・見栄え優）">
-<!ENTITY tabcatalog.animation.scroll.enabled  "なめらかにスクロールする">
 
+<!ENTITY tabcatalog.tab.appearance "外観">
 
-
-<!ENTITY tabcatalog.tab.thumbnail "サムネイル">
-
-<!ENTITY tabcatalog.appearance.caption  "サムネイルの表示">
+<!ENTITY tabcatalog.appearance.thumbnail.caption  "サムネイルの表示">
 
 <!ENTITY tabcatalog.appearance.header   "サムネイルにタイトルバーを付ける">
 <!ENTITY tabcatalog.appearance.closebox "サムネイルにクローズボックスを付ける">
@@ -54,6 +51,13 @@
 <!ENTITY tabcatalog.appearance.min.after  "ピクセル以上の大きさで表示する">
 
 <!ENTITY tabcatalog.thumbnail.shortcut.enable   "サムネイルごとにショートカットキーを割り振る">
+
+
+<!ENTITY tabcatalog.rendering_quality.caption "描画の画質と特殊効果">
+<!ENTITY tabcatalog.rendering_quality.low     "低（高速・見栄え劣）">
+<!ENTITY tabcatalog.rendering_quality.middle  "中">
+<!ENTITY tabcatalog.rendering_quality.high    "高（低速・見栄え優）">
+<!ENTITY tabcatalog.animation.scroll.enabled  "なめらかにスクロールする">
 
 
 

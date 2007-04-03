@@ -44,6 +44,12 @@
 		<preference id="extensions.tabcatalog.override.ctrltab"
 			name="extensions.tabcatalog.override.ctrltab"
 			type="bool"/>
+		<preference id="extensions.tabcatalog.override.ctrltab.delay.enabled"
+			name="extensions.tabcatalog.override.ctrltab.delay.enabled"
+			type="bool"/>
+		<preference id="extensions.tabcatalog.override.ctrltab.delay"
+			name="extensions.tabcatalog.override.ctrltab.delay"
+			type="int"/>
 		<preference id="extensions.tabcatalog.override.allinonegest"
 			name="extensions.tabcatalog.override.allinonegest"
 			type="bool"/>
@@ -58,10 +64,6 @@
 
 		<preference id="extensions.tabcatalog.panning.scrollBehavior"
 			name="extensions.tabcatalog.panning.scrollBehavior"
-			type="int"/>
-
-		<preference id="extensions.tabcatalog.rendering_quality"
-			name="extensions.tabcatalog.rendering_quality"
 			type="int"/>
 	</preferences>
 
@@ -107,6 +109,26 @@
 		<checkbox id="tabcatalog.override.ctrltab-check" flex="1"
 			label="&tabcatalog.override.ctrltab;"
 			preference="extensions.tabcatalog.override.ctrltab"/>
+		<hbox>
+			<spacer style="width:1em;"/>
+			<radiogroup id="extensions.tabcatalog.override.ctrltab.delay.enabled-radio"
+				preference="extensions.tabcatalog.override.ctrltab.delay.enabled"
+				orient="vertical">
+				<radio value="false" label="&tabcatalog.override.ctrltab.delay.disabled;"/>
+				<hbox align="center">
+					<radio value="true"
+						label="&tabcatalog.override.ctrltab.delay.enabled;"/>
+					<label value="&tabcatalog.override.ctrltab.delay.before;"
+						control="extensions.tabcatalog.override.ctrltab.delay-textbox"/>
+					<textbox id="extensions.tabcatalog.override.ctrltab.delay-textbox"
+						size="5"
+						preference="extensions.tabcatalog.override.ctrltab.delay"
+						type="number" min="0" increment="1"/>
+					<label value="&tabcatalog.override.ctrltab.delay.after;"
+						control="extensions.tabcatalog.override.ctrltab.delay-textbox"/>
+				</hbox>
+			</radiogroup>
+		</hbox>
 		<checkbox id="tabcatalog.override.allinonegest-check" flex="1"
 			label="&tabcatalog.override.allinonegest;"
 			preference="extensions.tabcatalog.override.allinonegest"/>
@@ -124,25 +146,9 @@
 		</vbox>
 	</groupbox>
 
-	<groupbox>
-		<caption label="&tabcatalog.rendering_quality.caption;"/>
-		<vbox>
-			<radiogroup id="extensions.tabcatalog.rendering_quality-radiogroup"
-				preference="extensions.tabcatalog.rendering_quality"
-				orient="horizontal">
-				<radio value="0" label="&tabcatalog.rendering_quality.low;"/>
-				<radio value="1" label="&tabcatalog.rendering_quality.middle;"/>
-				<radio value="2" label="&tabcatalog.rendering_quality.high;"/>
-			</radiogroup>
-			<checkbox id="tabcatalog.animation.scroll.enabled-check"
-				label="&tabcatalog.animation.scroll.enabled;"
-				preference="extensions.tabcatalog.animation.scroll.enabled"/>
-		</vbox>
-	</groupbox>
-
 </prefpane>
 
-<prefpane id="prefpane-thumbnail" label="&tabcatalog.tab.thumbnail;">
+<prefpane id="prefpane-thumbnail" label="&tabcatalog.tab.appearance;">
 	<preferences>
 		<preference id="extensions.tabcatalog.thumbnail.header"
 			name="extensions.tabcatalog.thumbnail.header"
@@ -158,13 +164,15 @@
 		<preference id="extensions.tabcatalog.thumbnail.min.size"
 			name="extensions.tabcatalog.thumbnail.min.size"
 			type="int"/>
+
+		<preference id="extensions.tabcatalog.rendering_quality"
+			name="extensions.tabcatalog.rendering_quality"
+			type="int"/>
 	</preferences>
 
-<!--
 	<groupbox>
-		<caption label="&tabcatalog.appearance.caption;"/>
+		<caption label="&tabcatalog.appearance.thumbnail.caption;"/>
 		<vbox>
--->
 			<checkbox id="tabcatalog.appearance.header-check" flex="1"
 				label="&tabcatalog.appearance.header;"
 				preference="extensions.tabcatalog.thumbnail.header"/>
@@ -187,10 +195,24 @@
 				<label value="&tabcatalog.appearance.min.after;"
 					control="extensions.tabcatalog.thumbnail.min.size-textbox"/>
 			</hbox>
-<!--
 		</vbox>
 	</groupbox>
--->
+
+	<groupbox>
+		<caption label="&tabcatalog.rendering_quality.caption;"/>
+		<vbox>
+			<radiogroup id="extensions.tabcatalog.rendering_quality-radiogroup"
+				preference="extensions.tabcatalog.rendering_quality"
+				orient="horizontal">
+				<radio value="0" label="&tabcatalog.rendering_quality.low;"/>
+				<radio value="1" label="&tabcatalog.rendering_quality.middle;"/>
+				<radio value="2" label="&tabcatalog.rendering_quality.high;"/>
+			</radiogroup>
+			<checkbox id="tabcatalog.animation.scroll.enabled-check"
+				label="&tabcatalog.animation.scroll.enabled;"
+				preference="extensions.tabcatalog.animation.scroll.enabled"/>
+		</vbox>
+	</groupbox>
 </prefpane>
 
 <prefpane id="prefpane-auto-show" label="&tabcatalog.tab.auto_show;">
