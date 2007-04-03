@@ -2142,18 +2142,39 @@ var TabCatalog = {
 		var tabs = aTabs || this.tabs;
 		var tabNum = tabs.length;
 
-		var boxObject = gBrowser.getBrowserForTab(gBrowser.selectedTab).boxObject;
-		var aspectRatio  = boxObject.height / boxObject.width;
+		// すべての基準となるサムネイルの縦横サイズの計算
+		var boxObject, aspectRatio;
+		if (this.getPref('extensions.tabcatalog.showAllWindows')) {
+			// 複数ウィンドウの場合は、すべてのウィンドウの中で最も正方形に近いものを基準に計算する
+			var windows = this.browserWindowsWithOpenedOrder;
+			var lastAspectRatio = 0;
+			for (var i = 0, maxi = windows.length; i < maxi; i++)
+			{
+				boxObject   = windows[i].gBrowser.getBrowserForTab(windows[i].gBrowser.selectedTab).boxObject;
+				aspectRatio = boxObject.height / boxObject.width;
+				if (Math.abs(1 - aspectRatio) < Math.abs(1 - lastAspectRatio)) {
+					lastAspectRatio = aspectRatio;
+					lastBoxObject   = boxObject;
+				}
+			}
+			boxObject   = lastBoxObject;
+			aspectRatio = lastAspectRatio;
+		}
+		else {
+			boxObject   = gBrowser.getBrowserForTab(gBrowser.selectedTab).boxObject;
+			aspectRatio = boxObject.height / boxObject.width;
+		}
 
 		var minSize = this.getPref('extensions.tabcatalog.thumbnail.min.enabled') ? Math.min(this.getPref('extensions.tabcatalog.thumbnail.min.size'), (aspectRatio  < 1 ? boxObject.width : boxObject.height )) : -1;
 
+		// ウィンドウの中に敷き詰められるサムネイルの、理論上の最大サイズ（縦横比を無視したもの）を計算する
 		var thumbnailMaxSize = window.innerWidth * window.innerHeight * 0.9 / tabNum;
 		var boxWidth = parseInt(Math.min(Math.sqrt(thumbnailMaxSize), window.outerWidth * 0.5)) - padding;
 		var boxHeight = parseInt(boxWidth * aspectRatio );
 
 		var matrixData;
 
-		if (aRelative !== void(0)) {
+		if (aRelative !== void(0)) { // サムネイルの拡大・縮小の場合。これは簡易的な計算でよい。
 			if (aRelative > 0) {
 				boxWidth = parseInt(Math.min(this.catalog.tnWidth * 1.2, boxObject.width - padding - padding));
 				boxHeight = parseInt(boxWidth * aspectRatio );
@@ -2177,6 +2198,7 @@ var TabCatalog = {
 				boxHeight = Math.max(minBoxHeight, parseInt(boxWidth * aspectRatio));
 			}
 
+			// ウィンドウ内にきちんと収まるサイズになるまで、サムネイルを少しずつ小さくしていく
 			do {
 				matrixData = this.getThumbnailMatrixSub(boxWidth, boxHeight, tabs);
 				if (
