@@ -1583,12 +1583,14 @@ var TabCatalog = {
 	CALLED_BY_TABSWITCH   : 16,
 	CALLED_BY_AIOG        : 32,
 
-	CALLED_MANUALLY       : 62,
+	CALLED_MANUALLY       : 62, // 2+4+8+16+32
 
 	CALLED_BY_BUTTON      : 64,
 	CALLED_BY_TABBAR      : 128,
 
-	CALLED_AUTOMATICALLY  : 192,
+	CALLED_AUTOMATICALLY  : 192, // 64+128
+
+	CALLED_FOR_SWITCHING  : 48, // 16+32
  
 	hide : function() 
 	{
@@ -1612,7 +1614,7 @@ var TabCatalog = {
 		var focusedNode = this.getFocusedItem();
 		this.lastFocusedIndex = (focusedNode) ? parseInt(focusedNode.getAttribute('index')) : -1 ;
 
-		this.stopCreateThumbnail();
+		this.stopCreateCanvas();
 		this.stopUpdateCanvas();
 		this.clear();
 		this.contextMenuShwon = false;
@@ -1678,6 +1680,7 @@ var TabCatalog = {
 		matrixData.isMultiWindow = this.isMultiWindow;
 		matrixData.splitByWindow = this.splitByWindow;
 
+		var current = 0;
 		for (var i = 0, max = tabs.length; i < max; i++)
 		{
 			if (
@@ -1753,6 +1756,7 @@ var TabCatalog = {
 				thumbnail.setAttribute('container-focused', true);
 				box.setAttribute('focused', true);
 				box.setAttribute('current', true);
+				current = i;
 			}
 
 			this.updateThumbnail(box);
@@ -1764,6 +1768,23 @@ var TabCatalog = {
 				box        : box
 			});
 		}
+
+		if (this.callingAction & this.CALLED_FOR_SWITCHING) {
+			var newCue = [];
+			newCue.push(this.createCanvasCue[current]);
+			var nextCue = current;
+			var prevCue = current;
+			var max = this.createCanvasCue.length;
+			while (newCue.length < max)
+			{
+				if (++nextCue < max)
+					newCue.push(this.createCanvasCue[nextCue]);
+				if (--prevCue > -1)
+					newCue.push(this.createCanvasCue[prevCue]);
+			}
+			this.createCanvasCue = newCue;
+		}
+
 		this.createCanvas();
 
 		this.catalog.posX       = 0;
@@ -1822,7 +1843,7 @@ var TabCatalog = {
 		if (this.createCanvasTimer) return;
 		window.setTimeout('TabCatalog.createCanvasCallback()', 0);
 	},
-	stopCreateThumbnail : function()
+	stopCreateCanvas : function()
 	{
 		if (this.createCanvasTimer) {
 			window.clearTimeout(this.createCanvasTimer);
@@ -1837,7 +1858,7 @@ var TabCatalog = {
 		this.createOneCanvas(cue.index, cue.tab, cue.matrixData, cue.box);
 
 		if (!this.createCanvasCue.length)
-			this.stopCreateThumbnail();
+			this.stopCreateCanvas();
 		else
 			this.createCanvasTimer = window.setTimeout('TabCatalog.createCanvasCallback()', 0);
 	},
