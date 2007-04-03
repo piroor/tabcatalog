@@ -1202,9 +1202,10 @@ var TabCatalog = {
 					TabCatalog.shown &&
 					standBy &&
 					(
-						!aEvent.shiftKey ||
-						(aEvent.charCode == 0 && aEvent.keyCode == 16)
-					)
+						(!aEvent.shiftKey && !navigator.platform.match(/linux/i)) ||
+						(aEvent.shiftKey && navigator.platform.match(/linux/i))
+					) &&
+					(aEvent.charCode == 0 && aEvent.keyCode == 16)
 				)
 				) {
 				TabCatalog.show(TabCatalog.CALLED_BY_TABSWITCH);
