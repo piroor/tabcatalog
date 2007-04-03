@@ -9,8 +9,8 @@
 
 <!ENTITY tabcatalog.sort_by_focus  "Rozmieść karty wg najczęściej oglądanych">
 <!ENTITY tabcatalog.showAllWindows "Wyświetl miniatury wszystkich karty ze wszystkich okien">
-<!ENTITY tabcatalog.split_by_window "Podziel dla każdego okna">
-<!ENTITY tabcatalog.show_scrollbar "Wyświetl pasek przewijania">
+<!ENTITY tabcatalog.split_by_window "Rozdziel dla każdego okna przeglądarki">
+<!ENTITY tabcatalog.show_scrollbar "Pokazuj paski przewijania">
 
 <!ENTITY tabcatalog.override.caption      "Wyświetl katalog miniatur za pomocą:">
 <!ENTITY tabcatalog.override.ctrltab      "Skrótu [Ctrl(Command)+Tab] (wyświetlenie i przełączanie pomiędzy kartami)">
