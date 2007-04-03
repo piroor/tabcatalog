@@ -1200,8 +1200,11 @@ var TabCatalog = {
 				scrollUp ||
 				( // when you release "shift" key on the menu
 					TabCatalog.shown &&
-					standBy && !aEvent.shiftKey &&
-					aEvent.charCode == 0 && aEvent.keyCode == 16
+					standBy &&
+					(
+						!aEvent.shiftKey ||
+						(aEvent.charCode == 0 && aEvent.keyCode == 16)
+					)
 				)
 				) {
 				TabCatalog.show(TabCatalog.CALLED_BY_TABSWITCH);
