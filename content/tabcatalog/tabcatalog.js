@@ -997,8 +997,11 @@ var TabCatalog = {
  
 	onTabSelect : function(aEvent) 
 	{
-		if (!TabCatalog.catalogShowing)
+		if (!TabCatalog.catalogShowing) {
 			gBrowser.selectedTab.__tabcatalog__lastSelectedTime = (new Date()).getTime();
+			if (TabCatalog.getPref('extensions.tabcatalog.sort_by_focus'))
+				TabCatalog.rebuildRequest = true;
+		}
 	},
   
 /* Key Events */ 
