@@ -929,8 +929,6 @@ var TabCatalog = {
 	{
 		this.delayedOnMouseOverTimer = null;
 
-		if (this.catalog.hasChildNodes()) return;
-
 		this.show(aBase);
 	},
  
