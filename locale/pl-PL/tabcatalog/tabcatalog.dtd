@@ -9,15 +9,15 @@
 
 <!ENTITY tabcatalog.sort_by_focus  "Rozmieść karty wg najczęściej oglądanych">
 <!ENTITY tabcatalog.showAllWindows "Wyświetl miniatury wszystkich karty ze wszystkich okien">
-<!ENTITY tabcatalog.split_by_window "Rozdziel dla każdego okna przeglądarki">
-<!ENTITY tabcatalog.show_scrollbar "Pokazuj paski przewijania">
+<!ENTITY tabcatalog.split_by_window "Podziel dla każdego okna">
+<!ENTITY tabcatalog.show_scrollbar "Wyświetl pasek przewijania">
 
 <!ENTITY tabcatalog.override.caption      "Wyświetl katalog miniatur za pomocą:">
 <!ENTITY tabcatalog.override.ctrltab      "Skrótu [Ctrl(Command)+Tab] (wyświetlenie i przełączanie pomiędzy kartami)">
-<!ENTITY tabcatalog.override.ctrltab.delay.disabled "Show Catalog just the moment I use the keys">
-<!ENTITY tabcatalog.override.ctrltab.delay.enabled  "Show Catalog after a delay:">
+<!ENTITY tabcatalog.override.ctrltab.delay.disabled "Wyświetl katalog natychmiast po użyciu skrótu">
+<!ENTITY tabcatalog.override.ctrltab.delay.enabled  "Wyświetl katalog z opóźnieniem:">
 <!ENTITY tabcatalog.override.ctrltab.delay.before   "">
-<!ENTITY tabcatalog.override.ctrltab.delay.after    "msec.">
+<!ENTITY tabcatalog.override.ctrltab.delay.after    "ms">
 <!ENTITY tabcatalog.override.allinonegest "Nawigacja kółkiem myszy tak jak w rozszerzeniu &quot;All-In-One Gestures&quot;">
 
 <!ENTITY tabcatalog.override.shortcut                "Skrótu klawiaturowego:">
@@ -35,9 +35,9 @@
 
 
 
-<!ENTITY tabcatalog.tab.appearance "Miniatury">
+<!ENTITY tabcatalog.tab.appearance "Wygląd">
 
-<!ENTITY tabcatalog.appearance.thumbnail.caption  "Opcje miniatur">
+<!ENTITY tabcatalog.appearance.thumbnail.caption   "Opcje miniatur">
 
 <!ENTITY tabcatalog.appearance.header   "Wyświetl pasek tytułu dla każdej miniatury">
 <!ENTITY tabcatalog.appearance.closebox "Wyświetl przycisk zamykania na każdej miniaturze">
@@ -60,16 +60,16 @@
 <!ENTITY tabcatalog.auto_show.caption  "Automatyczne wyświetlanie katalogu miniatur">
 <!ENTITY tabcatalog.auto_show.enabled "Wyświetlaj katalog po umieszczeniu wskaźnika myszy na przycisku &quot;Miniatury&quot;">
 <!ENTITY tabcatalog.auto_show.delay.show.before "Wyświetl po">
-<!ENTITY tabcatalog.auto_show.delay.show.after  "msek od momentu umieszczenia wskaźnikia na przycisku">
+<!ENTITY tabcatalog.auto_show.delay.show.after  "ms od momentu umieszczenia wskaźnikia na przycisku">
 <!ENTITY tabcatalog.auto_show.delay.hide.before "Ukryj po">
-<!ENTITY tabcatalog.auto_show.delay.hide.after  "msek od momentu przesunięcia wskaźnika poza katalog">
+<!ENTITY tabcatalog.auto_show.delay.hide.after  "ms od momentu przesunięcia wskaźnika poza katalog">
 
 <!ENTITY tabcatalog.auto_show.tabbar.caption  "Automatyczne wyświetlanie katalogu miniatur po wskazaniu paska kart">
 <!ENTITY tabcatalog.auto_show.tabbar.enabled "Wyświetlaj katalog miniatur po umieszczeniu wskaźnika myszy na pasku kart">
 <!ENTITY tabcatalog.auto_show.tabbar.delay.show.before "Wyświetl po">
-<!ENTITY tabcatalog.auto_show.tabbar.delay.show.after  "msek od momentu umieszczenia wskaźnikia na pasku">
+<!ENTITY tabcatalog.auto_show.tabbar.delay.show.after  "ms od momentu umieszczenia wskaźnikia na pasku">
 <!ENTITY tabcatalog.auto_show.tabbar.delay.hide.before "Ukryj katalog po">
-<!ENTITY tabcatalog.auto_show.tabbar.delay.hide.after  "msek od momentu przesunięcia wskaźnika poza pasek">
+<!ENTITY tabcatalog.auto_show.tabbar.delay.hide.after  "ms od momentu przesunięcia wskaźnika poza pasek">
 
 
 
