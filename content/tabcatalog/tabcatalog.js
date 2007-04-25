@@ -729,9 +729,9 @@ var TabCatalog = {
 			removeTabMethod = '__tabextensions__removeTab';
 		}
 
-		var originalAddTab = aTabBrowser[addTabMethod];
+		aTabBrowser.__tabcatalog__originalAddTab = aTabBrowser[addTabMethod];
 		aTabBrowser[addTabMethod] = function() {
-			var tab = originalAddTab.apply(this, arguments);
+			var tab = this.__tabcatalog__originalAddTab.apply(this, arguments);
 			TabCatalog.rebuildRequest = true;
 			try {
 				TabCatalog.initTab(tab);
@@ -741,7 +741,7 @@ var TabCatalog = {
 			return tab;
 		};
 
-		var originalRemoveTab = aTabBrowser[removeTabMethod];
+		aTabBrowser.__tabcatalog__originalRemoveTab = aTabBrowser[removeTabMethod];
 		aTabBrowser[removeTabMethod] = function(aTab) {
 			try {
 				aTab.linkedBrowser.webProgress.removeProgressListener(aTab.__tabcatalog__progressFilter);
@@ -752,7 +752,7 @@ var TabCatalog = {
 			catch(e) {
 			}
 
-			var retVal = originalRemoveTab.apply(this, arguments);
+			var retVal = this.__tabcatalog__originalRemoveTab.apply(this, arguments);
 
 			if (aTab.parentNode)
 				TabCatalog.initTab(aTab);
@@ -762,9 +762,9 @@ var TabCatalog = {
 			return retVal;
 		};
 
-		var originalMoveTabTo = aTabBrowser.moveTabTo;
+		aTabBrowser.__tabcatalog__originalMoveTabTo = aTabBrowser.moveTabTo;
 		aTabBrowser.moveTabTo = function() {
-			var tab = originalMoveTabTo.apply(this, arguments);
+			var tab = this.__tabcatalog__originalMoveTabTo.apply(this, arguments);
 			TabCatalog.rebuildRequest = true;
 			return tab;
 		};
