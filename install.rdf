@@ -13,6 +13,7 @@
                    em:optionsURL="chrome://tabcatalog/content/config.xul"
                    em:updateURL="http://piro.sakura.ne.jp/xul/xul.rdf.en">
 	<em:contributor>Ted Mielczarek</em:contributor>
+	<em:contributor>Gomita (thumbnail operations, from Tab Scope)</em:contributor>
 	<em:translator>ReinekeFux (de-DE locale)</em:translator>
 	<em:translator>Leszek teo Życzkowski (pl-PL locale)</em:translator>
     <em:targetApplication>
