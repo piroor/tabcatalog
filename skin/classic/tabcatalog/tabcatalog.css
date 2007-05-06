@@ -118,6 +118,10 @@ toolbar[iconsize="small"] #tabcatalog-button:hover {
 	max-height: 16px;
 }
 
+.tabcatalog-thumbnail[busy="true"] > .tabcatalog-thumbnail-header-box > .tabcatalog-thumbnail-header-favicon {
+	list-style-image: url("jar:resource:///chrome/classic.jar!/skin/classic/global/throbber/Throbber-small.gif") !important;
+}
+
 
 .tabcatalog-thumbnail-shortcut-label {
 	color: white;

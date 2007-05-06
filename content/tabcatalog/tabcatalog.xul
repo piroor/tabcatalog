@@ -67,6 +67,7 @@
 			flex="0"
 			tooltip="tabcatalog-tooltip"
 			onclick="TabCatalog.onCatalogClick(event);"
+			ondblclick="TabCatalog.onCatalogClick(event);"
 			ondraggesture="TabCatalog.onCatalogDragStart(event);">
 			<hbox class="tabcatalog-thumbnail-header-box"
 				align="center">

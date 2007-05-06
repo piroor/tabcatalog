@@ -16,6 +16,12 @@
 <!ENTITY tabcatalog.split_by_window "Split for each window">
 <!ENTITY tabcatalog.show_scrollbar "Show scrollbar">
 
+
+<!ENTITY tabcatalog.tab.operation   "Operation">
+
+<!ENTITY tabcatalog.send_click_event "Allow to operate browsers from thumbnails">
+<!ENTITY tabcatalog.send_click_event.description "*To select the tab, double-click on the thumbnail.">
+
 <!ENTITY tabcatalog.override.caption      "Show Catalog of Tabs for">
 <!ENTITY tabcatalog.override.ctrltab      "Ctrl(Command)-Tab to switch tabs">
 <!ENTITY tabcatalog.override.ctrltab.delay.disabled "Show Catalog just the moment I use the keys">
@@ -80,12 +86,3 @@
 <!ENTITY tabcatalog.auto_show.tabbar.delay.show.after  "msec after the pointer enters on the bar.">
 <!ENTITY tabcatalog.auto_show.tabbar.delay.hide.before "Hide catalog">
 <!ENTITY tabcatalog.auto_show.tabbar.delay.hide.after  "msec after the pointer exits from catalog.">
-
-
-
-<!ENTITY tabcatalog.tab.about "About">
-
-<!ENTITY tabcatalog.about.title       "About Tab Catalog">
-<!ENTITY tabcatalog.about.name_before "Tab Catalog Ver.">
-<!ENTITY tabcatalog.about.name_after  "">
-<!ENTITY tabcatalog.about.destributed "http://piro.sakura.ne.jp/">

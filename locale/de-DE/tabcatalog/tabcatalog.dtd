@@ -16,6 +16,12 @@
 <!ENTITY tabcatalog.split_by_window "Anzeige nach Fenstern unterteilen">
 <!ENTITY tabcatalog.show_scrollbar "Scroll-Leiste anzeigen">
 
+
+<!ENTITY tabcatalog.tab.operation   "Operation">
+
+<!ENTITY tabcatalog.send_click_event "Allow to operate browsers from thumbnails">
+<!ENTITY tabcatalog.send_click_event.description "*To select the tab, double-click on the thumbnail.">
+
 <!ENTITY tabcatalog.override.caption      "Tab-Vorschau aufrufen">
 <!ENTITY tabcatalog.override.ctrltab      "Bei Tab-Wechsel mittels Tastaturkürzel Strg(Befehl)+Tabulator">
 <!ENTITY tabcatalog.override.ctrltab.delay.disabled "Show Catalog just the moment I use the keys">
@@ -80,11 +86,3 @@
 <!ENTITY tabcatalog.auto_show.tabbar.delay.hide.before "Ausblenden">
 <!ENTITY tabcatalog.auto_show.tabbar.delay.hide.after  "ms nach Verlassen der Tab-Vorschau">
 
-
-
-<!ENTITY tabcatalog.tab.about "Über">
-
-<!ENTITY tabcatalog.about.title       "Über Tab Catalog">
-<!ENTITY tabcatalog.about.name_before "Tab Catalog Version">
-<!ENTITY tabcatalog.about.name_after  " deutsch">
-<!ENTITY tabcatalog.about.destributed "http://www.erweiterungen.de/detail/Tab_Catalog/">

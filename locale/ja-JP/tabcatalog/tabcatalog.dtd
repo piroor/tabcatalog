@@ -18,6 +18,12 @@
 <!ENTITY tabcatalog.split_by_window "ウィンドウごとに分けて表示する">
 <!ENTITY tabcatalog.show_scrollbar "スクロールバーを表示する">
 
+
+<!ENTITY tabcatalog.tab.operation   "操作">
+
+<!ENTITY tabcatalog.send_click_event "サムネイルからブラウザを操作できるようにする">
+<!ENTITY tabcatalog.send_click_event.description "※タブを選択するにはダブルクリックしてください">
+
 <!ENTITY tabcatalog.override.caption      "以下の場合にタブの一覧を表示する">
 <!ENTITY tabcatalog.override.ctrltab      "Ctrl(Command)-Tabでタブを切り替える時">
 <!ENTITY tabcatalog.override.ctrltab.delay.disabled "すぐに表示する">
@@ -79,12 +85,3 @@
 <!ENTITY tabcatalog.auto_show.tabbar.delay.hide.before "ポインタがタブバー上から離れて">
 <!ENTITY tabcatalog.auto_show.tabbar.delay.hide.after  "ミリ秒後に自動的に閉じる">
 
-
-
-
-<!ENTITY tabcatalog.tab.about "About">
-
-<!ENTITY tabcatalog.about.title       "タブカタログについて">
-<!ENTITY tabcatalog.about.name_before "タブカタログ Ver.">
-<!ENTITY tabcatalog.about.name_after  "">
-<!ENTITY tabcatalog.about.destributed "http://piro.sakura.ne.jp/">

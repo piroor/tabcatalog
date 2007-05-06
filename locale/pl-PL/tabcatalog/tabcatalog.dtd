@@ -12,6 +12,12 @@
 <!ENTITY tabcatalog.split_by_window "Podziel dla każdego okna">
 <!ENTITY tabcatalog.show_scrollbar "Wyświetl pasek przewijania">
 
+
+<!ENTITY tabcatalog.tab.operation   "Operation">
+
+<!ENTITY tabcatalog.send_click_event "Allow to operate browsers from thumbnails">
+<!ENTITY tabcatalog.send_click_event.description "*To select the tab, double-click on the thumbnail.">
+
 <!ENTITY tabcatalog.override.caption      "Wyświetl katalog miniatur za pomocą:">
 <!ENTITY tabcatalog.override.ctrltab      "Skrótu [Ctrl(Command)+Tab] (wyświetlenie i przełączanie pomiędzy kartami)">
 <!ENTITY tabcatalog.override.ctrltab.delay.disabled "Wyświetl katalog natychmiast po użyciu skrótu">
@@ -70,12 +76,3 @@
 <!ENTITY tabcatalog.auto_show.tabbar.delay.show.after  "ms od momentu umieszczenia wskaźnikia na pasku">
 <!ENTITY tabcatalog.auto_show.tabbar.delay.hide.before "Ukryj katalog po">
 <!ENTITY tabcatalog.auto_show.tabbar.delay.hide.after  "ms od momentu przesunięcia wskaźnika poza pasek">
-
-
-
-<!ENTITY tabcatalog.tab.about "Informacje">
-
-<!ENTITY tabcatalog.about.title       "O Tab Catalog">
-<!ENTITY tabcatalog.about.name_before "Tab Catalog wer.">
-<!ENTITY tabcatalog.about.name_after  "">
-<!ENTITY tabcatalog.about.destributed "http://piro.sakura.ne.jp/">

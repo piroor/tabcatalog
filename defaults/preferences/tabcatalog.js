@@ -4,6 +4,9 @@ pref("extensions.tabcatalog.window.sort_by_focus", false);
 pref("extensions.tabcatalog.showAllWindows", true);
 pref("extensions.tabcatalog.split_by_window", true);
 
+pref("extensions.tabcatalog.send_click_event", false);
+pref("extensions.tabcatalog.send_click_event.ignore_on_unclickbale", false);
+
 // 0 = close tab, 1 = close window after closing tab, 2 = close window
 pref("extensions.tabcatalog.closeTabActionForLastTab", 1);
 

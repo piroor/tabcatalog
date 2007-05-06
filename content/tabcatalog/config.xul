@@ -4,8 +4,6 @@
 <?xml-stylesheet href="chrome://tabcatalog/skin/config.css"?>
 
 <!DOCTYPE prefwindow [
-<!ENTITY % versionDTD SYSTEM "chrome://tabcatalog/content/_version.dtd">
-%versionDTD;
 <!ENTITY % mainDTD SYSTEM "chrome://tabcatalog/locale/tabcatalog.dtd">
 %mainDTD;
 ]>
@@ -35,6 +33,32 @@
 
 		<preference id="extensions.tabcatalog.show_scrollbar"
 			name="extensions.tabcatalog.show_scrollbar"
+			type="bool"/>
+	</preferences>
+
+	<checkbox id="tabcatalog.sort_by_focus-check"
+		label="&tabcatalog.sort_by_focus;"
+		preference="extensions.tabcatalog.sort_by_focus"/>
+
+	<checkbox id="extensions.tabcatalog.showAllWindows-check" flex="1"
+		label="&tabcatalog.showAllWindows;"
+		preference="extensions.tabcatalog.showAllWindows"/>
+	<hbox>
+		<spacer style="width:1em;"/>
+		<checkbox id="extensions.tabcatalog.split_by_window-check" flex="1"
+			label="&tabcatalog.split_by_window;"
+			preference="extensions.tabcatalog.split_by_window"/>
+	</hbox>
+
+	<checkbox id="extensions.tabcatalog.show_scrollbar-check" flex="1"
+		label="&tabcatalog.show_scrollbar;"
+		preference="extensions.tabcatalog.show_scrollbar"/>
+</prefpane>
+
+<prefpane id="prefpane-operation" label="&tabcatalog.tab.operation;">
+	<preferences>
+		<preference id="extensions.tabcatalog.send_click_event"
+			name="extensions.tabcatalog.send_click_event"
 			type="bool"/>
 
 		<preference id="extensions.tabcatalog.bothclick.enabled"
@@ -67,23 +91,10 @@
 			type="int"/>
 	</preferences>
 
-	<checkbox id="tabcatalog.sort_by_focus-check"
-		label="&tabcatalog.sort_by_focus;"
-		preference="extensions.tabcatalog.sort_by_focus"/>
-
-	<checkbox id="extensions.tabcatalog.showAllWindows-check" flex="1"
-		label="&tabcatalog.showAllWindows;"
-		preference="extensions.tabcatalog.showAllWindows"/>
-	<hbox>
-		<spacer style="width:1em;"/>
-		<checkbox id="extensions.tabcatalog.split_by_window-check" flex="1"
-			label="&tabcatalog.split_by_window;"
-			preference="extensions.tabcatalog.split_by_window"/>
-	</hbox>
-
-	<checkbox id="extensions.tabcatalog.show_scrollbar-check" flex="1"
-		label="&tabcatalog.show_scrollbar;"
-		preference="extensions.tabcatalog.show_scrollbar"/>
+	<checkbox id="extensions.tabcatalog.send_click_event-check"
+		label="&tabcatalog.send_click_event;"
+		preference="extensions.tabcatalog.send_click_event"/>
+	<!--description flex="1">&tabcatalog.send_click_event.description;</description-->
 
 	<groupbox>
 		<caption label="&tabcatalog.override.caption;"/>
@@ -145,7 +156,6 @@
 			</radiogroup>
 		</vbox>
 	</groupbox>
-
 </prefpane>
 
 <prefpane id="prefpane-thumbnail" label="&tabcatalog.tab.appearance;">
@@ -301,23 +311,6 @@
 	</groupbox>
 </prefpane>
 
-<!--prefpane id="prefpane-about" label="&tabcatalog.tab.about;">
-	<preferences/>
-	<groupbox>
-		<caption label="&tabcatalog.about.title;"/>
-		<vbox>
-			<description value="&tabcatalog.about.name_before;&tabcatalog.version;&tabcatalog.about.name_after;"/>
-			<description value="&tabcatalog.about.destributed;"
-				href="&tabcatalog.about.destributed;"
-				onclick="loadURI(this.getAttribute('href'));"
-				class="text-link"/>
-		</vbox>
-	</groupbox>
-
-
-
-
-</prefpane-->
 
 <script src="keyParser.js" type="application/x-javascript"/>
 <script type="application/x-javascript"><![CDATA[
