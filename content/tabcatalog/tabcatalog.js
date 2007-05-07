@@ -819,7 +819,7 @@ var TabCatalog = {
 			var tab = this.__tabcatalog__originalAddTab.apply(this, arguments);
 			TabCatalog.rebuildRequest = true;
 			try {
-				TabCatalog.initTab(tab);
+				TabCatalog.initTab(tab, this);
 			}
 			catch(e) {
 			}
@@ -837,7 +837,7 @@ var TabCatalog = {
 			var retVal = this.__tabcatalog__originalRemoveTab.apply(this, arguments);
 
 			if (aTab.parentNode)
-				TabCatalog.initTab(aTab);
+				TabCatalog.initTab(aTab, this);
 
 			TabCatalog.rebuildRequest = true;
 
