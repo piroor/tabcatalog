@@ -4,7 +4,7 @@ var TabCatalog = {
 /* Utilities */ 
 	 
 /* elements */ 
-	 
+	
 	get button() { 
 		return document.getElementById('tabcatalog-button');
 	},
@@ -185,7 +185,7 @@ var TabCatalog = {
 	_WindowManager : null,
   
 /* state */ 
-	 
+	
 	get backgroundShown() { 
 		return this.background.getAttribute('catalog-shown') == 'true';
 	},
@@ -336,11 +336,10 @@ var TabCatalog = {
 	},
   
 /* get items */ 
-	 
+	
 	getItems : function() 
 	{
-		if (!this.shown) return [];
-		return Array.prototype.slice.call(this.catalog.parentNode.getElementsByAttribute('class', 'tabcatalog-thumbnail'));
+		return Array.prototype.slice.call(this.catalog.getElementsByAttribute('class', 'tabcatalog-thumbnail'));
 	},
  
 	getFocusedItem : function(aPreventFallback) 
@@ -476,7 +475,7 @@ var TabCatalog = {
 			}
 		}
 	},
- 	 
+  
 /* check */ 
 	
 	isEventFiredInMenu : function(aEvent) 
@@ -724,7 +723,7 @@ var TabCatalog = {
 	LAST_TAB_ACTION_CLOSE_WINDOW         : 2,
   
 /* Initializing */ 
-	
+	 
 	init : function() 
 	{
 		if (!('gBrowser' in window)) return;
@@ -748,6 +747,7 @@ var TabCatalog = {
 		gTabCatalogPrefListener.observe(null, 'nsPref:changed', 'extensions.tabcatalog.thumbnail.header');
 		gTabCatalogPrefListener.observe(null, 'nsPref:changed', 'extensions.tabcatalog.thumbnail.closebox');
 		gTabCatalogPrefListener.observe(null, 'nsPref:changed', 'extensions.tabcatalog.thumbnail.shortcut');
+		gTabCatalogPrefListener.observe(null, 'nsPref:changed', 'extensions.tabcatalog.send_click_event');
 
 		window.addEventListener('unload', function() {
 			window.removeEventListener('unload', arguments.callee, false);
@@ -1422,8 +1422,9 @@ var TabCatalog = {
 		else if (tab) {
 			if (
 				aEvent.type == 'click' &&
-				this.getPref('extensions.tabcatalog.send_click_event') &&
-				this.getCanvasFromEvent(aEvent)
+				this.shouldSendClickEvent &&
+				this.getCanvasFromEvent(aEvent) &&
+				tab.linkedBrowser.contentDocument.contentType.indexOf('image') != 0
 				) {
 				if (
 					this.sendClickEvent(aEvent, node) ||
@@ -1487,7 +1488,60 @@ var TabCatalog = {
 		elt.dispatchEvent(evt);
 		return true;
 	},
-  
+  	
+	onCatalogToolbarButtonCommand : function(aEvent) 
+	{
+		var item   = this.getItemFromEvent(aEvent);
+		var b      = item.relatedTab.linkedBrowser;
+		var button = aEvent.target;
+
+		switch (button.getAttribute('class').split(' ')[1])
+		{
+			case 'goBack':
+				if (b.canGoBack) {
+					b.goBack();
+				}
+				break;
+
+			case 'goForward':
+				if (b.canGoForward) {
+					b.goForward();
+				}
+				break;
+
+			case 'reload':
+				if (aEvent.shiftKey) {
+					var webNav = b.webNavigation;
+					try {
+						var sh = webNav.sessionHistory;
+						if (sh)
+							webNav = sh.QueryInterface(nsIWebNavigation);
+					}
+					catch(e) {
+					}
+					const reloadFlags = webNav.LOAD_FLAGS_BYPASS_PROXY | webNav.LOAD_FLAGS_BYPASS_CACHE;
+					try {
+						webNav.reload(reloadFlags);
+					}
+					catch(e) {
+					}
+				}
+				else
+					b.reload();
+				break;
+
+			case 'stop':
+				b.stop();
+				break;
+
+			default:
+				return;
+		}
+
+		aEvent.stopPropagation();
+		aEvent.preventDefault();
+	},
+ 
 	onBackgroundClick : function(aEvent) 
 	{
 		if (!this.catalogZooming)
@@ -1555,7 +1609,7 @@ var TabCatalog = {
 			aEvent.preventDefault();
 			aEvent.stopPropagation();
 		}
-		else if (TabCatalog.getPref('extensions.tabcatalog.send_click_event') &&
+		else if (TabCatalog.shouldSendClickEvent &&
 				TabCatalog.getCanvasFromEvent(aEvent) &&
 				TabCatalog.sendWheelScrollEvent(aEvent, TabCatalog.getItemFromEvent(aEvent))) {
 			aEvent.preventDefault();
@@ -2401,11 +2455,17 @@ var TabCatalog = {
 	createProgressListener : function(aTab, aTabBrowser) 
 	{
 		return {
-			mTab           : aTab,
-			mBrowser       : aTab.linkedBrowser,
-			mTabBrowser    : aTabBrowser,
+			mTab        : aTab,
+			mBrowser    : aTab.linkedBrowser,
+			mTabBrowser : aTabBrowser,
 			onProgressChange: function (aWebProgress, aRequest, aCurSelfProgress, aMaxSelfProgress, aCurTotalProgress, aMaxTotalProgress)
 			{
+				var item = TabCatalog.getItemForTab(this.mTab);
+				if (item) {
+					item.totalProgress = aMaxTotalProgress ? aCurTotalProgress / aMaxTotalProgress : 0;
+					item.removeAttribute('busy');
+					TabCatalog.updateThumbnail(item);
+				}
 			},
 			onStateChange : function(aWebProgress, aRequest, aStateFlags, aStatus)
 			{
@@ -2414,14 +2474,6 @@ var TabCatalog = {
 					aStateFlags & nsIWebProgressListener.STATE_STOP &&
 					aStateFlags & nsIWebProgressListener.STATE_IS_NETWORK
 					) {
-					var item = TabCatalog.getItemForTab(this.mTab);
-					if (item) {
-						item.removeAttribute('busy');
-						window.setTimeout(function() {
-							TabCatalog.updateThumbnail(item);
-						}, 0);
-					}
-
 					var canvas = TabCatalog.getCanvasForTab(this.mTab);
 					if (canvas)
 						TabCatalog.updateOneCanvas({
@@ -2432,15 +2484,26 @@ var TabCatalog = {
 
 					if (this.mTab == this.mTabBrowser.selectedTab)
 						TabCatalog.updateBackground();
+
+					var item = TabCatalog.getItemForTab(this.mTab);
+					if (item) {
+						item.removeAttribute('busy');
+						TabCatalog.updateThumbnail(item, true);
+					}
+				}
+				else if (
+					aStateFlags & nsIWebProgressListener.STATE_START &&
+					aStateFlags & nsIWebProgressListener.STATE_IS_NETWORK
+					) {
+					var item = TabCatalog.getItemForTab(this.mTab);
+					if (item) {
+						item.setAttribute('busy', true);
+						TabCatalog.updateThumbnail(item);
+					}
 				}
 			},
 			onLocationChange : function(aWebProgress, aRequest, aLocation)
 			{
-				var item = TabCatalog.getItemForTab(this.mTab);
-				if (item) {
-					item.setAttribute('busy', true);
-					item.getElementsByAttribute('class', 'tabcatalog-thumbnail-header-favicon')[0].removeAttribute('src');
-				}
 			},
 			onStatusChange : function(aWebProgress, aRequest, aStatus, aMessage)
 			{
@@ -2460,16 +2523,78 @@ var TabCatalog = {
 		};
 	},
  
-	updateThumbnail : function(aThumbnailItem) 
+	updateThumbnail : function(aThumbnailItem, aUpdateWithDelay) 
 	{
-		var tab = aThumbnailItem.relatedTab;
+		var item = aThumbnailItem;
+		if (!item) return;
+
+		var tab = item.relatedTab;
 		var b   = tab.linkedBrowser;
 		var w   = b.contentWindow;
 
-		aThumbnailItem.getElementsByAttribute('class', 'tabcatalog-thumbnail-header-label')[0].setAttribute('value', b.contentDocument.title);
+		var title = item.getElementsByAttribute('class', 'tabcatalog-thumbnail-header-label')[0];
+		if (!aUpdateWithDelay)
+			title.setAttribute('value', b.contentDocument.title || tab.getAttribute('label'));
+		else
+			window.setTimeout(function() { title.setAttribute('value', b.contentDocument.title || tab.getAttribute('label')); }, 0);
 
-		if (tab.getAttribute('image'))
-			aThumbnailItem.getElementsByAttribute('class', 'tabcatalog-thumbnail-header-favicon')[0].setAttribute('src', tab.getAttribute('image'));
+		var isBusy = item.getAttribute('busy') == 'true';
+
+		var icon = item.getElementsByAttribute('class', 'tabcatalog-thumbnail-header-favicon')[0];
+		if (!isBusy) {
+			var updateFavicon = function() {
+				var favicon = tab.getAttribute('image');
+				if (favicon) icon.setAttribute('src', favicon);
+			};
+			if (!aUpdateWithDelay)
+				updateFavicon();
+			else
+				window.setTimeout(updateFavicon, 0);
+		}
+		else if (icon.hasAttribute('src')) {
+			icon.removeAttribute('src');
+		}
+
+		var progress = item.getElementsByAttribute('class', 'tabcatalog-thumbnail-header-progress')[0];
+		if (item.totalProgress &&
+			item.totalProgress < 1) {
+			progress.removeAttribute('collapsed');
+			progress.setAttribute('mode', 'normal');
+			progress.setAttribute('value', parseInt(item.totalProgress * 100));
+		}
+		else {
+			progress.setAttribute('collapsed', true);
+		}
+
+		var backButton = item.getElementsByAttribute('class', 'tabcatalog-thumbnail-toolbar-item goBack')[0];
+		var forwardButton = item.getElementsByAttribute('class', 'tabcatalog-thumbnail-toolbar-item goForward')[0];
+		var stopButton = item.getElementsByAttribute('class', 'tabcatalog-thumbnail-toolbar-item stop')[0];
+		var reloadButton = item.getElementsByAttribute('class', 'tabcatalog-thumbnail-toolbar-item reload')[0];
+		if (this.shouldSendClickEvent) {
+			if (!isBusy) {
+				stopButton.setAttribute('disabled', true);
+				reloadButton.removeAttribute('disabled');
+				try {
+					if (b.canGoBack)
+						backButton.removeAttribute('disabled');
+					else
+						backButton.setAttribute('disabled', true);
+
+					if (b.canGoForward)
+						forwardButton.removeAttribute('disabled');
+					else
+						forwardButton.setAttribute('disabled', true);
+				}
+				catch(e) {
+					backButton.setAttribute('disabled', true);
+					forwardButton.setAttribute('disabled', true);
+				}
+			}
+			else {
+				stopButton.removeAttribute('disabled');
+				reloadButton.setAttribute('disabled', true);
+			}
+		}
 	},
 	 
 	getThumbnailMatrix : function(aTabs, aRelative) 
@@ -2659,13 +2784,15 @@ var TabCatalog = {
 	updateCanvasCue : [],
 	updateCanvasTimer : null,
 	 
-	updateOneCanvas : function(aData) 
+	updateOneCanvas : function(aData, aImage) 
 	{
 		var canvas = aData.canvas;
 
 		var tab = aData.tab;
 		var b = tab.linkedBrowser;
 		var w = b.contentWindow;
+
+		var isImage = b.contentDocument.contentType.indexOf('image') == 0;
 
 		var width  = aData.width || w.innerWidth;
 		var height = aData.height || w.innerHeight;
@@ -2679,16 +2806,62 @@ var TabCatalog = {
 			height = canvas.height;
 		}
 
-		try {
-			var ctx = canvas.getContext('2d');
-			ctx.clearRect(0, 0, width, height);
-			ctx.save();
-			ctx.scale(width/w.innerWidth, height/w.innerHeight);
-			ctx.drawWindow(w, w.scrollX, w.scrollY, w.innerWidth, w.innerHeight, 'rgb(255,255,255)');
-			ctx.restore();
+		if (!isImage) {
+			try {
+				var ctx = canvas.getContext('2d');
+				ctx.clearRect(0, 0, width, height);
+				ctx.save();
+				ctx.scale(width/w.innerWidth, height/w.innerHeight);
+				ctx.drawWindow(w, w.scrollX, w.scrollY, w.innerWidth, w.innerHeight, 'rgb(255,255,255)');
+				ctx.restore();
+			}
+			catch(e) {
+				dump('TabCatalog Error: ' + e.message + '\n');
+			}
 		}
-		catch(e) {
-			dump('TabCatalog Error: ' + e.message + '\n');
+		else {
+			if (aImage && aImage instanceof Image) {
+				try {
+					var ctx = canvas.getContext('2d');
+					ctx.fillStyle = '#fff';
+					ctx.fillRect(0, 0, width, height);
+					var iW = parseInt(aImage.width);
+					var iH = parseInt(aImage.height);
+					var x = 0;
+					var y = 0;
+					ctx.save();
+					if ((iW / iH) < 1) {
+						iW = iW * height / iH;
+						x = Math.floor((width - iW) / 2 );
+						iH = height;
+					}
+					else {
+						iH = iH * width / iW;
+						y = Math.floor((height - iH) / 2 );
+						iW = width;
+					}
+					ctx.drawImage(aImage, x, y, iW, iH);
+					ctx.restore();
+				}
+				catch(e) {
+					dump('TabCatalog Error: ' + e.message + '\n');
+				}
+			}
+			else {
+				var img = new Image();
+				img.src = b.currentURI.spec;
+				var self = this;
+				img.addEventListener('load', function() {
+					img.removeEventListener('load', arguments.callee, false);
+					self.updateOneCanvas(aData, img);
+					delete self;
+					delete img;
+					delete ctx;
+					delete b;
+					delete w;
+				}, false);
+				return;
+			}
 		}
 
 		if (aData.isMultiWindow)
@@ -2955,7 +3128,7 @@ var TabCatalog = {
 	},
   
 /* Override */ 
-	
+	 
 /* All-In-One Gesture */ 
 	
 	aioTabWheelNav : function() 
@@ -3009,7 +3182,7 @@ var TabCatalog = {
 	},
    
 /* Save/Load Prefs */ 
-	
+	 
 	knsISupportsString : Components.interfaces.nsISupportsString, 
  
 	get Prefs() 
@@ -3147,21 +3320,21 @@ var gTabCatalogPrefListener =
 				break;
 
 			case 'extensions.tabcatalog.thumbnail.header':
-				if (TabCatalog.getPref('extensions.tabcatalog.thumbnail.header'))
+				if (TabCatalog.getPref(aPrefName))
 					TabCatalog.catalog.setAttribute('show-thumbnail-header', true);
 				else
 					TabCatalog.catalog.removeAttribute('show-thumbnail-header');
 				break;
 
 			case 'extensions.tabcatalog.thumbnail.closebox':
-				if (TabCatalog.getPref('extensions.tabcatalog.thumbnail.closebox'))
+				if (TabCatalog.getPref(aPrefName))
 					TabCatalog.catalog.setAttribute('show-thumbnail-closebox', true);
 				else
 					TabCatalog.catalog.removeAttribute('show-thumbnail-closebox');
 				break;
 
 			case 'extensions.tabcatalog.thumbnail.shortcut':
-				TabCatalog.thumbnailShortcutEnabled = TabCatalog.getPref('extensions.tabcatalog.thumbnail.shortcut');
+				TabCatalog.thumbnailShortcutEnabled = TabCatalog.getPref(aPrefName);
 				if (TabCatalog.thumbnailShortcutEnabled)
 					TabCatalog.catalog.setAttribute('show-thumbnail-shortcut', true);
 				else
@@ -3169,7 +3342,15 @@ var gTabCatalogPrefListener =
 				break;
 
 			case 'extensions.tabcatalog.thumbnail.min.size':
-				this.rebuildRequest = true;
+				TabCatalog.rebuildRequest = true;
+				break;
+
+			case 'extensions.tabcatalog.send_click_event':
+				TabCatalog.shouldSendClickEvent = TabCatalog.getPref(aPrefName);
+				if (TabCatalog.shouldSendClickEvent)
+					TabCatalog.catalog.setAttribute('show-thumbnail-toolbar-buttons', true);
+				else
+					TabCatalog.catalog.removeAttribute('show-thumbnail-toolbar-buttons');
 				break;
 
 			default:

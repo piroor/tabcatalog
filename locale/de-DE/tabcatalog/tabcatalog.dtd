@@ -3,6 +3,12 @@
 
 <!ENTITY tabcatalog.popup.removeTabs  "Ausgewählte Tabs schließen">
 
+<!ENTITY tabcatalog.thumbnail.goBack.tooltip    "Back">
+<!ENTITY tabcatalog.thumbnail.goForward.tooltip "Forward">
+<!ENTITY tabcatalog.thumbnail.reload.tooltip    "Reload">
+<!ENTITY tabcatalog.thumbnail.stop.tooltip      "Stop">
+<!ENTITY tabcatalog.thumbnail.close.tooltip     "Close Tab">
+
 
 
 <!ENTITY tabcatalog.title "Tab Catalog - Einstellungen">

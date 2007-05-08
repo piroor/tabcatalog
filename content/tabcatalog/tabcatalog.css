@@ -3,7 +3,8 @@
 
 #tabcatalog-thumbnail-container:not([show-thumbnail-header="true"]) .tabcatalog-thumbnail-header-box,
 #tabcatalog-thumbnail-container:not([show-thumbnail-closebox="true"]) .tabcatalog-thumbnail-header-closebox,
-#tabcatalog-thumbnail-container:not([show-thumbnail-shortcut="true"]) .tabcatalog-thumbnail-footer-box {
+#tabcatalog-thumbnail-container:not([show-thumbnail-shortcut="true"]) .tabcatalog-thumbnail-footer-box,
+#tabcatalog-thumbnail-container:not([show-thumbnail-toolbar-buttons="true"]) .tabcatalog-thumbnail-toolbar-item {
 	display: none;
 }
 
@@ -37,3 +38,10 @@
 .tabcatalog-thumbnail-shortcut-label:not([value]) {
 	display: none;
 }
+
+
+.tabcatalog-thumbnail-toolbar-item.reload[disabled="true"],
+.tabcatalog-thumbnail-toolbar-item.stop[disabled="true"] {
+	visibility: collapse;
+}
+

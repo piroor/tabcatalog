@@ -72,13 +72,46 @@
 			<hbox class="tabcatalog-thumbnail-header-box"
 				align="center">
 				<image class="tabcatalog-thumbnail-header-favicon"/>
-				<label class="tabcatalog-thumbnail-header-label"
-					crop="center"
-					flex="1"/>
-				<toolbarbutton class="tabcatalog-thumbnail-header-closebox"
-					label="&#215;"
-					oncommand="TabCatalog.onThumbnailCloseBoxClick(event);"
-					onclick="event.stopPropagation(); event.preventDefault();"/>
+				<stack flex="1">
+					<vbox flex="1">
+						<spacer class="tabcatalog-thumbnail-header-progress-padding" flex="1"/>
+						<progressmeter class="tabcatalog-thumbnail-header-progress"
+							collapsed="true"/>
+					</vbox>
+					<hbox align="center" flex="1">
+						<label class="tabcatalog-thumbnail-header-label"
+							crop="center"
+							flex="1"/>
+						<toolbarbutton class="tabcatalog-thumbnail-toolbar-item goBack"
+							tooltiptext="&tabcatalog.thumbnail.goBack.tooltip;"
+							oncommand="TabCatalog.onCatalogToolbarButtonCommand(event);"
+							onclick="event.stopPropagation();"
+							ondblclick="event.stopPropagation();"
+							disabled="true"/>
+						<toolbarbutton class="tabcatalog-thumbnail-toolbar-item goForward"
+							tooltiptext="&tabcatalog.thumbnail.goForward.tooltip;"
+							oncommand="TabCatalog.onCatalogToolbarButtonCommand(event);"
+							onclick="event.stopPropagation();"
+							ondblclick="event.stopPropagation();"
+							disabled="true"/>
+						<toolbarbutton class="tabcatalog-thumbnail-toolbar-item reload"
+							tooltiptext="&tabcatalog.thumbnail.reload.tooltip;"
+							oncommand="TabCatalog.onCatalogToolbarButtonCommand(event);"
+							onclick="event.stopPropagation();"
+							ondblclick="event.stopPropagation();"
+							disabled="true"/>
+						<toolbarbutton class="tabcatalog-thumbnail-toolbar-item stop"
+							tooltiptext="&tabcatalog.thumbnail.stop.tooltip;"
+							oncommand="TabCatalog.onCatalogToolbarButtonCommand(event);"
+							onclick="event.stopPropagation();"
+							ondblclick="event.stopPropagation();"
+							disabled="true"/>
+						<toolbarbutton class="tabcatalog-thumbnail-header-closebox tabs-closebutton toolbarbutton-1"
+							tooltiptext="&tabcatalog.thumbnail.close.tooltip;"
+							oncommand="TabCatalog.onThumbnailCloseBoxClick(event);"
+							onclick="event.stopPropagation(); event.preventDefault();"/>
+					</hbox>
+				</stack>
 			</hbox>
 			<vbox class="tabcatalog-thumbnail-canvas-box" flex="1"/>
 			<hbox class="tabcatalog-thumbnail-footer-box"

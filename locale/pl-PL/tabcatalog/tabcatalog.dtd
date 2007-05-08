@@ -3,6 +3,14 @@
 
 <!ENTITY tabcatalog.popup.removeTabs  "Zamknij zaznaczone karty">
 
+<!ENTITY tabcatalog.thumbnail.goBack.tooltip    "Back">
+<!ENTITY tabcatalog.thumbnail.goForward.tooltip "Forward">
+<!ENTITY tabcatalog.thumbnail.reload.tooltip    "Reload">
+<!ENTITY tabcatalog.thumbnail.stop.tooltip      "Stop">
+<!ENTITY tabcatalog.thumbnail.close.tooltip     "Close Tab">
+
+
+
 <!ENTITY tabcatalog.title "Tab Catalog - ustawienia">
 
 <!ENTITY tabcatalog.tab.catalog   "Katalog">

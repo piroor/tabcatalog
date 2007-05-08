@@ -113,16 +113,6 @@ toolbar[iconsize="small"] #tabcatalog-button:hover {
 }
 
 
-.tabcatalog-thumbnail-header-favicon {
-	max-width: 16px;
-	max-height: 16px;
-}
-
-.tabcatalog-thumbnail[busy="true"] > .tabcatalog-thumbnail-header-box > .tabcatalog-thumbnail-header-favicon {
-	list-style-image: url("jar:resource:///chrome/classic.jar!/skin/classic/global/throbber/Throbber-small.gif") !important;
-}
-
-
 .tabcatalog-thumbnail-shortcut-label {
 	color: white;
 	background: #796942;
@@ -133,6 +123,141 @@ toolbar[iconsize="small"] #tabcatalog-button:hover {
 	margin-top: -1.7em;
 	height: 1.5em;
 }
+
+
+/* toolbar */
+
+.tabcatalog-thumbnail-header-favicon {
+	max-width: 16px;
+	max-height: 16px;
+	list-style-image: url("jar:resource:///chrome/classic.jar!/skin/classic/global/icons/folder-item.png");
+	-moz-image-region: rect(0px, 16px, 16px, 0px);
+}
+
+.tabcatalog-thumbnail[busy="true"] > .tabcatalog-thumbnail-header-box > .tabcatalog-thumbnail-header-favicon {
+	list-style-image: url("jar:resource:///chrome/classic.jar!/skin/classic/global/throbber/Throbber-small.gif") !important;
+	opacity: 0.6;
+}
+
+
+.tabcatalog-thumbnail-header-progress {
+	height: 0.4em;
+	min-height: 0.4em;
+	max-height: 0.4em;
+	min-width: 0;
+	-moz-appearance: none;
+	border: none;
+	outline: none;
+
+	position: relative;
+	margin-top: 0.2em;
+	margin-bottom: -0.2em;
+}
+.tabcatalog-thumbnail-header-progress > .progress-bar,
+.tabcatalog-thumbnail-header-progress > .progress-remainder {
+	-moz-appearance: none;
+}
+
+
+/* toolbar buttons in thumbnail */
+
+/* ::::: 16px primary toolbar buttons ::::: */
+
+.tabcatalog-thumbnail-toolbar-item {
+  -moz-box-orient: vertical;
+  min-width: 0;
+  list-style-image: url("jar:resource:///chrome/classic.jar!/skin/classic/browser/Toolbar-small.png");
+}
+.tabcatalog-thumbnail-toolbar-item[chromedir="rtl"] {
+  -moz-box-orient: vertical;
+  min-width: 0;
+  list-style-image: url("jar:resource:///chrome/classic.jar!/skin/classic/browser/Toolbar-rtl-small.png");
+}
+.tabcatalog-thumbnail-toolbar-item .toolbarbutton-icon {
+  -moz-margin-end: 0px;
+}
+.tabcatalog-thumbnail-toolbar-item label {
+  display: none;
+}
+
+
+/* back button-- */
+
+.tabcatalog-thumbnail-toolbar-item.goBack .toolbarbutton-icon {
+  padding-right: 1px;
+}
+.tabcatalog-thumbnail-toolbar-item.goBack {
+  -moz-image-region: rect(0px 16px 16px 0px);
+}
+.tabcatalog-thumbnail-toolbar-item.goBack:not([disabled="true"]):hover,
+.tabcatalog-thumbnail-toolbar-item.goBack[buttonover="true"] {
+  -moz-image-region: rect(16px 16px 32px 0px);
+}
+.tabcatalog-thumbnail-toolbar-item.goBack[disabled="true"] {
+  -moz-image-region: rect(32px 16px 48px 0px);
+}
+.tabcatalog-thumbnail-toolbar-item.goBack:not([disabled="true"]):hover:active {
+  -moz-image-region: rect(64px 16px 80px 0px);
+}
+
+
+/* small forward button-- */
+
+.tabcatalog-thumbnail-toolbar-item.goForward .toolbarbutton-icon {
+  padding-right: 1px;
+}
+.tabcatalog-thumbnail-toolbar-item.goForward {
+  -moz-image-region: rect(0px 32px 16px 16px);
+}
+.tabcatalog-thumbnail-toolbar-item.goForward:not([disabled="true"]):hover,
+.tabcatalog-thumbnail-toolbar-item.goForward[buttonover="true"] {
+  -moz-image-region: rect(16px 32px 32px 16px);
+}
+.tabcatalog-thumbnail-toolbar-item.goForward[disabled="true"] {
+  -moz-image-region: rect(32px 32px 48px 16px);
+}
+.tabcatalog-thumbnail-toolbar-item.goForward:not([disabled="true"]):hover:active {
+  -moz-image-region: rect(64px 32px 80px 16px);
+}
+
+/* stop button */
+
+.tabcatalog-thumbnail-toolbar-item.stop .toolbarbutton-icon {
+  padding-left: 1px;
+}
+.tabcatalog-thumbnail-toolbar-item.stop {
+  -moz-image-region: rect(0px 48px 16px 32px);
+}
+.tabcatalog-thumbnail-toolbar-item.stop:not([disabled="true"]):hover {
+  -moz-image-region: rect(16px 48px 32px 32px);
+}
+.tabcatalog-thumbnail-toolbar-item.stop[disabled="true"] {
+  -moz-image-region: rect(32px 48px 48px 32px);
+}
+.tabcatalog-thumbnail-toolbar-item.stop:not([disabled="true"]):hover:active {
+  -moz-image-region: rect(64px 48px 80px 32px);
+}
+
+/* reload button */
+
+.tabcatalog-thumbnail-toolbar-item.reload .toolbarbutton-icon {
+  padding-left: 1px;
+}
+.tabcatalog-thumbnail-toolbar-item.reload {
+  -moz-image-region: rect(0px 64px 16px 48px);
+}
+.tabcatalog-thumbnail-toolbar-item.reload:not([disabled="true"]):hover {
+  -moz-image-region: rect(16px 64px 32px 48px);
+}
+.tabcatalog-thumbnail-toolbar-item.reload[disabled="true"] {
+  -moz-image-region: rect(32px 64px 48px 48px);
+}
+.tabcatalog-thumbnail-toolbar-item.reload:not([disabled="true"]):hover:active {
+  -moz-image-region: rect(64px 64px 80px 48px);
+}
+
+
+
 
 
 
