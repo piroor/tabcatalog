@@ -336,7 +336,7 @@ var TabCatalog = {
 	},
   
 /* get items */ 
-	
+	 
 	getItems : function() 
 	{
 		return Array.prototype.slice.call(this.catalog.getElementsByAttribute('class', 'tabcatalog-thumbnail'));
@@ -1836,7 +1836,7 @@ var TabCatalog = {
  
 	// Emulate events on canvas for related window 
 	// codes from Tab Scope ( https://addons.mozilla.org/firefox/addon/4882 )
-	
+	 
 	_getCorrespondingWindowAndPoint : function(aScreenX, aScreenY, aTargetThumbnail) 
 	{
 		var canvas  = aTargetThumbnail.relatedCanvas;
@@ -1851,10 +1851,11 @@ var TabCatalog = {
 		x -= parseInt(css.marginLeft, 10) + parseInt(css.borderLeftWidth, 10) + parseInt(css.paddingLeft, 10);
 		y -= parseInt(css.marginTop, 10)  + parseInt(css.borderTopWidth, 10)  + parseInt(css.paddingTop, 10);
 */
-		var scale = canvas.width / win.innerWidth;
+		var xScale = canvas.width / win.innerWidth;
+		var yScale = canvas.height / win.innerHeight;
 		var docBox = win.document.getBoxObjectFor(win.document.documentElement);
-		x = parseInt(x / scale, 10) + docBox.screenX + win.scrollX;
-		y = parseInt(y / scale, 10) + docBox.screenY + win.scrollY;
+		x = parseInt(x / xScale, 10) + docBox.screenX + win.scrollX;
+		y = parseInt(y / yScale, 10) + docBox.screenY + win.scrollY;
 		return { window : this.getWindowFromPoint(win, x, y), x : x, y : y };
 	},
 	 
@@ -1890,7 +1891,7 @@ var TabCatalog = {
 			ret = ret.concat(this.flattenWindows(aWindow.frames[i]));
 		return ret;
 	},
-   
+   	
 	getClickableElementFromPoint : function(aWindow, aScreenX, aScreenY) 
 	{
 		var doc = aWindow.document;
@@ -2078,7 +2079,7 @@ var TabCatalog = {
 
 		window.setTimeout('TabCatalog.catalogHiding = false;', 100);
 	},
- 	
+ 
 	updateUI : function(aRelative) 
 	{
 		var base = this.callingAction;
@@ -2913,12 +2914,13 @@ var TabCatalog = {
 		if (node)
 			tab = TabCatalog.getTabFromThumbnailItem(node);
 
-		if (!tab &&
+		var canvas = TabCatalog.getCanvasFromEvent(aEvent);
+		if (!canvas ||
+			!tab &&
 			tab.linkedBrowser.contentDocument.contentType.indexOf('image') == 0)
 			return;
 
 		var node   = this.getItemFromEvent(aEvent);
-		var canvas = node.relatedCanvas;
 		this.updateOneCanvas({
 			canvas        : canvas,
 			tab           : tab,
@@ -2935,11 +2937,12 @@ var TabCatalog = {
 		var bBox = document.getBoxObjectFor(browser);
 
 		var box = elt.ownerDocument.getBoxObjectFor(elt);
-		var scale = cBox.width / bBox.width;
-		var x = parseInt((box.screenX - bBox.screenX) * scale);
-		var y = parseInt((box.screenY - bBox.screenY) * scale);
-		var w = parseInt(box.width * scale);
-		var h = parseInt(box.height * scale);
+		var xScale = cBox.width / bBox.width;
+		var yScale = cBox.height / bBox.height;
+		var x = parseInt((box.screenX - bBox.screenX) * xScale);
+		var y = parseInt((box.screenY - bBox.screenY) * yScale);
+		var w = parseInt(box.width * xScale);
+		var h = parseInt(box.height * yScale);
 
 		try {
 			var ctx = canvas.getContext('2d');
