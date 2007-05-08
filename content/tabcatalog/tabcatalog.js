@@ -465,7 +465,7 @@ var TabCatalog = {
 		var d = aNode.ownerDocument;
 		try {
 			var xpathResult = d.evaluate(
-					'ancestor-or-self::*[((local-name() = "a" or local-name() = "A") and @href) local-name() = "button" or local-name() = "BUTTON" or ((local-name() = "input" or local-name() = "INPUT") and (@type = "SUBMIT" or @type = "submit" or @type = "BUTTON" or @type = "button" or @type = "IMAGE" or @type = "image"))]',
+					'ancestor-or-self::*[((local-name() = "a" or local-name() = "A") and @href) or local-name() = "button" or local-name() = "BUTTON" or ((local-name() = "input" or local-name() = "INPUT") and (@type = "SUBMIT" or @type = "submit" or @type = "BUTTON" or @type = "button" or @type = "IMAGE" or @type = "image"))]',
 					aNode,
 					d.createNSResolver(this.NSResolver),
 					XPathResult.FIRST_ORDERED_NODE_TYPE,
@@ -554,7 +554,7 @@ var TabCatalog = {
 		return ret;
 	},
    
-	getClickableElementFromPoint : function(aWindow, aScreenX, aScreenY, aBrowser) 
+	getClickableElementFromPoint : function(aWindow, aScreenX, aScreenY) 
 	{
 		var accNode;
 		try {
@@ -2965,18 +2965,27 @@ var TabCatalog = {
   
 	redrawBoxOnLink : function(aEvent) 
 	{
-		var node = TabCatalog.getItemFromEvent(aEvent);
+		var node = this.getItemFromEvent(aEvent);
 		var tab;
 		if (node)
-			tab = TabCatalog.getTabFromThumbnailItem(node);
+			tab = this.getTabFromThumbnailItem(node);
 
-		var canvas = TabCatalog.getCanvasFromEvent(aEvent);
+		var canvas = this.getCanvasFromEvent(aEvent);
 		if (!canvas ||
-			!tab &&
+			!tab ||
 			tab.linkedBrowser.contentDocument.contentType.indexOf('image') == 0)
 			return;
 
-		var node   = this.getItemFromEvent(aEvent);
+		var ret = this._getCorrespondingWindowAndPoint(aEvent.screenX, aEvent.screenY, node);
+		var elt = this.getClickableElementFromPoint(ret.window, ret.x, ret.y);
+
+		if ('__tabcatalog__lastHoverClickable' in ret.window &&
+			elt &&
+			elt == ret.window.__tabcatalog__lastHoverClickable)
+			return;
+
+		ret.window.__tabcatalog__lastHoverClickable = elt;
+
 		this.updateOneCanvas({
 			canvas        : canvas,
 			tab           : tab,
@@ -2984,8 +2993,6 @@ var TabCatalog = {
 			onlyRedraw    : true
 		});
 
-		var ret = this._getCorrespondingWindowAndPoint(aEvent.screenX, aEvent.screenY, node);
-		var elt = this.getClickableElementFromPoint(ret.window, ret.x, ret.y, tab.linkedBrowser);
 		if (!elt) return;
 
 		var browser = tab.linkedBrowser;
