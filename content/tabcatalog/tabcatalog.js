@@ -442,10 +442,30 @@ var TabCatalog = {
  
 	getImageInLink : function(aNode) 
 	{
+		if (!aNode) return null;
 		var d = aNode.ownerDocument;
 		try {
 			var xpathResult = d.evaluate(
 					'descendant::*[local-name() = "img" or local-name() = "IMG"]',
+					aNode,
+					d.createNSResolver(this.NSResolver),
+					XPathResult.FIRST_ORDERED_NODE_TYPE,
+					null
+				);
+		}
+		catch(e) {
+			return null;
+		}
+		return xpathResult.singleNodeValue;
+	},
+ 
+	getParentClickableNode : function(aNode) 
+	{
+		if (!aNode) return null;
+		var d = aNode.ownerDocument;
+		try {
+			var xpathResult = d.evaluate(
+					'ancestor-or-self::*[local-name() = "a" or local-name() = "A" or ((local-name() = "input" or local-name() = "INPUT") and (@type = "SUBMIT" or @type = "submit" or @type = "BUTTON" or @type = "button"))]',
 					aNode,
 					d.createNSResolver(this.NSResolver),
 					XPathResult.FIRST_ORDERED_NODE_TYPE,
@@ -475,7 +495,134 @@ var TabCatalog = {
 			}
 		}
 	},
-  
+ 
+	// Emulate events on canvas for related window 
+	// codes from Tab Scope ( https://addons.mozilla.org/firefox/addon/4882 )
+	 
+	_getCorrespondingWindowAndPoint : function(aScreenX, aScreenY, aTargetThumbnail) 
+	{
+		var canvas  = aTargetThumbnail.relatedCanvas;
+		var browser = aTargetThumbnail.relatedTab.linkedBrowser;
+
+		var win = browser.contentWindow;
+		var box = document.getBoxObjectFor(canvas);
+		var x = aScreenX - box.screenX;
+		var y = aScreenY - box.screenY;
+/*
+		var css = window.getComputedStyle(canvas, null);
+		x -= parseInt(css.marginLeft, 10) + parseInt(css.borderLeftWidth, 10) + parseInt(css.paddingLeft, 10);
+		y -= parseInt(css.marginTop, 10)  + parseInt(css.borderTopWidth, 10)  + parseInt(css.paddingTop, 10);
+*/
+		var xScale = canvas.width / win.innerWidth;
+		var yScale = canvas.height / win.innerHeight;
+		var docBox = win.document.getBoxObjectFor(win.document.documentElement);
+		x = parseInt(x / xScale, 10) + docBox.screenX + win.scrollX;
+		y = parseInt(y / yScale, 10) + docBox.screenY + win.scrollY;
+		return { window : this.getWindowFromPoint(win, x, y), x : x, y : y };
+	},
+	 
+	getWindowFromPoint : function(aWindow, aScreenX, aScreenY) 
+	{
+		var wins = this.flattenWindows(aWindow);
+		for (var i = wins.length - 1; i >= 0; i--) {
+			var win = wins[i];
+			var frameList = [];
+			var arr = win.document.getElementsByTagName('frame');
+			for (var j = 0; j < arr.length; j++)
+				frameList.push(arr[j]);
+			var arr = win.document.getElementsByTagName('iframe');
+			for (var j = 0; j < arr.length; j++)
+				frameList.push(arr[j]);
+			for (var j = frameList.length - 1; j >= 0; j--) {
+				var box = win.document.getBoxObjectFor(frameList[j]);
+				var l = box.screenX;
+				var t = box.screenY;
+				var r = l + box.width;
+				var b = t + box.height;
+				if (l <= aScreenX && aScreenX <= r && t <= aScreenY && aScreenY <= b)
+					return frameList[j].contentWindow;
+			}
+		}
+		return aWindow;
+	},
+	
+	flattenWindows : function(aWindow) 
+	{
+		var ret = [aWindow];
+		for (var i = 0; i < aWindow.frames.length; i++)
+			ret = ret.concat(this.flattenWindows(aWindow.frames[i]));
+		return ret;
+	},
+   
+	getClickableElementFromPoint : function(aWindow, aScreenX, aScreenY, aBrowser) 
+	{
+		var accNode;
+		try {
+			/*
+				クリック位置からアクセシビリティ用のノードを得る
+				参考：http://www.mozilla-japan.org/access/architecture.html
+			*/
+			var accService = Components.classes['@mozilla.org/accessibilityService;1']
+								.getService(Components.interfaces.nsIAccessibilityService);
+			var acc = accService.getAccessibleFor(aWindow.document);
+			var box = aWindow.document.getBoxObjectFor(aWindow.document.documentElement);
+			accNode = /* acc.getChildAtPoint(aScreenX - box.screenX, aScreenY - box.screenY) || */ acc.getChildAtPoint(aScreenX, aScreenY);
+			/* アクセシビリティ用のノードからDOMのノードを得る */
+			accNode = accNode.QueryInterface(Components.interfaces.nsIAccessNode).DOMNode;
+//dump(accNode+'\n');
+//dump(accNode.localName+'\n');
+			/*
+				この時点で、得られたノードがクリック可能な要素またはその子孫である場合、
+				祖先をたどってクリック可能な要素を返す。
+			*/
+			var clickable = accNode ? this.getParentClickableNode(accNode) : null ;
+			if (clickable)
+				return this.getImageInLink(clickable) || clickable;
+		}
+		catch(e) {
+//			dump(e+'\n');
+		}
+
+		var doc = aWindow.document;
+		/*
+			アクセシビリティ用のノードから得られたDOMノードがクリック可能な要素または
+			その子孫で *なかった* 場合でも、かなり近い位置の祖先ノードは取得できている。
+			なので、検索をそこからスタートすれば、相当な高速化になる。
+		*/
+		var startNode = accNode || doc;
+		var filter = function(aNode) {
+			switch (aNode.localName) {
+				case 'A':
+					if (aNode.href)
+						return NodeFilter.FILTER_ACCEPT;
+					break;
+				case 'INPUT':
+					if (aNode.type == 'button' || aNode.type == 'submit')
+						return NodeFilter.FILTER_ACCEPT;
+					break;
+			}
+			return NodeFilter.FILTER_SKIP;
+		};
+		var img;
+		var walker = aWindow.document.createTreeWalker(startNode, NodeFilter.SHOW_ELEMENT, filter, false);
+		for (var node = walker.firstChild(); node != null; node = walker.nextNode())
+		{
+			if (
+				node.hasChildNodes() &&
+				(img = this.getImageInLink(node))
+				)
+				node = img;
+			var box = doc.getBoxObjectFor(node);
+			var l = box.screenX;
+			var t = box.screenY;
+			var r = l + box.width;
+			var b = t + box.height;
+			if (l <= aScreenX && aScreenX <= r && t <= aScreenY && aScreenY <= b)
+				return node;
+		}
+		return null;
+	},
+   
 /* check */ 
 	
 	isEventFiredInMenu : function(aEvent) 
@@ -865,7 +1012,7 @@ var TabCatalog = {
 		delete maxi;
 		delete tabs;
 	},
- 
+ 	
 	destroy : function() 
 	{
 		window.removeEventListener('keydown',   this.onKeyDown,    true);
@@ -1833,101 +1980,7 @@ var TabCatalog = {
 			return false;
 		}
 	},
- 
-	// Emulate events on canvas for related window 
-	// codes from Tab Scope ( https://addons.mozilla.org/firefox/addon/4882 )
-	 
-	_getCorrespondingWindowAndPoint : function(aScreenX, aScreenY, aTargetThumbnail) 
-	{
-		var canvas  = aTargetThumbnail.relatedCanvas;
-		var browser = aTargetThumbnail.relatedTab.linkedBrowser;
-
-		var win = browser.contentWindow;
-		var box = document.getBoxObjectFor(canvas);
-		var x = aScreenX - box.screenX;
-		var y = aScreenY - box.screenY;
-/*
-		var css = window.getComputedStyle(canvas, null);
-		x -= parseInt(css.marginLeft, 10) + parseInt(css.borderLeftWidth, 10) + parseInt(css.paddingLeft, 10);
-		y -= parseInt(css.marginTop, 10)  + parseInt(css.borderTopWidth, 10)  + parseInt(css.paddingTop, 10);
-*/
-		var xScale = canvas.width / win.innerWidth;
-		var yScale = canvas.height / win.innerHeight;
-		var docBox = win.document.getBoxObjectFor(win.document.documentElement);
-		x = parseInt(x / xScale, 10) + docBox.screenX + win.scrollX;
-		y = parseInt(y / yScale, 10) + docBox.screenY + win.scrollY;
-		return { window : this.getWindowFromPoint(win, x, y), x : x, y : y };
-	},
-	 
-	getWindowFromPoint : function(aWindow, aScreenX, aScreenY) 
-	{
-		var wins = this.flattenWindows(aWindow);
-		for (var i = wins.length - 1; i >= 0; i--) {
-			var win = wins[i];
-			var frameList = [];
-			var arr = win.document.getElementsByTagName('frame');
-			for (var j = 0; j < arr.length; j++)
-				frameList.push(arr[j]);
-			var arr = win.document.getElementsByTagName('iframe');
-			for (var j = 0; j < arr.length; j++)
-				frameList.push(arr[j]);
-			for (var j = frameList.length - 1; j >= 0; j--) {
-				var box = win.document.getBoxObjectFor(frameList[j]);
-				var l = box.screenX;
-				var t = box.screenY;
-				var r = l + box.width;
-				var b = t + box.height;
-				if (l <= aScreenX && aScreenX <= r && t <= aScreenY && aScreenY <= b)
-					return frameList[j].contentWindow;
-			}
-		}
-		return aWindow;
-	},
-	 
-	flattenWindows : function(aWindow) 
-	{
-		var ret = [aWindow];
-		for (var i = 0; i < aWindow.frames.length; i++)
-			ret = ret.concat(this.flattenWindows(aWindow.frames[i]));
-		return ret;
-	},
-   	
-	getClickableElementFromPoint : function(aWindow, aScreenX, aScreenY) 
-	{
-		var doc = aWindow.document;
-		var filter = function(aNode) {
-			switch (aNode.localName) {
-				case 'A':
-					if (aNode.href)
-						return NodeFilter.FILTER_ACCEPT;
-					break;
-				case 'INPUT':
-					if (aNode.type == 'button' || aNode.type == 'submit')
-						return NodeFilter.FILTER_ACCEPT;
-					break;
-			}
-			return NodeFilter.FILTER_SKIP;
-		};
-		var img;
-		var walker = aWindow.document.createTreeWalker(doc, NodeFilter.SHOW_ELEMENT, filter, false);
-		for (var node = walker.firstChild(); node != null; node = walker.nextNode())
-		{
-			if (
-				node.hasChildNodes() &&
-				(img = this.getImageInLink(node))
-				)
-				node = img;
-			var box = doc.getBoxObjectFor(node);
-			var l = box.screenX;
-			var t = box.screenY;
-			var r = l + box.width;
-			var b = t + box.height;
-			if (l <= aScreenX && aScreenX <= r && t <= aScreenY && aScreenY <= b)
-				return node;
-		}
-		return null;
-	},
-   
+  
 /* Catarog Operations */ 
 	 
 	show : function(aBase, aOnlyUpdate, aRelative) 
@@ -2929,7 +2982,7 @@ var TabCatalog = {
 		});
 
 		var ret = this._getCorrespondingWindowAndPoint(aEvent.screenX, aEvent.screenY, node);
-		var elt = this.getClickableElementFromPoint(ret.window, ret.x, ret.y);
+		var elt = this.getClickableElementFromPoint(ret.window, ret.x, ret.y, tab.linkedBrowser);
 		if (!elt) return;
 
 		var browser = tab.linkedBrowser;
