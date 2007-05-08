@@ -465,7 +465,7 @@ var TabCatalog = {
 		var d = aNode.ownerDocument;
 		try {
 			var xpathResult = d.evaluate(
-					'ancestor-or-self::*[local-name() = "a" or local-name() = "A" or ((local-name() = "input" or local-name() = "INPUT") and (@type = "SUBMIT" or @type = "submit" or @type = "BUTTON" or @type = "button" or @type = "IMAGE" or @type = "image"))]',
+					'ancestor-or-self::*[((local-name() = "a" or local-name() = "A") and @href) local-name() = "button" or local-name() = "BUTTON" or ((local-name() = "input" or local-name() = "INPUT") and (@type = "SUBMIT" or @type = "submit" or @type = "BUTTON" or @type = "button" or @type = "IMAGE" or @type = "image"))]',
 					aNode,
 					d.createNSResolver(this.NSResolver),
 					XPathResult.FIRST_ORDERED_NODE_TYPE,
@@ -595,6 +595,9 @@ var TabCatalog = {
 				case 'A':
 					if (aNode.href)
 						return NodeFilter.FILTER_ACCEPT;
+					break;
+				case 'BUTTON':
+					return NodeFilter.FILTER_ACCEPT;
 					break;
 				case 'INPUT':
 					if (aNode.type == 'button' || aNode.type == 'submit' || aNode.type == 'image')
