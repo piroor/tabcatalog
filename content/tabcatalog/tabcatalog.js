@@ -820,6 +820,8 @@ var TabCatalog = {
 			TabCatalog.rebuildRequest = true;
 			try {
 				TabCatalog.initTab(tab, this);
+				if (TabCatalog.shown)
+					window.setTimeout('TabCatalog.updateUI();', 0);
 			}
 			catch(e) {
 			}
@@ -1390,27 +1392,26 @@ var TabCatalog = {
 		if (node)
 			tab = this.getTabFromThumbnailItem(node);
 
-		if (aEvent.type == 'click' &&
-			(
-				aEvent.button == 1/* ||
-				(
-					aEvent.button == 0 &&
-					(
-						(this.callingAction != this.CALLED_BY_TABSWITCH && aEvent.ctrlKey) ||
-						aEvent.metaKey
-					)
-				) */
-			)
-			) {
-			if (!this.ignoreMiddleClick && tab)
-				this.removeTab(tab);
-		}
-		else if (
+		var isMiddleClick = (
 				aEvent.type == 'click' &&
-				aEvent.button == 0 &&
-				aEvent.ctrlKey &&
-				this.callingAction != this.CALLED_BY_TABSWITCH
-				) {
+				(
+					aEvent.button == 1/* ||
+					(
+						aEvent.button == 0 &&
+						(
+							(this.callingAction != this.CALLED_BY_TABSWITCH && aEvent.ctrlKey) ||
+							aEvent.metaKey
+						)
+					) */
+				)
+			);
+
+		if (
+			aEvent.type == 'click' &&
+			aEvent.button == 0 &&
+			aEvent.ctrlKey &&
+			this.callingAction != this.CALLED_BY_TABSWITCH
+			) {
 			if (node.getAttribute('selected') == 'true')
 				node.removeAttribute('selected');
 			else
@@ -1428,12 +1429,25 @@ var TabCatalog = {
 				) {
 				if (
 					this.sendClickEvent(aEvent, node) ||
-					this.getPref('extensions.tabcatalog.send_click_event.ignore_on_unclickbale')
+					(
+						(
+							!isMiddleClick ||
+							this.getPref('extensions.tabcatalog.send_click_event.middlebutton')
+						) &&
+						this.getPref('extensions.tabcatalog.send_click_event.ignore_on_unclickable')
+					)
 					) return;
 			}
-			node.relatedTabBrowser.selectedTab = tab;
-			tab.ownerDocument.defaultView.focus();
-			this.hide();
+
+			if (isMiddleClick) {
+				if (!this.ignoreMiddleClick)
+					this.removeTab(tab);
+			}
+			else {
+				node.relatedTabBrowser.selectedTab = tab;
+				tab.ownerDocument.defaultView.focus();
+				this.hide();
+			}
 		}
 
 		aEvent.preventDefault();
