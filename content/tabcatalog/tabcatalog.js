@@ -1502,7 +1502,7 @@ var TabCatalog = {
 		elt.dispatchEvent(evt);
 		return true;
 	},
-  	
+  
 	onCatalogToolbarButtonCommand : function(aEvent) 
 	{
 		var item   = this.getItemFromEvent(aEvent);
@@ -1554,6 +1554,12 @@ var TabCatalog = {
 
 		aEvent.stopPropagation();
 		aEvent.preventDefault();
+	},
+ 
+	onCatalogMouseMove : function(aEvent) 
+	{
+		if (!TabCatalog.isSendingScrollEvent)
+			TabCatalog.redrawBoxOnLink(aEvent);
 	},
  
 	onBackgroundClick : function(aEvent) 
@@ -1656,6 +1662,8 @@ var TabCatalog = {
 
 		if (!ret.window.scrollMaxY) return false;
 
+		this.isSendingScrollEvent = true;
+
 		if (aEvent.detail < 0)
 			ret.window.scrollBy(0, -100);
 		else
@@ -1663,6 +1671,7 @@ var TabCatalog = {
 
 		if (!aTargetThumbnail.updateTimer) {
 			aTargetThumbnail.updateTimer = setTimeout(function() {
+				TabCatalog.isSendingScrollEvent = false;
 				TabCatalog.updateOneCanvas({
 					canvas        : canvas,
 					tab           : aTargetThumbnail.relatedTab,
@@ -1827,7 +1836,7 @@ var TabCatalog = {
  
 	// Emulate events on canvas for related window 
 	// codes from Tab Scope ( https://addons.mozilla.org/firefox/addon/4882 )
-	 
+	
 	_getCorrespondingWindowAndPoint : function(aScreenX, aScreenY, aTargetThumbnail) 
 	{
 		var canvas  = aTargetThumbnail.relatedCanvas;
@@ -1837,16 +1846,18 @@ var TabCatalog = {
 		var box = document.getBoxObjectFor(canvas);
 		var x = aScreenX - box.screenX;
 		var y = aScreenY - box.screenY;
+/*
 		var css = window.getComputedStyle(canvas, null);
 		x -= parseInt(css.marginLeft, 10) + parseInt(css.borderLeftWidth, 10) + parseInt(css.paddingLeft, 10);
 		y -= parseInt(css.marginTop, 10)  + parseInt(css.borderTopWidth, 10)  + parseInt(css.paddingTop, 10);
+*/
 		var scale = canvas.width / win.innerWidth;
 		var docBox = win.document.getBoxObjectFor(win.document.documentElement);
 		x = parseInt(x / scale, 10) + docBox.screenX + win.scrollX;
 		y = parseInt(y / scale, 10) + docBox.screenY + win.scrollY;
 		return { window : this.getWindowFromPoint(win, x, y), x : x, y : y };
 	},
-	
+	 
 	getWindowFromPoint : function(aWindow, aScreenX, aScreenY) 
 	{
 		var wins = this.flattenWindows(aWindow);
@@ -1871,7 +1882,7 @@ var TabCatalog = {
 		}
 		return aWindow;
 	},
-	
+	 
 	flattenWindows : function(aWindow) 
 	{
 		var ret = [aWindow];
@@ -1970,6 +1981,10 @@ var TabCatalog = {
 		var items = this.getItems();
 		this.moveFocusToItem(items[this.lastFocusedIndex], true);
 
+		if (this.shouldSendClickEvent &&
+			this.getPref('extensions.tabcatalog.send_click_event.indicate_clickable'))
+			window.addEventListener('mousemove', this.onCatalogMouseMove, true);
+
 		this.button0Pressed = false;
 		this.button1Pressed = false;
 		this.button2Pressed = false;
@@ -2019,6 +2034,12 @@ var TabCatalog = {
 
 		this.catalogHiding = true;
 
+		try {
+			window.removeEventListener('mousemove', this.onCatalogMouseMove, true);
+		}
+		catch(e) {
+		}
+
 		window.removeEventListener('DOMMouseScroll', this.onWheelScroll, true);
 		if (this.catalog.overflow) {
 			window.removeEventListener('mousemove', this.onPanningScroll, true);
@@ -2057,7 +2078,7 @@ var TabCatalog = {
 
 		window.setTimeout('TabCatalog.catalogHiding = false;', 100);
 	},
- 
+ 	
 	updateUI : function(aRelative) 
 	{
 		var base = this.callingAction;
@@ -2881,10 +2902,54 @@ var TabCatalog = {
 		if (aData.isMultiWindow)
 			this.drawWindowIndicator(canvas, tab.ownerDocument.defaultView);
 
-		if (canvas.parentNode)
+		if (canvas.parentNode && !aData.onlyRedraw)
 			this.updateThumbnail(canvas.parentNode.parentNode);
 	},
   
+	redrawBoxOnLink : function(aEvent) 
+	{
+		var node = TabCatalog.getItemFromEvent(aEvent);
+		var tab;
+		if (node)
+			tab = TabCatalog.getTabFromThumbnailItem(node);
+
+		if (!tab &&
+			tab.linkedBrowser.contentDocument.contentType.indexOf('image') == 0)
+			return;
+
+		var node   = this.getItemFromEvent(aEvent);
+		var canvas = node.relatedCanvas;
+		this.updateOneCanvas({
+			canvas        : canvas,
+			tab           : tab,
+			isMultiWindow : this.isMultiWindow,
+			onlyRedraw    : true
+		});
+
+		var ret = this._getCorrespondingWindowAndPoint(aEvent.screenX, aEvent.screenY, node);
+		var elt = this.getClickableElementFromPoint(ret.window, ret.x, ret.y);
+		if (!elt) return;
+
+		var browser = tab.linkedBrowser;
+		var cBox = document.getBoxObjectFor(canvas);
+		var bBox = document.getBoxObjectFor(browser);
+
+		var box = elt.ownerDocument.getBoxObjectFor(elt);
+		var scale = cBox.width / bBox.width;
+		var x = parseInt((box.screenX - bBox.screenX) * scale);
+		var y = parseInt((box.screenY - bBox.screenY) * scale);
+		var w = parseInt(box.width * scale);
+		var h = parseInt(box.height * scale);
+
+		try {
+			var ctx = canvas.getContext('2d');
+			ctx.fillStyle = 'rgba(0, 0, 255, 0.5)';
+			ctx.fillRect(x, y, w, h);
+		}
+		catch(e) {
+		}
+	},
+ 
 	clear : function(aKeepThumbnails) 
 	{
 		if (aKeepThumbnails) {
