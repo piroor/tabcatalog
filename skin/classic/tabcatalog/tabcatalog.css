@@ -19,11 +19,13 @@
 }
 
 :root[tabcatalog-panning="true"],
-:root[tabcatalog-panning="true"] .tabcatalog-thumbnail {
+:root[tabcatalog-panning="true"] .tabcatalog-thumbnail,
+:root[tabcatalog-panning="true"] .tabcatalog-thumbnail * {
 	cursor: -moz-grab;
 }
 
-.tabcatalog-thumbnail {
+.tabcatalog-thumbnail,
+.tabcatalog-thumbnail * {
 	cursor: pointer;
 }
 
