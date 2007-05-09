@@ -505,7 +505,7 @@ var TabCatalog = {
 		var browser = aTargetThumbnail.relatedTab.linkedBrowser;
 
 		var win = browser.contentWindow;
-		var box = document.getBoxObjectFor(canvas);
+		var box = canvas.ownerDocument.getBoxObjectFor(canvas);
 		var x = aScreenX - box.screenX;
 		var y = aScreenY - box.screenY;
 /*
@@ -1612,7 +1612,7 @@ var TabCatalog = {
 			var canvas  = aTargetThumbnail.relatedCanvas;
 			var browser = aTargetThumbnail.relatedTab.linkedBrowser;
 
-			var box = document.getBoxObjectFor(canvas);
+			var box = canvas.ownerDocument.getBoxObjectFor(canvas);
 			var scale = browser.boxObject.width / box.width;
 			var x = parseInt((aEvent.screenX - box.screenX) * scale);
 			var y = parseInt((aEvent.screenY - box.screenY) * scale);
@@ -1803,7 +1803,7 @@ var TabCatalog = {
 		var canvas  = aTargetThumbnail.relatedCanvas;
 		var browser = aTargetThumbnail.relatedTab.linkedBrowser;
 
-		var box = document.getBoxObjectFor(canvas);
+		var box = canvas.ownerDocument.getBoxObjectFor(canvas);
 		var ret = this._getCorrespondingWindowAndPoint(
 			aEvent.screenX + box.screenX,
 			aEvent.screenY + box.screenY,
@@ -2996,8 +2996,8 @@ var TabCatalog = {
 		if (!elt) return;
 
 		var browser = tab.linkedBrowser;
-		var cBox = document.getBoxObjectFor(canvas);
-		var bBox = document.getBoxObjectFor(browser);
+		var cBox = canvas.ownerDocument.getBoxObjectFor(canvas);
+		var bBox = browser.ownerDocument.getBoxObjectFor(browser);
 
 		var box = elt.ownerDocument.getBoxObjectFor(elt);
 		var xScale = cBox.width / bBox.width;
@@ -3013,8 +3013,63 @@ var TabCatalog = {
 			ctx.fillRect(x, y, w, h);
 			ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
 			ctx.strokeRect(x, y, w, h);
+
+			var loupeX = 0;
+			var loupeY = h;
+			var loupeW = Math.min(box.width, parseInt(cBox.width * 0.6));
+			var loupeH = Math.min(box.height, parseInt(cBox.height * 0.6));
+
+			if (x + (w / 2) < (cBox.width / 2)) { // left half
+				if (x > -1)
+					loupeX = x;
+			}
+			else { // right half
+				if (x+w - loupeW > -1)
+					loupeX = x+w - loupeW;
+				else
+					loupeX = 0;
+			}
+			if (loupeX + loupeW > cBox.width)
+				loupeW = cBox.width - loupeX;
+
+			if (y + (h / 2) < (cBox.height / 2)) { // upper half
+				if (y+h > -1)
+					loupeY = y+h;
+			}
+			else { // lower half
+				if (y-loupeH > -1)
+					loupeY = y-loupeH;
+				else
+					loupeY = 0;
+				if (loupeY + loupeH > y)
+					loupeH = y;
+			}
+			if (loupeY + loupeH > cBox.height)
+				loupeH = cBox.height - loupeY;
+
+			loupeW = Math.min(loupeW, cBox.width - loupeX);
+			loupeH = Math.min(loupeH, cBox.height - loupeY);
+
+			ctx.save();
+			ctx.translate(loupeX, loupeY);
+			ctx.globalAlpha = 0.9;
+			ctx.drawWindow(
+				ret.window,
+				box.screenX - bBox.screenX + ret.window.scrollX,
+				box.screenY - bBox.screenY + ret.window.scrollY,
+				loupeW,
+				loupeH,
+				'rgb(255,255,255)'
+			);
+			ctx.globalAlpha = 1;
+			ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
+			ctx.strokeRect(0, 0, loupeW, loupeH);
+			ctx.strokeStyle = 'rgba(0, 0, 255, 0.5)';
+			ctx.strokeRect(1, 1, loupeW-2, loupeH-2);
+			ctx.restore();
 		}
 		catch(e) {
+			alert(e+'\n'+[loupeX, loupeY, loupeW, loupeH, cBox.width, cBox.height].join('\n'));
 		}
 	},
  
