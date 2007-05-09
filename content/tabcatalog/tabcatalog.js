@@ -3063,13 +3063,12 @@ var TabCatalog = {
 			);
 			ctx.globalAlpha = 1;
 			ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
-			ctx.strokeRect(0, 0, loupeW, loupeH);
+			ctx.strokeRect(-1, -1, loupeW+2, loupeH+2);
 			ctx.strokeStyle = 'rgba(0, 0, 255, 0.5)';
-			ctx.strokeRect(1, 1, loupeW-2, loupeH-2);
+			ctx.strokeRect(0, 0, loupeW, loupeH);
 			ctx.restore();
 		}
 		catch(e) {
-			alert(e+'\n'+[loupeX, loupeY, loupeW, loupeH, cBox.width, cBox.height].join('\n'));
 		}
 	},
  
