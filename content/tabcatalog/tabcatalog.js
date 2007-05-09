@@ -4,7 +4,7 @@ var TabCatalog = {
 /* Utilities */ 
 	 
 /* elements */ 
-	
+	 
 	get button() { 
 		return document.getElementById('tabcatalog-button');
 	},
@@ -891,13 +891,13 @@ var TabCatalog = {
 
 		document.getElementById('contentAreaContextMenu').addEventListener('popupshowing',  this.cancelContextMenu,  true);
 
-		this.addPrefListener(gTabCatalogPrefListener);
-		gTabCatalogPrefListener.observe(null, 'nsPref:changed', 'extensions.tabcatalog.override.allinonegest');
-		gTabCatalogPrefListener.observe(null, 'nsPref:changed', 'extensions.tabcatalog.shortcut');
-		gTabCatalogPrefListener.observe(null, 'nsPref:changed', 'extensions.tabcatalog.thumbnail.header');
-		gTabCatalogPrefListener.observe(null, 'nsPref:changed', 'extensions.tabcatalog.thumbnail.closebox');
-		gTabCatalogPrefListener.observe(null, 'nsPref:changed', 'extensions.tabcatalog.thumbnail.shortcut');
-		gTabCatalogPrefListener.observe(null, 'nsPref:changed', 'extensions.tabcatalog.send_click_event');
+		this.addPrefListener(this);
+		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.override.allinonegest');
+		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.shortcut');
+		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.thumbnail.header');
+		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.thumbnail.closebox');
+		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.thumbnail.shortcut');
+		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.send_click_event');
 
 		window.addEventListener('unload', function() {
 			window.removeEventListener('unload', arguments.callee, false);
@@ -910,6 +910,11 @@ var TabCatalog = {
 		this.updateTabBrowser(gBrowser);
 
 		var nullPointer = this.tabContextMenu;
+
+		var ObserverService = Components
+			.classes['@mozilla.org/observer-service;1']
+			.getService(Components.interfaces.nsIObserverService);
+		ObserverService.addObserver(this, 'TabCatalog:browserWindowClosed', false);
 
 		this.initialShow();
 	},
@@ -1015,7 +1020,7 @@ var TabCatalog = {
 		delete maxi;
 		delete tabs;
 	},
- 	
+ 
 	destroy : function() 
 	{
 		window.removeEventListener('keydown',   this.onKeyDown,    true);
@@ -1030,7 +1035,7 @@ var TabCatalog = {
 
 		document.getElementById('contentAreaContextMenu').removeEventListener('popupshowing',  this.cancelContextMenu,  true);
 
-		this.removePrefListener(gTabCatalogPrefListener);
+		this.removePrefListener(this);
 
 		gBrowser.mTabContainer.removeEventListener('select', this.onTabSelect, true);
 
@@ -1040,10 +1045,101 @@ var TabCatalog = {
 			this.destroyTab(tabs[i]);
 		}
 
+		var ObserverService = Components
+			.classes['@mozilla.org/observer-service;1']
+			.getService(Components.interfaces.nsIObserverService);
+		ObserverService.removeObserver(this, 'TabCatalog:browserWindowClosed');
+		ObserverService.notifyObservers(window, 'TabCatalog:browserWindowClosed', null);
+
 		this.updateCanvasCue = [];
 		this.initCanvasCue = [];
 	},
   
+/* nsIObserver */ 
+	 
+	domain  : 'extensions.tabcatalog', 
+ 
+	observe : function(aSubject, aTopic, aPrefName) 
+	{
+		switch (aTopic)
+		{
+			case 'TabCatalog:browserWindowClosed':
+				if (this.getPref('extensions.tabcatalog.showAllWindows'))
+					this.rebuildRequest = true;
+				break;
+
+			case 'nsPref:changed':
+				var value = this.getPref(aPrefName);
+				switch (aPrefName)
+				{
+					case 'extensions.tabcatalog.override.allinonegest':
+						// for All-In-One Gesture
+						if ('aioTabWheelNav' in window &&
+							!('__tabcatalog__aioTabWheelNav' in window)) {
+							window.__tabcatalog__aioTabWheelNav = window.aioTabWheelNav;
+							window.__tabcatalog__aioTabPopping  = window.aioTabPopping;
+							window.__tabcatalog__aioTabWheeling = window.aioTabWheeling;
+							window.__tabcatalog__aioTabWheelEnd = window.aioTabWheelEnd;
+						}
+						if (value) {
+							window.aioTabWheelNav = TabCatalog.aioTabWheelNav;
+							window.aioTabPopping  = TabCatalog.aioTabPopping;
+							window.aioTabWheeling = TabCatalog.aioTabWheeling;
+							window.aioTabWheelEnd = TabCatalog.aioTabWheelEnd;
+						}
+						else {
+							window.aioTabWheelNav = window.__tabcatalog__aioTabWheelNav;
+							window.aioTabPopping  = window.__tabcatalog__aioTabPopping;
+							window.aioTabWheeling = window.__tabcatalog__aioTabWheeling;
+							window.aioTabWheelEnd = window.__tabcatalog__aioTabWheelEnd;
+						}
+						break;
+
+					case 'extensions.tabcatalog.shortcut':
+						this.shortcut = null;
+						break;
+
+					case 'extensions.tabcatalog.thumbnail.header':
+						if (this.getPref(aPrefName))
+							this.catalog.setAttribute('show-thumbnail-header', true);
+						else
+							this.catalog.removeAttribute('show-thumbnail-header');
+						break;
+
+					case 'extensions.tabcatalog.thumbnail.closebox':
+						if (this.getPref(aPrefName))
+							this.catalog.setAttribute('show-thumbnail-closebox', true);
+						else
+							this.catalog.removeAttribute('show-thumbnail-closebox');
+						break;
+
+					case 'extensions.tabcatalog.thumbnail.shortcut':
+						this.thumbnailShortcutEnabled = this.getPref(aPrefName);
+						if (this.thumbnailShortcutEnabled)
+							this.catalog.setAttribute('show-thumbnail-shortcut', true);
+						else
+							this.catalog.removeAttribute('show-thumbnail-shortcut');
+						break;
+
+					case 'extensions.tabcatalog.thumbnail.min.size':
+						this.rebuildRequest = true;
+						break;
+
+					case 'extensions.tabcatalog.send_click_event':
+						this.shouldSendClickEvent = this.getPref(aPrefName);
+						if (this.shouldSendClickEvent)
+							this.catalog.setAttribute('show-thumbnail-toolbar-buttons', true);
+						else
+							this.catalog.removeAttribute('show-thumbnail-toolbar-buttons');
+						break;
+
+					default:
+						break;
+				}
+				break;
+		}
+	},
+ 	 
 /* Event Handling */ 
 	 
 /* General */ 
@@ -1985,7 +2081,7 @@ var TabCatalog = {
 	},
   
 /* Catarog Operations */ 
-	 
+	
 	show : function(aBase, aOnlyUpdate, aRelative) 
 	{
 		var tabs = this.tabs;
@@ -3163,7 +3259,7 @@ var TabCatalog = {
 	},
   
 /* Commands */ 
-	 
+	
 /* Thumbnail Focus */ 
 	
 	scrollUpDown : function(aDir) 
@@ -3383,7 +3479,7 @@ var TabCatalog = {
 	},
    
 /* Save/Load Prefs */ 
-	 
+	
 	knsISupportsString : Components.interfaces.nsISupportsString, 
  
 	get Prefs() 
@@ -3481,85 +3577,6 @@ var TabCatalog = {
 	}
    
 }; 
-
-
-var gTabCatalogPrefListener =
-{
-	domain  : 'extensions.tabcatalog',
-	observe : function(aSubject, aTopic, aPrefName)
-	{
-		if (aTopic != 'nsPref:changed') return;
-
-		var value = TabCatalog.getPref(aPrefName);
-		switch (aPrefName)
-		{
-			case 'extensions.tabcatalog.override.allinonegest':
-				// for All-In-One Gesture
-				if ('aioTabWheelNav' in window &&
-					!('__tabcatalog__aioTabWheelNav' in window)) {
-					window.__tabcatalog__aioTabWheelNav = window.aioTabWheelNav;
-					window.__tabcatalog__aioTabPopping  = window.aioTabPopping;
-					window.__tabcatalog__aioTabWheeling = window.aioTabWheeling;
-					window.__tabcatalog__aioTabWheelEnd = window.aioTabWheelEnd;
-				}
-				if (value) {
-					window.aioTabWheelNav = TabCatalog.aioTabWheelNav;
-					window.aioTabPopping  = TabCatalog.aioTabPopping;
-					window.aioTabWheeling = TabCatalog.aioTabWheeling;
-					window.aioTabWheelEnd = TabCatalog.aioTabWheelEnd;
-				}
-				else {
-					window.aioTabWheelNav = window.__tabcatalog__aioTabWheelNav;
-					window.aioTabPopping  = window.__tabcatalog__aioTabPopping;
-					window.aioTabWheeling = window.__tabcatalog__aioTabWheeling;
-					window.aioTabWheelEnd = window.__tabcatalog__aioTabWheelEnd;
-				}
-				break;
-
-			case 'extensions.tabcatalog.shortcut':
-				TabCatalog.shortcut = null;
-				break;
-
-			case 'extensions.tabcatalog.thumbnail.header':
-				if (TabCatalog.getPref(aPrefName))
-					TabCatalog.catalog.setAttribute('show-thumbnail-header', true);
-				else
-					TabCatalog.catalog.removeAttribute('show-thumbnail-header');
-				break;
-
-			case 'extensions.tabcatalog.thumbnail.closebox':
-				if (TabCatalog.getPref(aPrefName))
-					TabCatalog.catalog.setAttribute('show-thumbnail-closebox', true);
-				else
-					TabCatalog.catalog.removeAttribute('show-thumbnail-closebox');
-				break;
-
-			case 'extensions.tabcatalog.thumbnail.shortcut':
-				TabCatalog.thumbnailShortcutEnabled = TabCatalog.getPref(aPrefName);
-				if (TabCatalog.thumbnailShortcutEnabled)
-					TabCatalog.catalog.setAttribute('show-thumbnail-shortcut', true);
-				else
-					TabCatalog.catalog.removeAttribute('show-thumbnail-shortcut');
-				break;
-
-			case 'extensions.tabcatalog.thumbnail.min.size':
-				TabCatalog.rebuildRequest = true;
-				break;
-
-			case 'extensions.tabcatalog.send_click_event':
-				TabCatalog.shouldSendClickEvent = TabCatalog.getPref(aPrefName);
-				if (TabCatalog.shouldSendClickEvent)
-					TabCatalog.catalog.setAttribute('show-thumbnail-toolbar-buttons', true);
-				else
-					TabCatalog.catalog.removeAttribute('show-thumbnail-toolbar-buttons');
-				break;
-
-			default:
-				break;
-		}
-	}
-};
-
 
 window.addEventListener('load', function() {
 	window.setTimeout('TabCatalog.init();', 0);
