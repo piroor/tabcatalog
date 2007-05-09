@@ -3011,6 +3011,8 @@ var TabCatalog = {
 			var ctx = canvas.getContext('2d');
 			ctx.fillStyle = 'rgba(0, 0, 255, 0.5)';
 			ctx.fillRect(x, y, w, h);
+			ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
+			ctx.strokeRect(x, y, w, h);
 		}
 		catch(e) {
 		}
