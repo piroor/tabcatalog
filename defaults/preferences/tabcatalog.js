@@ -6,7 +6,7 @@ pref("extensions.tabcatalog.split_by_window", true);
 
 pref("extensions.tabcatalog.send_click_event", false);
 pref("extensions.tabcatalog.send_click_event.middlebutton", true);
-pref("extensions.tabcatalog.send_click_event.ignore_on_unclickable", true);
+pref("extensions.tabcatalog.send_click_event.ignore_on_unclickable", false);
 pref("extensions.tabcatalog.send_click_event.indicate_clickable", true);
 
 // 0 = close tab, 1 = close window after closing tab, 2 = close window
