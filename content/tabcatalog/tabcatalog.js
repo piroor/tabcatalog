@@ -88,6 +88,7 @@ var TabCatalog = {
 			var windows = this.getPref('extensions.tabcatalog.window.sort_by_focus') ? this.browserWindowsWithFocusedOrder : this.browserWindowsWithOpenedOrder ;
 			for (var i = 0; i < windows.length; i++)
 			{
+				if (!windows[i].gBrowser) continue;
 				tabs = tabs.concat(Array.prototype.slice.call(windows[i].gBrowser.mTabContainer.childNodes));
 				if (this.shouldRebuild(windows[i]))
 					this.rebuildRequest = true;
@@ -838,7 +839,7 @@ var TabCatalog = {
 							var count = 0;
 							windows[i].setTimeout(function(aWindow) {
 								if (win.closed)
-									TabCatalog.show(base);
+									aWindow.TabCatalog.show(base);
 								else if (count++ < 1000)
 									aWindow.setTimeout(arguments.callee, 10, aWindow);
 							}, 10, windows[i]);
@@ -2617,7 +2618,7 @@ var TabCatalog = {
 		if (!aTab.__tabcatalog__progressListener) return;
 
 		aTab.linkedBrowser.webProgress.removeProgressListener(aTab.__tabcatalog__progressFilter);
-		aTab.cachedCanvas.progressFilter.removeProgressListener(aTab.__tabcatalog__progressListener);
+		aTab.__tabcatalog__progressFilter.removeProgressListener(aTab.__tabcatalog__progressListener);
 		delete aTab.__tabcatalog__progressFilter;
 		delete aTab.__tabcatalog__progressListener.mTab;
 		delete aTab.__tabcatalog__progressListener.mBrowser;
