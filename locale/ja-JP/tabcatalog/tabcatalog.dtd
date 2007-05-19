@@ -11,23 +11,20 @@
 
 
 
+
+
+
 <!ENTITY tabcatalog.title "タブカタログの設定">
 
 
 
-<!ENTITY tabcatalog.tab.catalog   "一覧表示">
 
+
+
+<!ENTITY tabcatalog.tab.catalog   "一覧表示の仕方">
 
 <!ENTITY tabcatalog.sort_by_focus  "最近表示されたタブの順番で表示する">
 <!ENTITY tabcatalog.showAllWindows "すべてのウィンドウのタブを表示する">
-<!ENTITY tabcatalog.split_by_window "ウィンドウごとに分けて表示する">
-<!ENTITY tabcatalog.show_scrollbar "スクロールバーを表示する">
-
-
-<!ENTITY tabcatalog.tab.operation   "操作">
-
-<!ENTITY tabcatalog.send_click_event "サムネイルからブラウザを操作できるようにする">
-<!ENTITY tabcatalog.send_click_event.description "※タブを選択するにはダブルクリックしてください">
 
 <!ENTITY tabcatalog.override.caption      "以下の場合にタブの一覧を表示する">
 <!ENTITY tabcatalog.override.ctrltab      "Ctrl(Command)-Tabでタブを切り替える時">
@@ -46,13 +43,33 @@
 <!ENTITY tabcatalog.override.bothclick       "マウスの左右ボタンを同時に押した時">
 
 
+<!ENTITY tabcatalog.catalog.advanced.button   "詳細設定">
+<!ENTITY tabcatalog.catalog.advanced.title    "一覧表示の仕方の詳細設定">
+
+<!ENTITY tabcatalog.split_by_window "ウィンドウごとに分けて表示する">
+<!ENTITY tabcatalog.show_scrollbar "スクロールバーを表示する">
+
+<!ENTITY tabcatalog.rendering_quality.caption "描画の画質と特殊効果">
+<!ENTITY tabcatalog.rendering_quality.low     "低（高速・見栄え劣）">
+<!ENTITY tabcatalog.rendering_quality.middle  "中">
+<!ENTITY tabcatalog.rendering_quality.high    "高（低速・見栄え優）">
+
+<!ENTITY tabcatalog.animation.scroll.enabled  "なめらかにスクロールする">
+
 <!ENTITY tabcatalog.panning.behavior         "パンスクロールの挙動">
 <!ENTITY tabcatalog.panning.behavior.0       "スクロールバーをつかんだように動かす">
 <!ENTITY tabcatalog.panning.behavior.1       "画面をつかんだように動かす">
 
 
 
-<!ENTITY tabcatalog.tab.appearance "外観">
+
+
+
+
+<!ENTITY tabcatalog.tab.thumbnail "サムネイルの外観と挙動">
+
+<!ENTITY tabcatalog.send_click_event "サムネイル上でリンクをクリックできるようにする">
+<!ENTITY tabcatalog.send_wheel_event "サムネイル上でホイールスクロールできるようにする">
 
 <!ENTITY tabcatalog.appearance.thumbnail.caption  "サムネイルの表示">
 
@@ -63,12 +80,6 @@
 
 <!ENTITY tabcatalog.thumbnail.shortcut.enable   "サムネイルごとにショートカットキーを割り振る">
 
-
-<!ENTITY tabcatalog.rendering_quality.caption "描画の画質と特殊効果">
-<!ENTITY tabcatalog.rendering_quality.low     "低（高速・見栄え劣）">
-<!ENTITY tabcatalog.rendering_quality.middle  "中">
-<!ENTITY tabcatalog.rendering_quality.high    "高（低速・見栄え優）">
-<!ENTITY tabcatalog.animation.scroll.enabled  "なめらかにスクロールする">
 
 
 

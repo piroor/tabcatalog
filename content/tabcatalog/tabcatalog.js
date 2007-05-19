@@ -1876,7 +1876,7 @@ var TabCatalog = {
 			aEvent.preventDefault();
 			aEvent.stopPropagation();
 		}
-		else if (TabCatalog.shouldSendClickEvent &&
+		else if (TabCatalog.getPref('extensions.tabcatalog.send_wheel_event') &&
 				TabCatalog.getCanvasFromEvent(aEvent) &&
 				TabCatalog.sendWheelScrollEvent(aEvent, TabCatalog.getItemFromEvent(aEvent))) {
 			aEvent.preventDefault();

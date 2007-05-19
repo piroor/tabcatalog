@@ -19,14 +19,7 @@
 
 <!ENTITY tabcatalog.sort_by_focus  "In der Reihefolge der letzten Tab-Benutzung anordnen">
 <!ENTITY tabcatalog.showAllWindows "Alle Tabs für alle offenen Fenster anzeigen">
-<!ENTITY tabcatalog.split_by_window "Anzeige nach Fenstern unterteilen">
-<!ENTITY tabcatalog.show_scrollbar "Scroll-Leiste anzeigen">
 
-
-<!ENTITY tabcatalog.tab.operation   "Operation">
-
-<!ENTITY tabcatalog.send_click_event "Allow to operate browsers from thumbnails">
-<!ENTITY tabcatalog.send_click_event.description "*To select the tab, double-click on the thumbnail.">
 
 <!ENTITY tabcatalog.override.caption      "Tab-Vorschau aufrufen">
 <!ENTITY tabcatalog.override.ctrltab      "Bei Tab-Wechsel mittels Tastaturkürzel Strg(Befehl)+Tabulator">
@@ -45,6 +38,19 @@
 <!ENTITY tabcatalog.override.bothclick       "Bei gleichzeitigem Drücken der linken und rechten Maustaste">
 
 
+
+<!ENTITY tabcatalog.catalog.advanced.button   "Advanced">
+<!ENTITY tabcatalog.catalog.advanced.title    "Advanced Configuration of Catalog">
+
+<!ENTITY tabcatalog.split_by_window "Anzeige nach Fenstern unterteilen">
+<!ENTITY tabcatalog.show_scrollbar "Scroll-Leiste anzeigen">
+
+<!ENTITY tabcatalog.rendering_quality.caption "Darstellungsqualität und Effekte">
+<!ENTITY tabcatalog.rendering_quality.low     "Niedrig (schnell, niedrige Qualität)">
+<!ENTITY tabcatalog.rendering_quality.middle  "Mittel">
+<!ENTITY tabcatalog.rendering_quality.high    "Hoch (langsam, hohe Qualität)">
+<!ENTITY tabcatalog.animation.scroll.enabled  "Sanften Bildlauf aktivieren">
+
 <!ENTITY tabcatalog.panning.behavior         "Bildlauf-Modus für mittlere Maustaste">
 <!ENTITY tabcatalog.panning.behavior.0       "gegenläufig (wie Scroll-Leiste)">
 <!ENTITY tabcatalog.panning.behavior.1       "gleichläufig (in Bewegungsrichtung)">
@@ -52,7 +58,11 @@
 
 
 
-<!ENTITY tabcatalog.tab.appearance "Vorschaubilder">
+
+<!ENTITY tabcatalog.tab.thumbnail "Vorschaubilder">
+
+<!ENTITY tabcatalog.send_click_event "Allow to click links on thumbnails">
+<!ENTITY tabcatalog.send_wheel_event "Allow to scroll by mouse wheel on thumbnails">
 
 <!ENTITY tabcatalog.appearance.thumbnail.caption  "Einstellungen für Vorschaubilder">
 
@@ -63,12 +73,6 @@
 
 <!ENTITY tabcatalog.thumbnail.shortcut.enable   "Schnellzugriffstasten anzeigen">
 
-
-<!ENTITY tabcatalog.rendering_quality.caption "Darstellungsqualität und Effekte">
-<!ENTITY tabcatalog.rendering_quality.low     "Niedrig (schnell, niedrige Qualität)">
-<!ENTITY tabcatalog.rendering_quality.middle  "Mittel">
-<!ENTITY tabcatalog.rendering_quality.high    "Hoch (langsam, hohe Qualität)">
-<!ENTITY tabcatalog.animation.scroll.enabled  "Sanften Bildlauf aktivieren">
 
 
 

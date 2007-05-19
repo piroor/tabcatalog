@@ -19,14 +19,7 @@
 
 <!ENTITY tabcatalog.sort_by_focus  "Sort tabs in order recently focused">
 <!ENTITY tabcatalog.showAllWindows "Show all tabs in all windows">
-<!ENTITY tabcatalog.split_by_window "Split for each window">
-<!ENTITY tabcatalog.show_scrollbar "Show scrollbar">
 
-
-<!ENTITY tabcatalog.tab.operation   "Operation">
-
-<!ENTITY tabcatalog.send_click_event "Allow to operate browsers from thumbnails">
-<!ENTITY tabcatalog.send_click_event.description "*To select the tab, double-click on the thumbnail.">
 
 <!ENTITY tabcatalog.override.caption      "Show Catalog of Tabs for">
 <!ENTITY tabcatalog.override.ctrltab      "Ctrl(Command)-Tab to switch tabs">
@@ -45,6 +38,18 @@
 <!ENTITY tabcatalog.override.bothclick       "Both click (both Left and Right buttons are clicked together)">
 
 
+<!ENTITY tabcatalog.catalog.advanced.button   "Advanced">
+<!ENTITY tabcatalog.catalog.advanced.title    "Advanced Configuration of Catalog">
+
+<!ENTITY tabcatalog.split_by_window "Split for each window">
+<!ENTITY tabcatalog.show_scrollbar "Show scrollbar">
+
+<!ENTITY tabcatalog.rendering_quality.caption "Rendering Quality and Effects">
+<!ENTITY tabcatalog.rendering_quality.low     "Low (rapid, looks unattractive)">
+<!ENTITY tabcatalog.rendering_quality.middle  "Middle">
+<!ENTITY tabcatalog.rendering_quality.high    "High (slow, looks attractive)">
+<!ENTITY tabcatalog.animation.scroll.enabled  "Scroll smoothly">
+
 <!ENTITY tabcatalog.panning.behavior         "Panning Scroll">
 <!ENTITY tabcatalog.panning.behavior.0       "like grabbing Scrollbar">
 <!ENTITY tabcatalog.panning.behavior.1       "like grabbing Screen">
@@ -52,7 +57,10 @@
 
 
 
-<!ENTITY tabcatalog.tab.appearance "Appearance">
+<!ENTITY tabcatalog.tab.thumbnail "Thumbnail Features">
+
+<!ENTITY tabcatalog.send_click_event "Allow to click links on thumbnails">
+<!ENTITY tabcatalog.send_wheel_event "Allow to scroll by mouse wheel on thumbnails">
 
 <!ENTITY tabcatalog.appearance.thumbnail.caption  "Thumbnail Options">
 
@@ -64,11 +72,6 @@
 <!ENTITY tabcatalog.thumbnail.shortcut.enable   "Assign shortcut key for each thumbnail">
 
 
-<!ENTITY tabcatalog.rendering_quality.caption "Rendering Quality and Effects">
-<!ENTITY tabcatalog.rendering_quality.low     "Low (rapid, looks unattractive)">
-<!ENTITY tabcatalog.rendering_quality.middle  "Middle">
-<!ENTITY tabcatalog.rendering_quality.high    "High (slow, looks attractive)">
-<!ENTITY tabcatalog.animation.scroll.enabled  "Scroll smoothly">
 
 
 

@@ -8,6 +8,7 @@ pref("extensions.tabcatalog.send_click_event", false);
 pref("extensions.tabcatalog.send_click_event.middlebutton", true);
 pref("extensions.tabcatalog.send_click_event.ignore_on_unclickable", false);
 pref("extensions.tabcatalog.send_click_event.indicate_clickable", true);
+pref("extensions.tabcatalog.send_wheel_event", true);
 
 // 0 = close tab, 1 = close window after closing tab, 2 = close window
 pref("extensions.tabcatalog.closeTabActionForLastTab", 1);

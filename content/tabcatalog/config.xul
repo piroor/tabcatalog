@@ -19,46 +19,24 @@
 		shortcutShowHideCatalog.keyData = TabCatalog_parseShortcut(shortcutShowHideCatalog.value);
 	">
 	<preferences>
-		<preference id="extensions.tabcatalog.showAllWindows"
-			name="extensions.tabcatalog.showAllWindows"
-			type="bool"/>
-
 		<preference id="extensions.tabcatalog.sort_by_focus"
 			name="extensions.tabcatalog.sort_by_focus"
 			type="bool"/>
 
-		<preference id="extensions.tabcatalog.split_by_window"
-			name="extensions.tabcatalog.split_by_window"
+		<preference id="extensions.tabcatalog.showAllWindows"
+			name="extensions.tabcatalog.showAllWindows"
 			type="bool"/>
 
 		<preference id="extensions.tabcatalog.show_scrollbar"
 			name="extensions.tabcatalog.show_scrollbar"
 			type="bool"/>
-	</preferences>
 
-	<checkbox id="tabcatalog.sort_by_focus-check"
-		label="&tabcatalog.sort_by_focus;"
-		preference="extensions.tabcatalog.sort_by_focus"/>
+		<preference id="extensions.tabcatalog.rendering_quality"
+			name="extensions.tabcatalog.rendering_quality"
+			type="int"/>
 
-	<checkbox id="extensions.tabcatalog.showAllWindows-check" flex="1"
-		label="&tabcatalog.showAllWindows;"
-		preference="extensions.tabcatalog.showAllWindows"/>
-	<hbox>
-		<spacer style="width:1em;"/>
-		<checkbox id="extensions.tabcatalog.split_by_window-check" flex="1"
-			label="&tabcatalog.split_by_window;"
-			preference="extensions.tabcatalog.split_by_window"/>
-	</hbox>
-
-	<checkbox id="extensions.tabcatalog.show_scrollbar-check" flex="1"
-		label="&tabcatalog.show_scrollbar;"
-		preference="extensions.tabcatalog.show_scrollbar"/>
-</prefpane>
-
-<prefpane id="prefpane-operation" label="&tabcatalog.tab.operation;">
-	<preferences>
-		<preference id="extensions.tabcatalog.send_click_event"
-			name="extensions.tabcatalog.send_click_event"
+		<preference id="extensions.tabcatalog.animation.scroll.enabled"
+			name="extensions.tabcatalog.animation.scroll.enabled"
 			type="bool"/>
 
 		<preference id="extensions.tabcatalog.bothclick.enabled"
@@ -82,19 +60,20 @@
 			name="extensions.tabcatalog.shortcut"
 			type="string"/>
 
-		<preference id="extensions.tabcatalog.animation.scroll.enabled"
-			name="extensions.tabcatalog.animation.scroll.enabled"
-			type="bool"/>
-
 		<preference id="extensions.tabcatalog.panning.scrollBehavior"
 			name="extensions.tabcatalog.panning.scrollBehavior"
 			type="int"/>
+
 	</preferences>
 
-	<checkbox id="extensions.tabcatalog.send_click_event-check"
-		label="&tabcatalog.send_click_event;"
-		preference="extensions.tabcatalog.send_click_event"/>
-	<!--description flex="1">&tabcatalog.send_click_event.description;</description-->
+	<checkbox id="tabcatalog.sort_by_focus-check"
+		label="&tabcatalog.sort_by_focus;"
+		preference="extensions.tabcatalog.sort_by_focus"/>
+
+	<checkbox id="extensions.tabcatalog.showAllWindows-check" flex="1"
+		label="&tabcatalog.showAllWindows;"
+		preference="extensions.tabcatalog.showAllWindows"/>
+
 
 	<groupbox>
 		<caption label="&tabcatalog.override.caption;"/>
@@ -145,21 +124,22 @@
 			preference="extensions.tabcatalog.override.allinonegest"/>
 	</groupbox>
 
-	<groupbox>
-		<caption label="&tabcatalog.panning.behavior;"/>
-		<vbox>
-			<radiogroup id="extensions.tabcatalog.panning.scrollBehavior-radiogroup"
-				preference="extensions.tabcatalog.panning.scrollBehavior"
-				orient="horizontal">
-				<radio value="0" label="&tabcatalog.panning.behavior.0;"/>
-				<radio value="1" label="&tabcatalog.panning.behavior.1;"/>
-			</radiogroup>
-		</vbox>
-	</groupbox>
+	<hbox>
+		<spacer flex="1"/>
+		<button label="&tabcatalog.catalog.advanced.button;"
+			oncommand="document.documentElement.openSubDialog('chrome://tabcatalog/content/config-catalog.xul');"/>
+	</hbox>
 </prefpane>
 
-<prefpane id="prefpane-thumbnail" label="&tabcatalog.tab.appearance;">
+<prefpane id="prefpane-thumbnail" label="&tabcatalog.tab.thumbnail;">
 	<preferences>
+		<preference id="extensions.tabcatalog.send_click_event"
+			name="extensions.tabcatalog.send_click_event"
+			type="bool"/>
+		<preference id="extensions.tabcatalog.send_wheel_event"
+			name="extensions.tabcatalog.send_wheel_event"
+			type="bool"/>
+
 		<preference id="extensions.tabcatalog.thumbnail.header"
 			name="extensions.tabcatalog.thumbnail.header"
 			type="bool"/>
@@ -174,11 +154,14 @@
 		<preference id="extensions.tabcatalog.thumbnail.min.size"
 			name="extensions.tabcatalog.thumbnail.min.size"
 			type="int"/>
-
-		<preference id="extensions.tabcatalog.rendering_quality"
-			name="extensions.tabcatalog.rendering_quality"
-			type="int"/>
 	</preferences>
+
+	<checkbox id="extensions.tabcatalog.send_click_event-check"
+		label="&tabcatalog.send_click_event;"
+		preference="extensions.tabcatalog.send_click_event"/>
+	<checkbox id="extensions.tabcatalog.send_wheel_event-check"
+		label="&tabcatalog.send_wheel_event;"
+		preference="extensions.tabcatalog.send_wheel_event"/>
 
 	<groupbox>
 		<caption label="&tabcatalog.appearance.thumbnail.caption;"/>
@@ -205,22 +188,6 @@
 				<label value="&tabcatalog.appearance.min.after;"
 					control="extensions.tabcatalog.thumbnail.min.size-textbox"/>
 			</hbox>
-		</vbox>
-	</groupbox>
-
-	<groupbox>
-		<caption label="&tabcatalog.rendering_quality.caption;"/>
-		<vbox>
-			<radiogroup id="extensions.tabcatalog.rendering_quality-radiogroup"
-				preference="extensions.tabcatalog.rendering_quality"
-				orient="horizontal">
-				<radio value="0" label="&tabcatalog.rendering_quality.low;"/>
-				<radio value="1" label="&tabcatalog.rendering_quality.middle;"/>
-				<radio value="2" label="&tabcatalog.rendering_quality.high;"/>
-			</radiogroup>
-			<checkbox id="tabcatalog.animation.scroll.enabled-check"
-				label="&tabcatalog.animation.scroll.enabled;"
-				preference="extensions.tabcatalog.animation.scroll.enabled"/>
 		</vbox>
 	</groupbox>
 </prefpane>

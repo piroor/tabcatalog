@@ -3,11 +3,11 @@
 
 <!ENTITY tabcatalog.popup.removeTabs  "Zamknij zaznaczone karty">
 
-<!ENTITY tabcatalog.thumbnail.goBack.tooltip    "Back">
-<!ENTITY tabcatalog.thumbnail.goForward.tooltip "Forward">
-<!ENTITY tabcatalog.thumbnail.reload.tooltip    "Reload">
-<!ENTITY tabcatalog.thumbnail.stop.tooltip      "Stop">
-<!ENTITY tabcatalog.thumbnail.close.tooltip     "Close Tab">
+<!ENTITY tabcatalog.thumbnail.goBack.tooltip    "Wstecz">
+<!ENTITY tabcatalog.thumbnail.goForward.tooltip "Do przodu">
+<!ENTITY tabcatalog.thumbnail.reload.tooltip    "Odśwież">
+<!ENTITY tabcatalog.thumbnail.stop.tooltip      "Zatrzymaj">
+<!ENTITY tabcatalog.thumbnail.close.tooltip     "Zamknij kartę">
 
 
 
@@ -15,16 +15,10 @@
 
 <!ENTITY tabcatalog.tab.catalog   "Katalog">
 
+<!ENTITY tabcatalog.tab.catalog.caption "Wyświetlanie katalogu">
+
 <!ENTITY tabcatalog.sort_by_focus  "Rozmieść karty wg najczęściej oglądanych">
 <!ENTITY tabcatalog.showAllWindows "Wyświetl miniatury wszystkich karty ze wszystkich okien">
-<!ENTITY tabcatalog.split_by_window "Podziel dla każdego okna">
-<!ENTITY tabcatalog.show_scrollbar "Wyświetl pasek przewijania">
-
-
-<!ENTITY tabcatalog.tab.operation   "Operation">
-
-<!ENTITY tabcatalog.send_click_event "Allow to operate browsers from thumbnails">
-<!ENTITY tabcatalog.send_click_event.description "*To select the tab, double-click on the thumbnail.">
 
 <!ENTITY tabcatalog.override.caption      "Wyświetl katalog miniatur za pomocą:">
 <!ENTITY tabcatalog.override.ctrltab      "Skrótu [Ctrl(Command)+Tab] (wyświetlenie i przełączanie pomiędzy kartami)">
@@ -43,13 +37,32 @@
 <!ENTITY tabcatalog.override.bothclick       "Podwójnego kliknięcia (naciśnięcie jednocześnie prawego i lewego przycisku myszy)">
 
 
+<!ENTITY tabcatalog.catalog.advanced.button   "Advanced">
+<!ENTITY tabcatalog.catalog.advanced.title    "Advanced Configuration of Catalog">
+
+<!ENTITY tabcatalog.split_by_window "Podziel dla każdego okna">
+<!ENTITY tabcatalog.show_scrollbar "Wyświetl pasek przewijania">
+
+<!ENTITY tabcatalog.rendering_quality.caption "Jakość i szybkość wyświetlania miniatur">
+<!ENTITY tabcatalog.rendering_quality.low     "Niska (szybko, mało atrakcyjny wygląd)">
+<!ENTITY tabcatalog.rendering_quality.middle  "Średnia">
+<!ENTITY tabcatalog.rendering_quality.high    "Wysoka (wolno, atrakcyjny wygląd)">
+<!ENTITY tabcatalog.animation.scroll.enabled  "Przewijaj płynnie">
+
 <!ENTITY tabcatalog.panning.behavior         "Przewijanie">
-<!ENTITY tabcatalog.panning.behavior.0       "jak przeciąganie paska przewijania">
-<!ENTITY tabcatalog.panning.behavior.1       "jak przeciąganie ekranu">
+<!ENTITY tabcatalog.panning.behavior.0       "Jak przeciąganie paska przewijania">
+<!ENTITY tabcatalog.panning.behavior.1       "Jak przeciąganie ekranu">
 
 
 
-<!ENTITY tabcatalog.tab.appearance "Wygląd">
+
+
+
+
+<!ENTITY tabcatalog.tab.thumbnail "Wygląd">
+
+<!ENTITY tabcatalog.send_click_event "Allow to click links on thumbnails">
+<!ENTITY tabcatalog.send_wheel_event "Allow to scroll by mouse wheel on thumbnails">
 
 <!ENTITY tabcatalog.appearance.thumbnail.caption   "Opcje miniatur">
 
@@ -60,12 +73,6 @@
 
 <!ENTITY tabcatalog.thumbnail.shortcut.enable   "Przypisz każdej miniaturze skrót klawiaturowy">
 
-
-<!ENTITY tabcatalog.rendering_quality.caption "Jakość i szybkość wyświetlania miniatur ">
-<!ENTITY tabcatalog.rendering_quality.low     "niska (szybko, mało atrakcyjny wygląd)">
-<!ENTITY tabcatalog.rendering_quality.middle  "średnia">
-<!ENTITY tabcatalog.rendering_quality.high    "wysoka (wolno, atrakcyjny wygląd)">
-<!ENTITY tabcatalog.animation.scroll.enabled  "Przewijaj płynnie">
 
 
 
