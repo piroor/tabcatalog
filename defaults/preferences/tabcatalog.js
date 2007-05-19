@@ -44,11 +44,9 @@ pref("extensions.tabcatalog.thumbnail.min.size",    180);
 
 pref("extensions.tabcatalog.auto_show.enabled", true);
 pref("extensions.tabcatalog.auto_show.show_delay", 250);
-pref("extensions.tabcatalog.auto_show.hide_delay", 400);
 
 pref("extensions.tabcatalog.auto_show.tabbar.enabled", false);
 pref("extensions.tabcatalog.auto_show.tabbar.show_delay", 250);
-pref("extensions.tabcatalog.auto_show.tabbar.hide_delay", 400);
 
 
 
