@@ -59,7 +59,7 @@
 
 
 
-<!ENTITY tabcatalog.tab.thumbnail "Vorschaubilder">
+<!ENTITY tabcatalog.tab.thumbnail "Thumbnail Features">
 
 <!ENTITY tabcatalog.send_click_event "Allow to click links on thumbnails">
 <!ENTITY tabcatalog.send_wheel_event "Allow to scroll by mouse wheel on thumbnails">
