@@ -91,13 +91,8 @@
 <!ENTITY tabcatalog.auto_show.enabled "「サムネイル一覧」ボタンの上にポインタをかざしたときに自動的にサムネイル一覧を表示する">
 <!ENTITY tabcatalog.auto_show.delay.show.before "ポインタをかざしてから">
 <!ENTITY tabcatalog.auto_show.delay.show.after  "ミリ秒後に自動的に表示する">
-<!ENTITY tabcatalog.auto_show.delay.hide.before "ポインタがボタン上から離れて">
-<!ENTITY tabcatalog.auto_show.delay.hide.after  "ミリ秒後に自動的に閉じる">
 
 <!ENTITY tabcatalog.auto_show.tabbar.caption  "タブバー上でのサムネイル一覧の自動表示">
 <!ENTITY tabcatalog.auto_show.tabbar.enabled "タブバーの上にポインタをかざしたときに自動的にサムネイル一覧を表示する">
 <!ENTITY tabcatalog.auto_show.tabbar.delay.show.before "ポインタをかざしてから">
 <!ENTITY tabcatalog.auto_show.tabbar.delay.show.after  "ミリ秒後に自動的に表示する">
-<!ENTITY tabcatalog.auto_show.tabbar.delay.hide.before "ポインタがタブバー上から離れて">
-<!ENTITY tabcatalog.auto_show.tabbar.delay.hide.after  "ミリ秒後に自動的に閉じる">
-

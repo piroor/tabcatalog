@@ -86,13 +86,8 @@
 <!ENTITY tabcatalog.auto_show.enabled "Beim Überfahren der Schaltfläche &quot;Tab-Vorschau&quot; mit der Maus">
 <!ENTITY tabcatalog.auto_show.delay.show.before "Anzeigen    ">
 <!ENTITY tabcatalog.auto_show.delay.show.after  "ms nach Berühren der Schaltfläche">
-<!ENTITY tabcatalog.auto_show.delay.hide.before "Ausblenden">
-<!ENTITY tabcatalog.auto_show.delay.hide.after  "ms nach Verlassen der Tab-Vorschau">
 
 <!ENTITY tabcatalog.auto_show.tabbar.caption  "Automatisches Einblenden der Vorschau für die Tab-Leiste">
 <!ENTITY tabcatalog.auto_show.tabbar.enabled "Beim Überfahren der Tab-Leiste mit der Maus">
 <!ENTITY tabcatalog.auto_show.tabbar.delay.show.before "Anzeigen    ">
 <!ENTITY tabcatalog.auto_show.tabbar.delay.show.after  "ms nach Berühren der Tab-Leiste">
-<!ENTITY tabcatalog.auto_show.tabbar.delay.hide.before "Ausblenden">
-<!ENTITY tabcatalog.auto_show.tabbar.delay.hide.after  "ms nach Verlassen der Tab-Vorschau">
-

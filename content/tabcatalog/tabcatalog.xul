@@ -47,7 +47,6 @@
 <window id="main-window">
 	<hbox id="tabcatalog-thumbnail-container-wrapper"
 		onmouseup="TabCatalog.onCatalogDragEnd(event);"
-		onmouseout="TabCatalog.onMouseOut(event);"
 		onmouseover="TabCatalog.onMouseOver(event);">
 		<box id="tabcatalog-padding-size-box"/>
 		<box id="tabcatalog-header-size-box"/>

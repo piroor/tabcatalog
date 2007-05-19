@@ -337,7 +337,7 @@ var TabCatalog = {
 	},
   
 /* get items */ 
-	 
+	
 	getItems : function() 
 	{
 		return Array.prototype.slice.call(this.catalog.getElementsByAttribute('class', 'tabcatalog-thumbnail'));
@@ -1057,7 +1057,7 @@ var TabCatalog = {
 	},
   
 /* nsIObserver */ 
-	 
+	
 	domain  : 'extensions.tabcatalog', 
  
 	observe : function(aSubject, aTopic, aPrefName) 
@@ -1140,11 +1140,11 @@ var TabCatalog = {
 				break;
 		}
 	},
- 	 
+  
 /* Event Handling */ 
 	 
 /* General */ 
-	
+	 
 	onMouseDown : function(aEvent) 
 	{
 		if (
@@ -1250,7 +1250,7 @@ var TabCatalog = {
 				this.onButtonMouseOver(aEvent);
 		}
 	},
-	
+	 
 	delayedOnMouseOver : function(aBase) 
 	{
 		this.delayedOnMouseOverTimer = null;
@@ -1266,38 +1266,6 @@ var TabCatalog = {
 		}
 	},
   
-	onMouseOut : function(aEvent) 
-	{
-		if (this.catalogShowing ||
-			this.catalogHiding ||
-			this.catalogScrolling ||
-			this.catalogPanning ||
-			this.isDisabled() ||
-			this.thumbnailDragging)
-			return;
-
-		if (this.callingAction == this.CALLED_BY_TABBAR)
-			this.onTabBarMouseOut(aEvent);
-		else
-			this.onButtonMouseOut(aEvent);
-	},
-	
-	delayedOnMouseOut : function() 
-	{
-		if (TabCatalog.shown) return;
-
-		this.hide();
-		this.cancelDelayedMouseOut();
-	},
- 
-	cancelDelayedMouseOut : function() 
-	{
-		if (this.delayedOnMouseOutTimer) {
-			window.clearTimeout(this.delayedOnMouseOutTimer);
-			this.delayedOnMouseOutTimer = null;
-		}
-	},
-  
 	onResize : function(aEvent) 
 	{
 		if (aEvent.target != document)
@@ -1306,7 +1274,7 @@ var TabCatalog = {
 		TabCatalog.rebuildRequest = true;
 		TabCatalog.hide();
 	},
- 
+ 	
 	onBlur : function(aEvent) 
 	{
 		TabCatalog.hide();
@@ -2002,7 +1970,7 @@ var TabCatalog = {
 	},
   
 /* Toolbar Button */ 
-	
+	 
 	onButtonMouseOver : function(aEvent) 
 	{
 		if ((this.callingAction & this.CALLED_MANUALLY) ||
@@ -2013,8 +1981,6 @@ var TabCatalog = {
 			this.cancelDelayedMouseOver();
 			this.delayedOnMouseOverTimer = window.setTimeout('TabCatalog.delayedOnMouseOver(TabCatalog.CALLED_BY_BUTTON)', this.getPref('extensions.tabcatalog.auto_show.show_delay'));
 		}
-
-		this.cancelDelayedMouseOut();
 	},
  
 	onButtonMouseOut : function(aEvent) 
@@ -2024,15 +1990,10 @@ var TabCatalog = {
 			return;
 
 		this.cancelDelayedMouseOver();
-
-		if (this.getPref('extensions.tabcatalog.auto_show.enabled')) {
-			this.cancelDelayedMouseOut();
-			this.delayedOnMouseOutTimer = window.setTimeout('TabCatalog.delayedOnMouseOut()', this.getPref('extensions.tabcatalog.auto_show.hide_delay'));
-		}
 	},
   
 /* Tab Bar */ 
-	
+	 
 	onTabBarMouseOver : function(aEvent) 
 	{
 		if (!TabCatalog.getPref('extensions.tabcatalog.auto_show.tabbar.enabled') ||
@@ -2045,8 +2006,6 @@ var TabCatalog = {
 			TabCatalog.cancelDelayedMouseOver();
 			TabCatalog.delayedOnMouseOverTimer = window.setTimeout('TabCatalog.delayedOnMouseOver(TabCatalog.CALLED_BY_TABBAR)', TabCatalog.getPref('extensions.tabcatalog.auto_show.tabbar.show_delay'));
 		}
-
-		TabCatalog.cancelDelayedMouseOut();
 	},
  
 	onTabBarMouseOut : function(aEvent) 
@@ -2058,11 +2017,6 @@ var TabCatalog = {
 			return;
 
 		TabCatalog.cancelDelayedMouseOver();
-
-		if (TabCatalog.getPref('extensions.tabcatalog.auto_show.tabbar.enabled')) {
-			TabCatalog.cancelDelayedMouseOut();
-			TabCatalog.delayedOnMouseOutTimer = window.setTimeout('TabCatalog.delayedOnMouseOut()', TabCatalog.getPref('extensions.tabcatalog.auto_show.tabbar.hide_delay'));
-		}
 	},
   
 	cancelContextMenu : function(aEvent) 
@@ -2227,8 +2181,6 @@ var TabCatalog = {
 
 		if (this.delayedOnMouseOverTimer)
 			window.clearTimeout(this.delayedOnMouseOverTimer);
-		if (this.delayedOnMouseOutTimer)
-			window.clearTimeout(this.delayedOnMouseOutTimer);
 
 		window.setTimeout('TabCatalog.catalogHiding = false;', 100);
 	},

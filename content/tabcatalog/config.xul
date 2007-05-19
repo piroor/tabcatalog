@@ -232,17 +232,6 @@
 				<label value="&tabcatalog.auto_show.delay.show.after;"
 					control="tabcatalog.auto_show.delay.show-textbox"/>
 			</hbox>
-
-			<hbox class="indent" align="center">
-				<label value="&tabcatalog.auto_show.delay.hide.before;"
-					control="tabcatalog.auto_show.delay.hide-textbox"/>
-				<textbox id="tabcatalog.auto_show.delay.hide-textbox"
-					preference="extensions.tabcatalog.auto_show.hide_delay"
-					style="width: 3em;"
-					type="number" min="0" increment="1"/>
-				<label value="&tabcatalog.auto_show.delay.hide.after;"
-					control="tabcatalog.auto_show.delay.hide-textbox"/>
-			</hbox>
 		</vbox>
 	</groupbox>
 
@@ -262,17 +251,6 @@
 					type="number" min="0" increment="1"/>
 				<label value="&tabcatalog.auto_show.tabbar.delay.show.after;"
 					control="tabcatalog.auto_show.tabbar.delay.show-textbox"/>
-			</hbox>
-
-			<hbox class="indent" align="center">
-				<label value="&tabcatalog.auto_show.tabbar.delay.hide.before;"
-					control="tabcatalog.auto_show.tabbar.delay.hide-textbox"/>
-				<textbox id="tabcatalog.auto_show.tabbar.delay.hide-textbox"
-					preference="extensions.tabcatalog.auto_show.tabbar.hide_delay"
-					style="width: 3em;"
-					type="number" min="0" increment="1"/>
-				<label value="&tabcatalog.auto_show.tabbar.delay.hide.after;"
-					control="tabcatalog.auto_show.tabbar.delay.hide-textbox"/>
 			</hbox>
 		</vbox>
 	</groupbox>

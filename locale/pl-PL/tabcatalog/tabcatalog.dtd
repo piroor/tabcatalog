@@ -82,12 +82,8 @@
 <!ENTITY tabcatalog.auto_show.enabled "Wyświetlaj katalog po umieszczeniu wskaźnika myszy na przycisku &quot;Miniatury&quot;">
 <!ENTITY tabcatalog.auto_show.delay.show.before "Wyświetl po">
 <!ENTITY tabcatalog.auto_show.delay.show.after  "ms od momentu umieszczenia wskaźnikia na przycisku">
-<!ENTITY tabcatalog.auto_show.delay.hide.before "Ukryj po">
-<!ENTITY tabcatalog.auto_show.delay.hide.after  "ms od momentu przesunięcia wskaźnika poza katalog">
 
 <!ENTITY tabcatalog.auto_show.tabbar.caption  "Automatyczne wyświetlanie katalogu miniatur po wskazaniu paska kart">
 <!ENTITY tabcatalog.auto_show.tabbar.enabled "Wyświetlaj katalog miniatur po umieszczeniu wskaźnika myszy na pasku kart">
 <!ENTITY tabcatalog.auto_show.tabbar.delay.show.before "Wyświetl po">
 <!ENTITY tabcatalog.auto_show.tabbar.delay.show.after  "ms od momentu umieszczenia wskaźnikia na pasku">
-<!ENTITY tabcatalog.auto_show.tabbar.delay.hide.before "Ukryj katalog po">
-<!ENTITY tabcatalog.auto_show.tabbar.delay.hide.after  "ms od momentu przesunięcia wskaźnika poza pasek">
