@@ -19,14 +19,6 @@
 
 <!ENTITY tabcatalog.sort_by_focus  "Rendezés a legutóbb használt lapok szerint">
 <!ENTITY tabcatalog.showAllWindows "Minden ablak összes lapjának megjelenítése">
-<!ENTITY tabcatalog.split_by_window "Felosztás ablakok szerint">
-<!ENTITY tabcatalog.show_scrollbar "Gördülősáv megjelenítése">
-
-
-<!ENTITY tabcatalog.tab.operation   "Műveletek">
-
-<!ENTITY tabcatalog.send_click_event "Az 'Előző lap', 'Következő lap' és 'Lap újratöltése' gombok megjelenítése">
-<!ENTITY tabcatalog.send_click_event.description "*Lap kiválasztásához duppla-klikk a gyorsnézeten.">
 
 <!ENTITY tabcatalog.override.caption      "A gyorsnézet megjelenítése a következők segítségével:">
 <!ENTITY tabcatalog.override.ctrltab      "A 'Ctrl-Tab' billentyűkombináció lenyomásával">
@@ -45,14 +37,28 @@
 <!ENTITY tabcatalog.override.bothclick       "Az egér bal és jobb gombjának egyidejű lenyomásával">
 
 
+<!ENTITY tabcatalog.catalog.advanced.button   "Advanced">
+<!ENTITY tabcatalog.catalog.advanced.title    "Advanced Configuration of Catalog">
+
+<!ENTITY tabcatalog.split_by_window "Felosztás ablakok szerint">
+<!ENTITY tabcatalog.show_scrollbar "Show scrollbar">
+
+<!ENTITY tabcatalog.rendering_quality.caption "Megjelenés minősége (efektusok)">
+<!ENTITY tabcatalog.rendering_quality.low     "Gyenge (gyors)">
+<!ENTITY tabcatalog.rendering_quality.middle  "Közepes">
+<!ENTITY tabcatalog.rendering_quality.high    "Magas (lassú)">
+<!ENTITY tabcatalog.animation.scroll.enabled  "Lassú mozgatás">
+
 <!ENTITY tabcatalog.panning.behavior         "Görgetés stílusa">
 <!ENTITY tabcatalog.panning.behavior.0       "mint a gördítősávnál">
 <!ENTITY tabcatalog.panning.behavior.1       "mint a képernyőnél">
 
 
 
+<!ENTITY tabcatalog.tab.thumbnail "Thumbnail Features">
 
-<!ENTITY tabcatalog.tab.appearance "Megjelenés">
+<!ENTITY tabcatalog.send_click_event "Az 'Előző lap', 'Következő lap' és 'Lap újratöltése' gombok megjelenítése">
+<!ENTITY tabcatalog.send_click_event.description "*Lap kiválasztásához duppla-klikk a gyorsnézeten.">
 
 <!ENTITY tabcatalog.appearance.thumbnail.caption  "A Gyorsnézet ablakainak beállítása">
 
@@ -62,17 +68,6 @@
 <!ENTITY tabcatalog.appearance.min.after  "képpont.">
 
 <!ENTITY tabcatalog.thumbnail.shortcut.enable   "Billentyűkombináció hozzárendelése minden ablakhoz">
-
-
-<!ENTITY tabcatalog.rendering_quality.caption "Megjelenés minősége (efektusok)">
-<!ENTITY tabcatalog.rendering_quality.low     "Gyenge (gyors)">
-<!ENTITY tabcatalog.rendering_quality.middle  "Közepes">
-<!ENTITY tabcatalog.rendering_quality.high    "Magas (lassú)">
-<!ENTITY tabcatalog.animation.scroll.enabled  "Lassú mozgatás">
-
-
-
-
 
 
 
