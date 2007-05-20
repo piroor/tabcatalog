@@ -1787,7 +1787,7 @@ var TabCatalog = {
 	onCatalogMouseMove : function(aEvent) 
 	{
 		if (!TabCatalog.isSendingScrollEvent)
-			TabCatalog.redrawBoxOnLink(aEvent);
+			TabCatalog.drawBoxOnLink(aEvent);
 	},
  
 	onBackgroundClick : function(aEvent) 
@@ -3039,7 +3039,7 @@ var TabCatalog = {
 			this.updateThumbnail(canvas.parentNode.parentNode);
 	},
   
-	redrawBoxOnLink : function(aEvent) 
+	drawBoxOnLink : function(aEvent) 
 	{
 		var node = this.getItemFromEvent(aEvent);
 		var tab;
@@ -3094,16 +3094,22 @@ var TabCatalog = {
 			var loupeY = h;
 			var loupeW = Math.min(box.width, parseInt(cBox.width * 0.6));
 			var loupeH = Math.min(box.height, parseInt(cBox.height * 0.6));
+			var distance = 16;
+			var pos;
 
 			if (x + (w / 2) < (cBox.width / 2)) { // left half
 				if (x > -1)
 					loupeX = x;
+				loupeX += distance;
+				pos = this.TOP_LEFT;
 			}
 			else { // right half
 				if (x+w - loupeW > -1)
 					loupeX = x+w - loupeW;
 				else
 					loupeX = 0;
+				loupeX -= distance;
+				pos = this.TOP_RIGHT;
 			}
 			if (loupeX + loupeW > cBox.width)
 				loupeW = cBox.width - loupeX;
@@ -3111,6 +3117,7 @@ var TabCatalog = {
 			if (y + (h / 2) < (cBox.height / 2)) { // upper half
 				if (y+h > -1)
 					loupeY = y+h;
+				loupeY += distance;
 			}
 			else { // lower half
 				if (y-loupeH > -1)
@@ -3119,12 +3126,67 @@ var TabCatalog = {
 					loupeY = 0;
 				if (loupeY + loupeH > y)
 					loupeH = y;
+				loupeY -= distance;
+				pos = (pos == this.TOP_LEFT) ? this.BOTTOM_LEFT : this.BOTTOM_RIGHT ;
 			}
 			if (loupeY + loupeH > cBox.height)
 				loupeH = cBox.height - loupeY;
 
 			loupeW = Math.min(loupeW, cBox.width - loupeX);
 			loupeH = Math.min(loupeH, cBox.height - loupeY);
+
+			ctx.save();
+			ctx.beginPath();
+			switch (pos)
+			{
+				case this.TOP_LEFT:
+					ctx.moveTo(x, y+h);
+					ctx.lineTo(x+w, y+h);
+					ctx.lineTo(x+w, y);
+					ctx.lineTo(loupeX+loupeW, loupeY);
+					ctx.lineTo(loupeX, loupeY);
+					if (loupeX > x) {
+						ctx.lineTo(loupeX, loupeY+loupeH);
+					}
+					break;
+				case this.TOP_RIGHT:
+					ctx.moveTo(x, y+h);
+					ctx.lineTo(x+w, y+h);
+					if (loupeX+loupeW < x+w) {
+						ctx.lineTo(loupeX+loupeW, loupeY+loupeH);
+					}
+					ctx.lineTo(loupeX+loupeW, loupeY);
+					ctx.lineTo(loupeX, loupeY);
+					ctx.lineTo(x, y);
+					break;
+				case this.BOTTOM_LEFT:
+					ctx.moveTo(x, y);
+					ctx.lineTo(x+w, y);
+					ctx.lineTo(x+w, y+h);
+					ctx.lineTo(loupeX+loupeW, loupeY+loupeH);
+					ctx.lineTo(loupeX, loupeY+loupeH);
+					if (loupeX > x) {
+						ctx.lineTo(loupeX, loupeY);
+					}
+					break;
+				case this.BOTTOM_RIGHT:
+					ctx.moveTo(x, y);
+					ctx.lineTo(x+w, y);
+					if (loupeX+loupeW < x+w) {
+						ctx.lineTo(loupeX+loupeW, loupeY);
+					}
+					ctx.lineTo(loupeX+loupeW, loupeY+loupeH);
+					ctx.lineTo(loupeX, loupeY+loupeH);
+					ctx.lineTo(x, y+h);
+					break;
+			}
+			ctx.closePath();
+			ctx.fillStyle = 'rgba(50, 50, 50, 0.5)';
+			ctx.fill();
+			ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
+			ctx.stroke();
+			ctx.restore();
+
 
 			ctx.save();
 			ctx.translate(loupeX, loupeY);
@@ -3147,6 +3209,10 @@ var TabCatalog = {
 		catch(e) {
 		}
 	},
+	TOP_RIGHT    : 1,
+	TOP_LEFT     : 2,
+	BOTTOM_RIGHT : 3,
+	BOTTOM_LEFT  : 4,
  
 	clear : function(aKeepThumbnails) 
 	{
