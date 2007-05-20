@@ -34,18 +34,30 @@
 
 #tabcatalog-button {
 	list-style-image: url('chrome://tabcatalog/skin/icon.png') !important;
-	-moz-image-region: rect(0, 24px, 24px, 0) !important;
+	-moz-image-region: rect(0, 24px, 24px, 0);
 }
+#tabcatalog-button[buttonover="true"],
 #tabcatalog-button:hover {
-	-moz-image-region: rect(24px, 24px, 48px, 0) !important;
+	-moz-image-region: rect(24px, 24px, 48px, 0);
+}
+#tabcatalog-button[disabled="true"],
+#tabcatalog-button[disabled="true"][buttonover="true"],
+#tabcatalog-button[disabled="true"]:hover {
+	-moz-image-region: rect(48px 24px 72px 0px);
 }
 
-toolbar[iconsize="small"] #tabcatalog-button {
+[iconsize="small"] #tabcatalog-button {
 	list-style-image: url('chrome://tabcatalog/skin/icon-small.png') !important;
-	-moz-image-region: rect(0, 16px, 16px, 0) !important;
+	-moz-image-region: rect(0, 16px, 16px, 0);
 }
-toolbar[iconsize="small"] #tabcatalog-button:hover {
-	-moz-image-region: rect(16px, 16px, 32px, 0) !important;
+[iconsize="small"] #tabcatalog-button[buttonover="true"],
+[iconsize="small"] #tabcatalog-button:hover {
+	-moz-image-region: rect(16px, 16px, 32px, 0);
+}
+[iconsize="small"] #tabcatalog-button[disabled="true"],
+[iconsize="small"] #tabcatalog-button[disabled="true"][buttonover="true"],
+[iconsize="small"] #tabcatalog-button[disabled="true"]:hover {
+	-moz-image-region: rect(32px 16px 48px 0px);
 }
 
 

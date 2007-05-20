@@ -13,6 +13,12 @@
 <script src="tabcatalog.js" type="application/x-javascript"/>
 <script src="keyParser.js" type="application/x-javascript"/>
 
+<broadcasterset id="mainBroadcasterSet">
+	<broadcaster id="tabcatalog-featuresForMultipleTabs-broadcaster"
+		disabled="true"/>
+</broadcasterset>
+
+
 <popupset id="mainPopupSet">
 	<tooltip id="tabcatalog-tooltip"
 		position="after_pointer"
@@ -40,7 +46,8 @@
 		class="toolbarbutton-1 chromeclass-toolbar-additional"
 		oncommand="TabCatalog.show(TabCatalog.CALLED_BY_BUTTONCLICK);"
 		onmouseover="TabCatalog.onButtonMouseOver(event);"
-		onmouseout="TabCatalog.onButtonMouseOut(event);"/>
+		onmouseout="TabCatalog.onButtonMouseOut(event);"
+		observes="tabcatalog-featuresForMultipleTabs-broadcaster"/>
 </toolbarpalette>
 
 

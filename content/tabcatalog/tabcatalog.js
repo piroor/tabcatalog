@@ -2571,6 +2571,8 @@ var TabCatalog = {
 
 		aTab.__tabcatalog__progressListener = listener;
 		aTab.__tabcatalog__progressFilter   = filter;
+
+		window.setTimeout('TabCatalog.updateMultipleTabsState();', 0);
 	},
  
 	destroyTab : function(aTab) 
@@ -2584,6 +2586,18 @@ var TabCatalog = {
 		delete aTab.__tabcatalog__progressListener.mBrowser;
 		delete aTab.__tabcatalog__progressListener.mTabBrowser;
 		delete aTab.__tabcatalog__progressListener;
+
+		window.setTimeout('TabCatalog.updateMultipleTabsState();', 0);
+	},
+ 
+	updateMultipleTabsState : function() 
+	{
+		var tabBroadcaster = document.getElementById('tabcatalog-featuresForMultipleTabs-broadcaster');
+		var b = gBrowser;
+		if (b.mTabContainer.childNodes.length > 1)
+			tabBroadcaster.removeAttribute('disabled');
+		else
+			tabBroadcaster.setAttribute('disabled', true);
 	},
  
 	getCanvasForTab : function(aTab) 
