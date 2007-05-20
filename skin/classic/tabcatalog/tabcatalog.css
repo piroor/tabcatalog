@@ -1,0 +1,333 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+@namespace html url("http://www.w3.org/1999/xhtml");
+
+
+/* UI Settings*/
+
+#tabcatalog-padding-size-box {
+	width: 25px !important; /* the width of this box is parsed as padding of thumbnails. */
+}
+#tabcatalog-header-size-box {
+	width: 1.5em !important; /* the width of this box is parsed as the height of titlebar of thumbnails. */
+}
+#tabcatalog-splitter-size-box {
+	width: 1.2em !important;
+}
+
+#tabcatalog-tooltip {
+	max-width: 40em;
+}
+
+:root[tabcatalog-panning="true"],
+:root[tabcatalog-panning="true"] .tabcatalog-thumbnail,
+:root[tabcatalog-panning="true"] .tabcatalog-thumbnail * {
+	cursor: -moz-grab;
+}
+
+.tabcatalog-thumbnail,
+.tabcatalog-thumbnail * {
+	cursor: pointer;
+}
+
+
+/* Toolbar button */
+
+#tabcatalog-button {
+	list-style-image: url('chrome://tabcatalog/skin/icon.png') !important;
+	-moz-image-region: rect(0, 24px, 24px, 0);
+}
+#tabcatalog-button[buttonover="true"],
+#tabcatalog-button:hover {
+	-moz-image-region: rect(24px, 24px, 48px, 0);
+}
+#tabcatalog-button[disabled="true"],
+#tabcatalog-button[disabled="true"][buttonover="true"],
+#tabcatalog-button[disabled="true"]:hover {
+	-moz-image-region: rect(48px 24px 72px 0px);
+}
+
+[iconsize="small"] #tabcatalog-button {
+	list-style-image: url('chrome://tabcatalog/skin/icon-small.png') !important;
+	-moz-image-region: rect(0, 16px, 16px, 0);
+}
+[iconsize="small"] #tabcatalog-button[buttonover="true"],
+[iconsize="small"] #tabcatalog-button:hover {
+	-moz-image-region: rect(16px, 16px, 32px, 0);
+}
+[iconsize="small"] #tabcatalog-button[disabled="true"],
+[iconsize="small"] #tabcatalog-button[disabled="true"][buttonover="true"],
+[iconsize="small"] #tabcatalog-button[disabled="true"]:hover {
+	-moz-image-region: rect(32px 16px 48px 0px);
+}
+
+
+
+
+/* Thumbnails Container */
+
+#tabcatalog-thumbnail-container > thumbnail {
+	border: 1px solid transparent !important;
+	-moz-binding: url(dropshadow.xml#only-box);
+	padding: 10px;
+	margin: -10px;
+}
+#tabcatalog-thumbnail-container > thumbnail[container-focused="true"] {
+	background: url(bg-focused.png) repeat !important;
+	border-color: #333 !important;
+}
+
+#tabcatalog-thumbnail-container[dropshadow="true"] > thumbnail {
+	-moz-binding: url(dropshadow.xml#dropshadow) !important;
+	padding: 0 2px 2px !important;
+	margin: -8px -10px -10px !important;
+}
+
+
+/* Thumbnails */
+
+.tabcatalog-thumbnail {
+	padding: 0;
+	margin: 0;
+	outline: 1px solid #666;
+}
+.tabcatalog-thumbnail-canvas-box {
+	background: white url(thumbnail-placeholder.png) no-repeat 50% 50%;
+}
+
+.tabcatalog-thumbnail[current="true"] {
+	outline-width: 3px;
+	outline-color: #333 !important;
+}
+.tabcatalog-thumbnail[focused="true"] {
+	outline-width: 3px;
+	outline-color: #052d65 !important;
+}
+
+.tabcatalog-thumbnail[selected="true"] {
+	outline: 2px #053db5 solid !important;
+}
+
+
+/* Titlebar of Thumbnails */
+
+.tabcatalog-thumbnail-header-box {
+/*
+	position: relative;
+	margin-bottom: -1.5em;
+*/
+
+	height: 1.5em;
+	padding-left: 2px;
+	color: #4c4c4c;
+	background: transparent url(header.png) repeat;
+}
+.tabcatalog-thumbnail[selected="true"] .tabcatalog-thumbnail-header-box {
+	color: white;
+	background-image: url(header-selected.png);
+}
+
+
+.tabcatalog-thumbnail-shortcut-label {
+	color: white;
+	background: #796942;
+	padding: 0.1em 0.2em;
+	border: 1px -moz-bg-outset;
+	line-height: 1;
+	position: relative;
+	margin-top: -1.7em;
+	height: 1.5em;
+}
+
+
+/* toolbar */
+
+.tabcatalog-thumbnail-header-favicon {
+	max-width: 16px;
+	max-height: 16px;
+	list-style-image: url("jar:resource:///chrome/classic.jar!/skin/classic/global/icons/folder-item.png");
+	-moz-image-region: rect(0px, 16px, 16px, 0px);
+}
+
+.tabcatalog-thumbnail[busy="true"] > .tabcatalog-thumbnail-header-box > .tabcatalog-thumbnail-header-favicon {
+	list-style-image: url("jar:resource:///chrome/classic.jar!/skin/classic/global/throbber/Throbber-small.gif") !important;
+	opacity: 0.6;
+}
+
+
+.tabcatalog-thumbnail-header-progress {
+	height: 0.4em;
+	min-height: 0.4em;
+	max-height: 0.4em;
+	min-width: 0;
+	-moz-appearance: none;
+	border: none;
+	outline: none;
+
+	position: relative;
+	margin-top: 0.2em;
+	margin-bottom: -0.2em;
+}
+.tabcatalog-thumbnail-header-progress > .progress-bar,
+.tabcatalog-thumbnail-header-progress > .progress-remainder {
+	-moz-appearance: none;
+}
+
+
+/* Close button in thumbnail */
+
+.tabcatalog-thumbnail-header-closebox.tab-close-button .toolbarbutton-icon,
+.tabcatalog-thumbnail-header-closebox.tab-close-button {
+	margin-left: 0;
+	margin-right: 0;
+}
+.tabcatalog-thumbnail-header-closebox.tab-close-button label {
+	display: none;
+}
+
+
+/* toolbar buttons in thumbnail */
+
+/* ::::: 16px primary toolbar buttons ::::: */
+
+.tabcatalog-thumbnail-toolbar-item {
+  -moz-box-orient: vertical;
+  min-width: 0;
+  list-style-image: url("jar:resource:///chrome/classic.jar!/skin/classic/browser/Toolbar-small.png");
+}
+.tabcatalog-thumbnail-toolbar-item[chromedir="rtl"] {
+  -moz-box-orient: vertical;
+  min-width: 0;
+  list-style-image: url("jar:resource:///chrome/classic.jar!/skin/classic/browser/Toolbar-rtl-small.png");
+}
+.tabcatalog-thumbnail-toolbar-item .toolbarbutton-icon {
+  -moz-margin-end: 0px;
+  max-width: 16px !important;
+  max-height: 16px !important;
+}
+.tabcatalog-thumbnail-toolbar-item label {
+  display: none;
+}
+
+
+/* back button-- */
+
+.tabcatalog-thumbnail-toolbar-item.goBack .toolbarbutton-icon {
+  padding-right: 1px;
+}
+.tabcatalog-thumbnail-toolbar-item.goBack {
+  -moz-image-region: rect(0px 16px 16px 0px);
+}
+.tabcatalog-thumbnail-toolbar-item.goBack:not([disabled="true"]):hover,
+.tabcatalog-thumbnail-toolbar-item.goBack[buttonover="true"] {
+  -moz-image-region: rect(16px 16px 32px 0px);
+}
+.tabcatalog-thumbnail-toolbar-item.goBack[disabled="true"] {
+  -moz-image-region: rect(32px 16px 48px 0px);
+}
+.tabcatalog-thumbnail-toolbar-item.goBack:not([disabled="true"]):hover:active {
+  -moz-image-region: rect(64px 16px 80px 0px);
+}
+
+
+/* small forward button-- */
+
+.tabcatalog-thumbnail-toolbar-item.goForward .toolbarbutton-icon {
+  padding-right: 1px;
+}
+.tabcatalog-thumbnail-toolbar-item.goForward {
+  -moz-image-region: rect(0px 32px 16px 16px);
+}
+.tabcatalog-thumbnail-toolbar-item.goForward:not([disabled="true"]):hover,
+.tabcatalog-thumbnail-toolbar-item.goForward[buttonover="true"] {
+  -moz-image-region: rect(16px 32px 32px 16px);
+}
+.tabcatalog-thumbnail-toolbar-item.goForward[disabled="true"] {
+  -moz-image-region: rect(32px 32px 48px 16px);
+}
+.tabcatalog-thumbnail-toolbar-item.goForward:not([disabled="true"]):hover:active {
+  -moz-image-region: rect(64px 32px 80px 16px);
+}
+
+/* stop button */
+
+.tabcatalog-thumbnail-toolbar-item.stop .toolbarbutton-icon {
+  padding-left: 1px;
+}
+.tabcatalog-thumbnail-toolbar-item.stop {
+  -moz-image-region: rect(0px 48px 16px 32px);
+}
+.tabcatalog-thumbnail-toolbar-item.stop:not([disabled="true"]):hover {
+  -moz-image-region: rect(16px 48px 32px 32px);
+}
+.tabcatalog-thumbnail-toolbar-item.stop[disabled="true"] {
+  -moz-image-region: rect(32px 48px 48px 32px);
+}
+.tabcatalog-thumbnail-toolbar-item.stop:not([disabled="true"]):hover:active {
+  -moz-image-region: rect(64px 48px 80px 32px);
+}
+
+/* reload button */
+
+.tabcatalog-thumbnail-toolbar-item.reload .toolbarbutton-icon {
+  padding-left: 1px;
+}
+.tabcatalog-thumbnail-toolbar-item.reload {
+  -moz-image-region: rect(0px 64px 16px 48px);
+}
+.tabcatalog-thumbnail-toolbar-item.reload:not([disabled="true"]):hover {
+  -moz-image-region: rect(16px 64px 32px 48px);
+}
+.tabcatalog-thumbnail-toolbar-item.reload[disabled="true"] {
+  -moz-image-region: rect(32px 64px 48px 48px);
+}
+.tabcatalog-thumbnail-toolbar-item.reload:not([disabled="true"]):hover:active {
+  -moz-image-region: rect(64px 64px 80px 48px);
+}
+
+
+
+
+
+
+
+.tabcatalog-splitter {
+	border-top: 1px solid white;
+}
+
+
+
+
+/* scrollbar, slider */
+
+#tabcatalog-scrollbar-size-box {
+	width: 1em !important;
+}
+
+.tabcatalog-scrollbar {
+	background: white;
+	border: 1px gray solid;
+	opacity: 0.7;
+	-moz-opacity: 0.7;
+	-moz-box-sizing: border-box;
+	cursor: -moz-grab;
+	min-height: 2em;
+}
+
+.tabcatalog-scrollbar-slider {
+	background: black;
+	opacity: 0.2;
+	-moz-opacity: 0.2;
+	-moz-box-sizing: border-box;
+	cursor: normal;
+}
+
+
+
+/* Background Screen */
+
+.tabcatalog-background {
+	background: black;
+	opacity: 0.3;
+	margin: 0;
+	padding: 0;
+}

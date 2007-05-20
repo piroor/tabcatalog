@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+
+<bindings id="dropshadow"
+		xmlns="http://www.mozilla.org/xbl"
+		xmlns:xbl="http://www.mozilla.org/xbl"
+		xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+	<binding id="dropshadow" includes="*">
+		<resources>
+			<stylesheet src="dropshadow.css"/>
+		</resources>
+		<content>
+			<xul:grid class="dropshadow-grid">
+				<xul:columns>
+					<xul:column/>
+					<xul:column flex="1"/>
+					<xul:column/>
+				</xul:columns>
+				<xul:rows>
+					<xul:row>
+						<xul:spacer class="dropshadow-tl dropshadow"/>
+						<xul:spacer class="dropshadow-t dropshadow"/>
+						<xul:spacer class="dropshadow-tr dropshadow"/>
+					</xul:row>
+					<xul:row flex="1">
+						<xul:spacer class="dropshadow-l dropshadow"/>
+						<xul:box class="dropshadow-c dropshadow"
+							xbl:inherits="width,height dropshadow">
+							<children/>
+						</xul:box>
+						<xul:spacer class="dropshadow-r dropshadow"/>
+					</xul:row>
+					<xul:row>
+						<xul:spacer class="dropshadow-bl dropshadow"/>
+						<xul:spacer class="dropshadow-b dropshadow"/>
+						<xul:spacer class="dropshadow-br dropshadow"/>
+					</xul:row>
+				</xul:rows>
+			</xul:grid>
+		</content>
+	</binding>
+
+	<binding id="only-box" includes="*">
+		<resources>
+			<stylesheet src="dropshadow.css"/>
+		</resources>
+		<content>
+			<xul:box class="dropshadow-c dropshadow"
+				xbl:inherits="width,height">
+				<children/>
+			</xul:box>
+		</content>
+	</binding>
+
+</bindings>

@@ -1,0 +1,90 @@
+<!ENTITY tabcatalog.label       "Miniatury">
+<!ENTITY tabcatalog.tooltiptext "Wyświetla katalog miniatur otwartych stron w kartach">
+
+<!ENTITY tabcatalog.popup.removeTabs  "Zamknij zaznaczone karty">
+
+<!ENTITY tabcatalog.thumbnail.goBack.tooltip    "Wstecz">
+<!ENTITY tabcatalog.thumbnail.goForward.tooltip "Do przodu">
+<!ENTITY tabcatalog.thumbnail.reload.tooltip    "Odśwież">
+<!ENTITY tabcatalog.thumbnail.stop.tooltip      "Zatrzymaj">
+<!ENTITY tabcatalog.thumbnail.close.tooltip     "Zamknij kartę">
+
+
+
+<!ENTITY tabcatalog.title "Tab Catalog - ustawienia">
+
+<!ENTITY tabcatalog.tab.catalog   "Katalog">
+
+<!ENTITY tabcatalog.tab.catalog.caption "Wyświetlanie katalogu">
+
+<!ENTITY tabcatalog.sort_by_focus  "Rozmieść karty wg najczęściej oglądanych">
+<!ENTITY tabcatalog.showAllWindows "Wyświetl miniatury kart dla wszystkich okien">
+
+<!ENTITY tabcatalog.override.caption      "Wyświetl katalog miniatur za pomocą:">
+<!ENTITY tabcatalog.override.ctrltab      "Skrótu [Ctrl(Command)+Tab] (wyświetlenie i przełączanie pomiędzy kartami)">
+<!ENTITY tabcatalog.override.ctrltab.delay.disabled "Wyświetl katalog natychmiast po użyciu skrótu">
+<!ENTITY tabcatalog.override.ctrltab.delay.enabled  "Wyświetl katalog z opóźnieniem:">
+<!ENTITY tabcatalog.override.ctrltab.delay.before   "">
+<!ENTITY tabcatalog.override.ctrltab.delay.after    "ms">
+<!ENTITY tabcatalog.override.allinonegest "Nawigacja kółkiem myszy tak jak w rozszerzeniu &quot;All-In-One Gestures&quot;">
+
+<!ENTITY tabcatalog.override.shortcut                "Skrótu klawiaturowego:">
+<!ENTITY tabcatalog.override.shortcut.set            "Określ">
+<!ENTITY tabcatalog.override.shortcut.clear          "Wyczyść">
+<!ENTITY tabcatalog.override.shortcut.dialog.message "Naciśnij nową kombinację klawiszy">
+<!ENTITY tabcatalog.override.shortcut.dialog.button  "Anuluj">
+
+<!ENTITY tabcatalog.override.bothclick       "Podwójnego kliknięcia (naciśnięcie jednocześnie prawego i lewego przycisku myszy)">
+
+
+<!ENTITY tabcatalog.catalog.advanced.button   "Advanced">
+<!ENTITY tabcatalog.catalog.advanced.title    "Advanced Configuration of Catalog">
+
+<!ENTITY tabcatalog.split_by_window "Oddzielnie dla każdego okna">
+<!ENTITY tabcatalog.show_scrollbar "Wyświetl pasek przewijania">
+
+<!ENTITY tabcatalog.rendering_quality.caption "Jakość i szybkość wyświetlania miniatur">
+<!ENTITY tabcatalog.rendering_quality.low     "Niska (szybko, mało atrakcyjny wygląd)">
+<!ENTITY tabcatalog.rendering_quality.middle  "Średnia">
+<!ENTITY tabcatalog.rendering_quality.high    "Wysoka (wolno, atrakcyjny wygląd)">
+<!ENTITY tabcatalog.animation.scroll.enabled  "Przewijaj płynnie">
+
+<!ENTITY tabcatalog.panning.behavior         "Przewijanie">
+<!ENTITY tabcatalog.panning.behavior.0       "Jak przeciąganie paska przewijania">
+<!ENTITY tabcatalog.panning.behavior.1       "Jak przeciąganie ekranu">
+
+
+
+
+
+
+
+<!ENTITY tabcatalog.tab.thumbnail "Thumbnail Features">
+
+<!ENTITY tabcatalog.send_click_event "Allow to click links on thumbnails">
+<!ENTITY tabcatalog.send_wheel_event "Allow to scroll by mouse wheel on thumbnails">
+
+<!ENTITY tabcatalog.appearance.thumbnail.caption   "Opcje miniatur">
+
+<!ENTITY tabcatalog.appearance.header   "Wyświetl pasek tytułu dla każdej miniatury">
+<!ENTITY tabcatalog.appearance.navigation "Show &quot;Back&quot; and &quot;Forward&quot; buttons">
+<!ENTITY tabcatalog.appearance.closebox "Wyświetl przycisk zamykania na każdej miniaturze">
+<!ENTITY tabcatalog.appearance.min.before "Wielkość wyświetlanych miniatur nie mniejsza niż">
+<!ENTITY tabcatalog.appearance.min.after  "pikseli">
+
+<!ENTITY tabcatalog.thumbnail.shortcut.enable   "Przypisz każdej miniaturze skrót klawiaturowy">
+
+
+
+
+<!ENTITY tabcatalog.tab.auto_show "Wyświetlanie">
+
+<!ENTITY tabcatalog.auto_show.caption  "Automatyczne wyświetlanie katalogu miniatur">
+<!ENTITY tabcatalog.auto_show.enabled "Wyświetlaj katalog po umieszczeniu wskaźnika myszy na przycisku &quot;Miniatury&quot;">
+<!ENTITY tabcatalog.auto_show.delay.show.before "Wyświetl po">
+<!ENTITY tabcatalog.auto_show.delay.show.after  "ms od momentu umieszczenia wskaźnikia na przycisku">
+
+<!ENTITY tabcatalog.auto_show.tabbar.caption  "Automatyczne wyświetlanie katalogu miniatur po wskazaniu paska kart">
+<!ENTITY tabcatalog.auto_show.tabbar.enabled "Wyświetlaj katalog miniatur po umieszczeniu wskaźnika myszy na pasku kart">
+<!ENTITY tabcatalog.auto_show.tabbar.delay.show.before "Wyświetl po">
+<!ENTITY tabcatalog.auto_show.tabbar.delay.show.after  "ms od momentu umieszczenia wskaźnikia na pasku">

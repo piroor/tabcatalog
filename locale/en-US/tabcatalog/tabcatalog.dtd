@@ -1,0 +1,94 @@
+<!ENTITY tabcatalog.label       "Thumbnail View">
+<!ENTITY tabcatalog.tooltiptext "Show Thumbnail List of Tab Contents">
+
+<!ENTITY tabcatalog.popup.removeTabs  "Close Selected Tabs">
+
+<!ENTITY tabcatalog.thumbnail.goBack.tooltip    "Back">
+<!ENTITY tabcatalog.thumbnail.goForward.tooltip "Forward">
+<!ENTITY tabcatalog.thumbnail.reload.tooltip    "Reload">
+<!ENTITY tabcatalog.thumbnail.stop.tooltip      "Stop">
+<!ENTITY tabcatalog.thumbnail.close.tooltip     "Close Tab">
+
+
+
+<!ENTITY tabcatalog.title "Tab Catalog Configuration">
+
+
+
+<!ENTITY tabcatalog.tab.catalog   "Catalog">
+
+<!ENTITY tabcatalog.sort_by_focus  "Sort tabs in order recently focused">
+<!ENTITY tabcatalog.showAllWindows "Show all tabs in all windows">
+
+
+<!ENTITY tabcatalog.override.caption      "Show Catalog of Tabs for">
+<!ENTITY tabcatalog.override.ctrltab      "Ctrl(Command)-Tab to switch tabs">
+<!ENTITY tabcatalog.override.ctrltab.delay.disabled "Show Catalog just the moment I use the keys">
+<!ENTITY tabcatalog.override.ctrltab.delay.enabled  "Show Catalog after a delay:">
+<!ENTITY tabcatalog.override.ctrltab.delay.before   "">
+<!ENTITY tabcatalog.override.ctrltab.delay.after    "msec.">
+<!ENTITY tabcatalog.override.allinonegest "Scroll Wheel Navigation of &quot;All-In-One Gestures&quot; Extension">
+
+<!ENTITY tabcatalog.override.shortcut                "Shortcut key:">
+<!ENTITY tabcatalog.override.shortcut.set            "Set">
+<!ENTITY tabcatalog.override.shortcut.clear          "Clear">
+<!ENTITY tabcatalog.override.shortcut.dialog.message "Press new shortcut">
+<!ENTITY tabcatalog.override.shortcut.dialog.button  "Cancel">
+
+<!ENTITY tabcatalog.override.bothclick       "Both click (both Left and Right buttons are clicked together)">
+
+
+<!ENTITY tabcatalog.catalog.advanced.button   "Advanced">
+<!ENTITY tabcatalog.catalog.advanced.title    "Advanced Configuration of Catalog">
+
+<!ENTITY tabcatalog.split_by_window "Split for each window">
+<!ENTITY tabcatalog.show_scrollbar "Show scrollbar">
+
+<!ENTITY tabcatalog.rendering_quality.caption "Rendering Quality and Effects">
+<!ENTITY tabcatalog.rendering_quality.low     "Low (rapid, looks unattractive)">
+<!ENTITY tabcatalog.rendering_quality.middle  "Middle">
+<!ENTITY tabcatalog.rendering_quality.high    "High (slow, looks attractive)">
+<!ENTITY tabcatalog.animation.scroll.enabled  "Scroll smoothly">
+
+<!ENTITY tabcatalog.panning.behavior         "Panning Scroll">
+<!ENTITY tabcatalog.panning.behavior.0       "like grabbing Scrollbar">
+<!ENTITY tabcatalog.panning.behavior.1       "like grabbing Screen">
+
+
+
+
+<!ENTITY tabcatalog.tab.thumbnail "Thumbnail Features">
+
+<!ENTITY tabcatalog.send_click_event "Allow to click links on thumbnails">
+<!ENTITY tabcatalog.send_wheel_event "Allow to scroll by mouse wheel on thumbnails">
+
+<!ENTITY tabcatalog.appearance.thumbnail.caption  "Thumbnail Options">
+
+<!ENTITY tabcatalog.appearance.header   "Show titlebar for each thumbnail">
+<!ENTITY tabcatalog.appearance.navigation "Show &quot;Back&quot; and &quot;Forward&quot; buttons">
+<!ENTITY tabcatalog.appearance.closebox "Show close box">
+<!ENTITY tabcatalog.appearance.min.before "Show each thumbnail larger than">
+<!ENTITY tabcatalog.appearance.min.after  "pixel(s)">
+
+<!ENTITY tabcatalog.thumbnail.shortcut.enable   "Assign shortcut key for each thumbnail">
+
+
+
+
+
+
+
+
+
+
+<!ENTITY tabcatalog.tab.auto_show "Auto Popup">
+
+<!ENTITY tabcatalog.auto_show.caption  "Auto Popup of Thumbnail View for the &quot;Thumbnail View&quot; button">
+<!ENTITY tabcatalog.auto_show.enabled "When point the &quot;Thumbnail View&quot; button, popup catalog automatically.">
+<!ENTITY tabcatalog.auto_show.delay.show.before "Show catalog">
+<!ENTITY tabcatalog.auto_show.delay.show.after  "msec after the pointer enters on the button.">
+
+<!ENTITY tabcatalog.auto_show.tabbar.caption  "Auto Popup of Thumbnail View for the Tab Bar">
+<!ENTITY tabcatalog.auto_show.tabbar.enabled "When point the tab bar, popup catalog automatically.">
+<!ENTITY tabcatalog.auto_show.tabbar.delay.show.before "Show catalog">
+<!ENTITY tabcatalog.auto_show.tabbar.delay.show.after  "msec after the pointer enters on the bar.">

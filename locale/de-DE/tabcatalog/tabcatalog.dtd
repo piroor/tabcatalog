@@ -1,0 +1,94 @@
+<!ENTITY tabcatalog.label       "Tab-Vorschau">
+<!ENTITY tabcatalog.tooltiptext "Zeigt eine Übersicht mit Vorschaubildern der Tab-Inhalte">
+
+<!ENTITY tabcatalog.popup.removeTabs  "Ausgewählte Tabs schließen">
+
+<!ENTITY tabcatalog.thumbnail.goBack.tooltip    "Back">
+<!ENTITY tabcatalog.thumbnail.goForward.tooltip "Forward">
+<!ENTITY tabcatalog.thumbnail.reload.tooltip    "Reload">
+<!ENTITY tabcatalog.thumbnail.stop.tooltip      "Stop">
+<!ENTITY tabcatalog.thumbnail.close.tooltip     "Close Tab">
+
+
+
+<!ENTITY tabcatalog.title "Tab Catalog - Einstellungen">
+
+
+
+<!ENTITY tabcatalog.tab.catalog   "Tab-Vorschau">
+
+<!ENTITY tabcatalog.sort_by_focus  "In der Reihefolge der letzten Tab-Benutzung anordnen">
+<!ENTITY tabcatalog.showAllWindows "Alle Tabs für alle offenen Fenster anzeigen">
+
+
+<!ENTITY tabcatalog.override.caption      "Tab-Vorschau aufrufen">
+<!ENTITY tabcatalog.override.ctrltab      "Bei Tab-Wechsel mittels Tastaturkürzel Strg(Befehl)+Tabulator">
+<!ENTITY tabcatalog.override.ctrltab.delay.disabled "Show Catalog just the moment I use the keys">
+<!ENTITY tabcatalog.override.ctrltab.delay.enabled  "Show Catalog after a delay:">
+<!ENTITY tabcatalog.override.ctrltab.delay.before   "">
+<!ENTITY tabcatalog.override.ctrltab.delay.after    "msec.">
+<!ENTITY tabcatalog.override.allinonegest "Bei Mausrad-Navigation der Erweiterung &quot;All-in-One Gestures&quot;">
+
+<!ENTITY tabcatalog.override.shortcut                "Via Tastaturkürzel:">
+<!ENTITY tabcatalog.override.shortcut.set            "Ändern...">
+<!ENTITY tabcatalog.override.shortcut.clear          "Löschen">
+<!ENTITY tabcatalog.override.shortcut.dialog.message " Taste(n) für neues Kürzel drücken ">
+<!ENTITY tabcatalog.override.shortcut.dialog.button  "Abbrechen">
+
+<!ENTITY tabcatalog.override.bothclick       "Bei gleichzeitigem Drücken der linken und rechten Maustaste">
+
+
+
+<!ENTITY tabcatalog.catalog.advanced.button   "Advanced">
+<!ENTITY tabcatalog.catalog.advanced.title    "Advanced Configuration of Catalog">
+
+<!ENTITY tabcatalog.split_by_window "Anzeige nach Fenstern unterteilen">
+<!ENTITY tabcatalog.show_scrollbar "Scroll-Leiste anzeigen">
+
+<!ENTITY tabcatalog.rendering_quality.caption "Darstellungsqualität und Effekte">
+<!ENTITY tabcatalog.rendering_quality.low     "Niedrig (schnell, niedrige Qualität)">
+<!ENTITY tabcatalog.rendering_quality.middle  "Mittel">
+<!ENTITY tabcatalog.rendering_quality.high    "Hoch (langsam, hohe Qualität)">
+<!ENTITY tabcatalog.animation.scroll.enabled  "Sanften Bildlauf aktivieren">
+
+<!ENTITY tabcatalog.panning.behavior         "Bildlauf-Modus für mittlere Maustaste">
+<!ENTITY tabcatalog.panning.behavior.0       "gegenläufig (wie Scroll-Leiste)">
+<!ENTITY tabcatalog.panning.behavior.1       "gleichläufig (in Bewegungsrichtung)">
+
+
+
+
+
+<!ENTITY tabcatalog.tab.thumbnail "Thumbnail Features">
+
+<!ENTITY tabcatalog.send_click_event "Allow to click links on thumbnails">
+<!ENTITY tabcatalog.send_wheel_event "Allow to scroll by mouse wheel on thumbnails">
+
+<!ENTITY tabcatalog.appearance.thumbnail.caption  "Einstellungen für Vorschaubilder">
+
+<!ENTITY tabcatalog.appearance.header   "Titelleiste anzeigen">
+<!ENTITY tabcatalog.appearance.navigation "Show &quot;Back&quot; and &quot;Forward&quot; buttons">
+<!ENTITY tabcatalog.appearance.closebox "Schließen-Schaltfläche anzeigen">
+<!ENTITY tabcatalog.appearance.min.before "Mindestgröße der Vorschaubilder: ">
+<!ENTITY tabcatalog.appearance.min.after  "Pixel">
+
+<!ENTITY tabcatalog.thumbnail.shortcut.enable   "Schnellzugriffstasten anzeigen">
+
+
+
+
+
+
+
+
+<!ENTITY tabcatalog.tab.auto_show "Automatische Anzeige">
+
+<!ENTITY tabcatalog.auto_show.caption  "Automatisches Einblenden der Vorschau für die Schaltfläche">
+<!ENTITY tabcatalog.auto_show.enabled "Beim Überfahren der Schaltfläche &quot;Tab-Vorschau&quot; mit der Maus">
+<!ENTITY tabcatalog.auto_show.delay.show.before "Anzeigen    ">
+<!ENTITY tabcatalog.auto_show.delay.show.after  "ms nach Berühren der Schaltfläche">
+
+<!ENTITY tabcatalog.auto_show.tabbar.caption  "Automatisches Einblenden der Vorschau für die Tab-Leiste">
+<!ENTITY tabcatalog.auto_show.tabbar.enabled "Beim Überfahren der Tab-Leiste mit der Maus">
+<!ENTITY tabcatalog.auto_show.tabbar.delay.show.before "Anzeigen    ">
+<!ENTITY tabcatalog.auto_show.tabbar.delay.show.after  "ms nach Berühren der Tab-Leiste">

@@ -1,0 +1,99 @@
+<!ENTITY tabcatalog.label       "サムネイル一覧">
+<!ENTITY tabcatalog.tooltiptext "全てのタブの内容をサムネイルで一覧表示">
+
+<!ENTITY tabcatalog.popup.removeTabs  "選択したタブをすべて閉じる">
+
+<!ENTITY tabcatalog.thumbnail.goBack.tooltip    "戻る">
+<!ENTITY tabcatalog.thumbnail.goForward.tooltip "進む">
+<!ENTITY tabcatalog.thumbnail.reload.tooltip    "再読み込み">
+<!ENTITY tabcatalog.thumbnail.stop.tooltip      "中止">
+<!ENTITY tabcatalog.thumbnail.close.tooltip     "タブを閉じる">
+
+
+
+
+
+
+<!ENTITY tabcatalog.title "タブカタログの設定">
+
+
+
+
+
+
+<!ENTITY tabcatalog.tab.catalog   "一覧表示の仕方">
+
+<!ENTITY tabcatalog.sort_by_focus  "最近表示されたタブの順番で表示する">
+<!ENTITY tabcatalog.showAllWindows "すべてのウィンドウのタブを表示する">
+
+<!ENTITY tabcatalog.override.caption      "以下の場合にタブの一覧を表示する">
+<!ENTITY tabcatalog.override.ctrltab      "Ctrl(Command)-Tabでタブを切り替える時">
+<!ENTITY tabcatalog.override.ctrltab.delay.disabled "すぐに表示する">
+<!ENTITY tabcatalog.override.ctrltab.delay.enabled  "以下の秒数が経過した後に表示する：">
+<!ENTITY tabcatalog.override.ctrltab.delay.before "">
+<!ENTITY tabcatalog.override.ctrltab.delay.after  "ミリ秒">
+<!ENTITY tabcatalog.override.allinonegest "&quot;All-In-One Gestures&quot;のスクロールホイールナビゲーションでタブを切り替える時">
+
+<!ENTITY tabcatalog.override.shortcut                "次のキーが押された時：">
+<!ENTITY tabcatalog.override.shortcut.set            "変更">
+<!ENTITY tabcatalog.override.shortcut.clear          "消去">
+<!ENTITY tabcatalog.override.shortcut.dialog.message "ショートカットに使いたいキーを押してください">
+<!ENTITY tabcatalog.override.shortcut.dialog.button  "キャンセル">
+
+<!ENTITY tabcatalog.override.bothclick       "マウスの左右ボタンを同時に押した時">
+
+
+<!ENTITY tabcatalog.catalog.advanced.button   "詳細設定">
+<!ENTITY tabcatalog.catalog.advanced.title    "一覧表示の仕方の詳細設定">
+
+<!ENTITY tabcatalog.split_by_window "ウィンドウごとに分けて表示する">
+<!ENTITY tabcatalog.show_scrollbar "スクロールバーを表示する">
+
+<!ENTITY tabcatalog.rendering_quality.caption "描画の画質と特殊効果">
+<!ENTITY tabcatalog.rendering_quality.low     "低（高速・見栄え劣）">
+<!ENTITY tabcatalog.rendering_quality.middle  "中">
+<!ENTITY tabcatalog.rendering_quality.high    "高（低速・見栄え優）">
+
+<!ENTITY tabcatalog.animation.scroll.enabled  "なめらかにスクロールする">
+
+<!ENTITY tabcatalog.panning.behavior         "パンスクロールの挙動">
+<!ENTITY tabcatalog.panning.behavior.0       "スクロールバーをつかんだように動かす">
+<!ENTITY tabcatalog.panning.behavior.1       "画面をつかんだように動かす">
+
+
+
+
+
+
+
+<!ENTITY tabcatalog.tab.thumbnail "サムネイルの外観と挙動">
+
+<!ENTITY tabcatalog.send_click_event "サムネイル上でリンクをクリックできるようにする">
+<!ENTITY tabcatalog.send_wheel_event "サムネイル上でホイールスクロールできるようにする">
+
+<!ENTITY tabcatalog.appearance.thumbnail.caption  "サムネイルの表示">
+
+<!ENTITY tabcatalog.appearance.header   "サムネイルにタイトルバーを付ける">
+<!ENTITY tabcatalog.appearance.navigation "「戻る」「進む」ボタンを付ける">
+<!ENTITY tabcatalog.appearance.closebox "クローズボックスを付ける">
+<!ENTITY tabcatalog.appearance.min.before "サムネイルを">
+<!ENTITY tabcatalog.appearance.min.after  "ピクセル以上の大きさで表示する">
+
+<!ENTITY tabcatalog.thumbnail.shortcut.enable   "サムネイルごとにショートカットキーを割り振る">
+
+
+
+
+
+
+<!ENTITY tabcatalog.tab.auto_show "自動ポップアップ">
+
+<!ENTITY tabcatalog.auto_show.caption  "「サムネイル一覧」ボタン上でのサムネイル一覧の自動表示">
+<!ENTITY tabcatalog.auto_show.enabled "「サムネイル一覧」ボタンの上にポインタをかざしたときに自動的にサムネイル一覧を表示する">
+<!ENTITY tabcatalog.auto_show.delay.show.before "ポインタをかざしてから">
+<!ENTITY tabcatalog.auto_show.delay.show.after  "ミリ秒後に自動的に表示する">
+
+<!ENTITY tabcatalog.auto_show.tabbar.caption  "タブバー上でのサムネイル一覧の自動表示">
+<!ENTITY tabcatalog.auto_show.tabbar.enabled "タブバーの上にポインタをかざしたときに自動的にサムネイル一覧を表示する">
+<!ENTITY tabcatalog.auto_show.tabbar.delay.show.before "ポインタをかざしてから">
+<!ENTITY tabcatalog.auto_show.tabbar.delay.show.after  "ミリ秒後に自動的に表示する">

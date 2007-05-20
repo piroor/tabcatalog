@@ -1,0 +1,50 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+
+#tabcatalog-thumbnail-container:not([show-thumbnail-header="true"]) .tabcatalog-thumbnail-header-box,
+#tabcatalog-thumbnail-container:not([show-thumbnail-closebox="true"]) .tabcatalog-thumbnail-header-closebox,
+#tabcatalog-thumbnail-container:not([show-thumbnail-shortcut="true"]) .tabcatalog-thumbnail-footer-box,
+#tabcatalog-thumbnail-container:not([show-thumbnail-toolbar-buttons="true"]) .tabcatalog-thumbnail-toolbar-item {
+	display: none;
+}
+#tabcatalog-thumbnail-container[show-thumbnail-closebox="true"] .tabcatalog-thumbnail-header-closebox {
+	display: -moz-box;
+}
+
+
+
+#tabcatalog-thumbnail-container:not([catalog-shown="true"]),
+#tabcatalog-background:not([catalog-shown="true"]),
+#tabcatalog-background-backup:not([catalog-shown="true"]),
+#tabcatalog-background-canvas:not([catalog-shown="true"]) {
+	display: none;
+}
+
+#tabcatalog-thumbnail-container[catalog-shown="true"],
+#tabcatalog-background[catalog-shown="true"],
+#tabcatalog-background-backup[catalog-shown="true"],
+#tabcatalog-background-canvas[catalog-shown="true"] {
+	position: fixed;
+	top: 0;
+	left: 0;
+}
+
+
+
+#tabcatalog-padding-size-box,
+#tabcatalog-header-size-box {
+	height: 0 !important;
+	max-height: 0 !important;
+}
+
+
+.tabcatalog-thumbnail-shortcut-label:not([value]) {
+	display: none;
+}
+
+
+.tabcatalog-thumbnail-toolbar-item.reload[disabled="true"],
+.tabcatalog-thumbnail-toolbar-item.stop[disabled="true"] {
+	visibility: collapse;
+}
+

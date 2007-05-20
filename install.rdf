@@ -1,37 +1,27 @@
-<?xml version="1.0"?>
-<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-	 xmlns:em="http://www.mozilla.org/2004/em-rdf#">
-	<Description about="urn:mozilla:install-manifest">
-
-		<em:id>{29c4afe1-db19-4298-8785-fcc94d1d6c1d}</em:id>
-
-		<em:version>0.4.2007052101</em:version>
-
-
-		<em:targetApplication>
-			<Description><!-- Firefox -->
-				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
-				<em:minVersion>1.5</em:minVersion>
-				<em:maxVersion>3.0a5pre</em:maxVersion>
-				<!--em:maxVersion>2.0.0.*</em:maxVersion-->
-			</Description>
-		</em:targetApplication>
-
-
-		<em:name>Split Browser</em:name>
-		<em:description>Splits browser window as you like.</em:description>
-		<em:creator>SHIMODA Hiroshi</em:creator>
-		<em:translator>Menet (fr-FR locale)</em:translator>
-		<em:translator>ReinekeFux (de-DE locale)</em:translator>
-		<em:translator>sushizang (ko-KR locale)</em:translator>
-		<em:translator>Alan CHENG (zh-TW locale)</em:translator>
-		<em:translator>Mikes Kaszman Istvan (hu-HU locale)</em:translator>
-		<em:homepageURL>http://piro.sakura.ne.jp/xul/_splitbrowser.html.en</em:homepageURL>
-		<em:updateURL>http://piro.sakura.ne.jp/xul/xul.rdf.en</em:updateURL>
-
-
-		<em:optionsURL>chrome://splitbrowser/content/config.xul</em:optionsURL>
-		<!--em:aboutURL>chrome://splitbrowser/content/about.xul</em:aboutURL-->
-		<em:iconURL>chrome://splitbrowser/content/icon.png</em:iconURL>
-	</Description>
-</RDF>
+<?xml version="1.0" encoding="UTF-8"?>
+<RDF:RDF xmlns:em="http://www.mozilla.org/2004/em-rdf#"
+         xmlns:NC="http://home.netscape.com/NC-rdf#"
+         xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <RDF:Description RDF:about="urn:mozilla:install-manifest"
+                   em:id="{049952B3-A745-43bd-8D26-D1349B1ED944}"
+                   em:name="Tab Catalog"
+                   em:version="1.4.2007052101"
+                   em:creator="SHIMODA Hiroshi"
+                   em:description="Shows thumbnail-style catalog of tabs."
+                   em:homepageURL="http://piro.sakura.ne.jp/xul/tabcatalog/"
+                   em:iconURL="chrome://tabcatalog/content/icon.png"
+                   em:optionsURL="chrome://tabcatalog/content/config.xul"
+                   em:updateURL="http://piro.sakura.ne.jp/xul/xul.rdf.en">
+	<em:contributor>Ted Mielczarek</em:contributor>
+	<em:contributor>Gomita (thumbnail operations, from Tab Scope)</em:contributor>
+	<em:translator>ReinekeFux (de-DE locale)</em:translator>
+	<em:translator>Leszek teo Życzkowski (pl-PL locale)</em:translator>
+	<em:translator>Michał "Hołek" Połtyn (pl-PL locale)</em:translator>
+	<em:translator>Mikes Kaszman Istvan (hu-HU locale)</em:translator>
+    <em:targetApplication>
+      <RDF:Description em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                       em:minVersion="1.5"
+                       em:maxVersion="2.0.0.*" />
+    </em:targetApplication>
+  </RDF:Description>
+</RDF:RDF>

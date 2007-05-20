@@ -1,0 +1,135 @@
+<?xml version="1.0"?>
+
+<?xml-stylesheet href="tabcatalog.css" type="text/css"?>
+<?xml-stylesheet href="chrome://tabcatalog/skin/tabcatalog.css" type="text/css"?>
+<?xml-stylesheet href="chrome://global/skin/browser.css" type="text/css"?>
+
+<!DOCTYPE overlay SYSTEM "chrome://tabcatalog/locale/tabcatalog.dtd">
+
+<overlay id="tabcatalog-overlay"
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+         xmlns:html="http://www.w3.org/1999/xhtml">
+
+
+<script src="tabcatalog.js" type="application/x-javascript"/>
+<script src="keyParser.js" type="application/x-javascript"/>
+
+<broadcasterset id="mainBroadcasterSet">
+	<broadcaster id="tabcatalog-featuresForMultipleTabs-broadcaster"
+		disabled="true"/>
+</broadcasterset>
+
+
+<popupset id="mainPopupSet">
+	<tooltip id="tabcatalog-tooltip"
+		position="after_pointer"
+		noautohide="true"
+		onpopupshowing="return TabCatalog.fillInTooltip(document.tooltipNode);">
+		<vbox flex="1">
+			<label crop="center"/>
+			<label crop="center"/>
+		</vbox>
+	</tooltip>
+	<menupopup id="tabcatalog-tabselect-menu"
+		position="after_pointer">
+		<menuitem label="&tabcatalog.popup.removeTabs;"
+			class="tabcatalog-tabcontextmenu-item"
+			for-multiple-selected="true"
+			oncommand="TabCatalog.closeSelectedTabs();"/>
+	</menupopup>
+</popupset>
+
+
+<toolbarpalette id="BrowserToolbarPalette">
+	<toolbarbutton id="tabcatalog-button"
+		label="&tabcatalog.label;"
+		tooltiptext="&tabcatalog.tooltiptext;"
+		class="toolbarbutton-1 chromeclass-toolbar-additional"
+		oncommand="TabCatalog.show(TabCatalog.CALLED_BY_BUTTONCLICK);"
+		onmouseover="TabCatalog.onButtonMouseOver(event);"
+		onmouseout="TabCatalog.onButtonMouseOut(event);"
+		observes="tabcatalog-featuresForMultipleTabs-broadcaster"/>
+</toolbarpalette>
+
+
+<window id="main-window">
+	<hbox id="tabcatalog-thumbnail-container-wrapper"
+		onmouseup="TabCatalog.onCatalogDragEnd(event);"
+		onmouseover="TabCatalog.onMouseOver(event);">
+		<box id="tabcatalog-padding-size-box"/>
+		<box id="tabcatalog-header-size-box"/>
+		<box id="tabcatalog-splitter-size-box"/>
+		<box id="tabcatalog-scrollbar-size-box"/>
+
+		<box id="tabcatalog-background-canvas"/>
+		<box id="tabcatalog-background-backup"
+			class="tabcatalog-background"/>
+		<box id="tabcatalog-background"
+			class="tabcatalog-background"
+			onclick="TabCatalog.onBackgroundClick();"/>
+		<box id="tabcatalog-thumbnail-container"/>
+	</hbox>
+	<data id="thumbnail-item-template">
+		<vbox class="tabcatalog-thumbnail"
+			flex="0"
+			tooltip="tabcatalog-tooltip"
+			onclick="TabCatalog.onCatalogClick(event);"
+			ondblclick="TabCatalog.onCatalogClick(event);"
+			ondraggesture="TabCatalog.onCatalogDragStart(event);">
+			<hbox class="tabcatalog-thumbnail-header-box"
+				align="center">
+				<image class="tabcatalog-thumbnail-header-favicon"/>
+				<stack flex="1">
+					<vbox flex="1">
+						<spacer class="tabcatalog-thumbnail-header-progress-padding" flex="1"/>
+						<progressmeter class="tabcatalog-thumbnail-header-progress"
+							collapsed="true"/>
+					</vbox>
+					<hbox align="center" flex="1">
+						<label class="tabcatalog-thumbnail-header-label"
+							crop="center"
+							flex="1"/>
+						<toolbarbutton class="tabcatalog-thumbnail-toolbar-item goBack"
+							custom-tooltiptext="&tabcatalog.thumbnail.goBack.tooltip;"
+							oncommand="TabCatalog.onCatalogToolbarButtonCommand(event);"
+							onclick="event.stopPropagation();"
+							ondblclick="event.stopPropagation();"
+							disabled="true"/>
+						<toolbarbutton class="tabcatalog-thumbnail-toolbar-item goForward"
+							custom-tooltiptext="&tabcatalog.thumbnail.goForward.tooltip;"
+							oncommand="TabCatalog.onCatalogToolbarButtonCommand(event);"
+							onclick="event.stopPropagation();"
+							ondblclick="event.stopPropagation();"
+							disabled="true"/>
+						<toolbarbutton class="tabcatalog-thumbnail-toolbar-item reload"
+							custom-tooltiptext="&tabcatalog.thumbnail.reload.tooltip;"
+							oncommand="TabCatalog.onCatalogToolbarButtonCommand(event);"
+							onclick="event.stopPropagation();"
+							ondblclick="event.stopPropagation();"
+							disabled="true"/>
+						<toolbarbutton class="tabcatalog-thumbnail-toolbar-item stop"
+							custom-tooltiptext="&tabcatalog.thumbnail.stop.tooltip;"
+							oncommand="TabCatalog.onCatalogToolbarButtonCommand(event);"
+							onclick="event.stopPropagation();"
+							ondblclick="event.stopPropagation();"
+							disabled="true"/>
+						<toolbarbutton class="tabcatalog-thumbnail-header-closebox tabs-closebutton tab-close-button"
+							custom-tooltiptext="&tabcatalog.thumbnail.close.tooltip;"
+							oncommand="TabCatalog.onThumbnailCloseBoxClick(event);"
+							onclick="event.stopPropagation(); event.preventDefault();"/>
+					</hbox>
+				</stack>
+			</hbox>
+			<vbox class="tabcatalog-thumbnail-canvas-box" flex="1"/>
+			<hbox class="tabcatalog-thumbnail-footer-box"
+				flex="1"
+				align="center">
+				<spacer flex="1"/>
+				<label class="tabcatalog-thumbnail-shortcut-label"/>
+			</hbox>
+		</vbox>
+	</data>
+</window>
+
+
+</overlay>
