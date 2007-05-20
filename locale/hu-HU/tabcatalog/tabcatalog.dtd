@@ -1,0 +1,94 @@
+<!ENTITY tabcatalog.label       "Gyorsnézet">
+<!ENTITY tabcatalog.tooltiptext "Lapok tartalmának megjelenítése gyorsnézetben">
+
+<!ENTITY tabcatalog.popup.removeTabs  "Kiválasztott lapok bezárása">
+
+<!ENTITY tabcatalog.thumbnail.goBack.tooltip    "Előző">
+<!ENTITY tabcatalog.thumbnail.goForward.tooltip "Következő">
+<!ENTITY tabcatalog.thumbnail.reload.tooltip    "Újratöltés">
+<!ENTITY tabcatalog.thumbnail.stop.tooltip      "Megállítás">
+<!ENTITY tabcatalog.thumbnail.close.tooltip     "Lap bezárása">
+
+
+
+<!ENTITY tabcatalog.title "Tab Catalog beállítások">
+
+
+
+<!ENTITY tabcatalog.tab.catalog   "Gyorsnézet">
+
+<!ENTITY tabcatalog.sort_by_focus  "Rendezés a legutóbb használt lapok szerint">
+<!ENTITY tabcatalog.showAllWindows "Minden ablak összes lapjának megjelenítése">
+<!ENTITY tabcatalog.split_by_window "Felosztás ablakok szerint">
+<!ENTITY tabcatalog.show_scrollbar "Gördülősáv megjelenítése">
+
+
+<!ENTITY tabcatalog.tab.operation   "Műveletek">
+
+<!ENTITY tabcatalog.send_click_event "Az 'Előző lap', 'Következő lap' és 'Lap újratöltése' gombok megjelenítése">
+<!ENTITY tabcatalog.send_click_event.description "*Lap kiválasztásához duppla-klikk a gyorsnézeten.">
+
+<!ENTITY tabcatalog.override.caption      "A gyorsnézet megjelenítése a következők segítségével:">
+<!ENTITY tabcatalog.override.ctrltab      "A 'Ctrl-Tab' billentyűkombináció lenyomásával">
+<!ENTITY tabcatalog.override.ctrltab.delay.disabled "A váltás a gyorsnézet ablakai között azonnal megtörténik">
+<!ENTITY tabcatalog.override.ctrltab.delay.enabled  "A gyorsnézet megjelenítése">
+<!ENTITY tabcatalog.override.ctrltab.delay.before   "">
+<!ENTITY tabcatalog.override.ctrltab.delay.after    "ezredmásodperc késéssel">
+<!ENTITY tabcatalog.override.allinonegest "Navigáció a görgővel mint az &quot;All-In-One Gestures&quot; kiterjesztésnél">
+
+<!ENTITY tabcatalog.override.shortcut                "Billentyűkombináció:">
+<!ENTITY tabcatalog.override.shortcut.set            "Beállít">
+<!ENTITY tabcatalog.override.shortcut.clear          "Töröl">
+<!ENTITY tabcatalog.override.shortcut.dialog.message "Nyomja le az új kombinációt">
+<!ENTITY tabcatalog.override.shortcut.dialog.button  "Mégse">
+
+<!ENTITY tabcatalog.override.bothclick       "Az egér bal és jobb gombjának egyidejű lenyomásával">
+
+
+<!ENTITY tabcatalog.panning.behavior         "Görgetés stílusa">
+<!ENTITY tabcatalog.panning.behavior.0       "mint a gördítősávnál">
+<!ENTITY tabcatalog.panning.behavior.1       "mint a képernyőnél">
+
+
+
+
+<!ENTITY tabcatalog.tab.appearance "Megjelenés">
+
+<!ENTITY tabcatalog.appearance.thumbnail.caption  "A Gyorsnézet ablakainak beállítása">
+
+<!ENTITY tabcatalog.appearance.header   "Fejléc megjelenítése">
+<!ENTITY tabcatalog.appearance.closebox "Bezárás gomb megjelenítése">
+<!ENTITY tabcatalog.appearance.min.before "A gyorsnézet mindegyik ablaka nagyobb, mint">
+<!ENTITY tabcatalog.appearance.min.after  "képpont.">
+
+<!ENTITY tabcatalog.thumbnail.shortcut.enable   "Billentyűkombináció hozzárendelése minden ablakhoz">
+
+
+<!ENTITY tabcatalog.rendering_quality.caption "Megjelenés minősége (efektusok)">
+<!ENTITY tabcatalog.rendering_quality.low     "Gyenge (gyors)">
+<!ENTITY tabcatalog.rendering_quality.middle  "Közepes">
+<!ENTITY tabcatalog.rendering_quality.high    "Magas (lassú)">
+<!ENTITY tabcatalog.animation.scroll.enabled  "Lassú mozgatás">
+
+
+
+
+
+
+
+
+<!ENTITY tabcatalog.tab.auto_show "Automatikus megjelenítés">
+
+<!ENTITY tabcatalog.auto_show.caption  "&quot;Gyorsnézet&quot; gomb">
+<!ENTITY tabcatalog.auto_show.enabled "Automatikus megjelenítés a &quot;gyorsnézet&quot; gomb fölé érve">
+<!ENTITY tabcatalog.auto_show.delay.show.before "Megjelenítés késleltetése:">
+<!ENTITY tabcatalog.auto_show.delay.show.after  "ezredmásodperc.">
+<!ENTITY tabcatalog.auto_show.delay.hide.before "Elrejtés">
+<!ENTITY tabcatalog.auto_show.delay.hide.after  "ezredmásodperccel az elhagyás után.">
+
+<!ENTITY tabcatalog.auto_show.tabbar.caption  "Fül-sáv">
+<!ENTITY tabcatalog.auto_show.tabbar.enabled "Automatikus megjelenítés a fül-sáv fölé érve">
+<!ENTITY tabcatalog.auto_show.tabbar.delay.show.before "Megjelenítés késleltetése:">
+<!ENTITY tabcatalog.auto_show.tabbar.delay.show.after  "ezredmásodperc.">
+<!ENTITY tabcatalog.auto_show.tabbar.delay.hide.before "Elrejtés">
+<!ENTITY tabcatalog.auto_show.tabbar.delay.hide.after  "ezredmásodperccel az elhagyás után.">
