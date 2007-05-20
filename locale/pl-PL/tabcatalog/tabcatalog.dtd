@@ -18,7 +18,7 @@
 <!ENTITY tabcatalog.tab.catalog.caption "Wyświetlanie katalogu">
 
 <!ENTITY tabcatalog.sort_by_focus  "Rozmieść karty wg najczęściej oglądanych">
-<!ENTITY tabcatalog.showAllWindows "Wyświetl miniatury wszystkich karty ze wszystkich okien">
+<!ENTITY tabcatalog.showAllWindows "Wyświetl miniatury kart dla wszystkich okien">
 
 <!ENTITY tabcatalog.override.caption      "Wyświetl katalog miniatur za pomocą:">
 <!ENTITY tabcatalog.override.ctrltab      "Skrótu [Ctrl(Command)+Tab] (wyświetlenie i przełączanie pomiędzy kartami)">
@@ -40,7 +40,7 @@
 <!ENTITY tabcatalog.catalog.advanced.button   "Advanced">
 <!ENTITY tabcatalog.catalog.advanced.title    "Advanced Configuration of Catalog">
 
-<!ENTITY tabcatalog.split_by_window "Podziel dla każdego okna">
+<!ENTITY tabcatalog.split_by_window "Oddzielnie dla każdego okna">
 <!ENTITY tabcatalog.show_scrollbar "Wyświetl pasek przewijania">
 
 <!ENTITY tabcatalog.rendering_quality.caption "Jakość i szybkość wyświetlania miniatur">

@@ -16,6 +16,7 @@
 	<em:contributor>Gomita (thumbnail operations, from Tab Scope)</em:contributor>
 	<em:translator>ReinekeFux (de-DE locale)</em:translator>
 	<em:translator>Leszek teo Życzkowski (pl-PL locale)</em:translator>
+	<em:translator>Michał "Hołek" Połtyn (pl-PL locale)</em:translator>
     <em:targetApplication>
       <RDF:Description em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
                        em:minVersion="1.5"
