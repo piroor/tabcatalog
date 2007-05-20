@@ -1124,7 +1124,8 @@ var TabCatalog = {
 						break;
 
 					case 'extensions.tabcatalog.thumbnail.navigation':
-						if (this.getPref(aPrefName))
+						this.shouldShowNavigations = this.getPref(aPrefName);
+						if (this.shouldShowNavigations)
 							this.catalog.setAttribute('show-thumbnail-toolbar-buttons', true);
 						else
 							this.catalog.removeAttribute('show-thumbnail-toolbar-buttons');
@@ -2737,7 +2738,7 @@ var TabCatalog = {
 		var forwardButton = item.getElementsByAttribute('class', 'tabcatalog-thumbnail-toolbar-item goForward')[0];
 		var stopButton = item.getElementsByAttribute('class', 'tabcatalog-thumbnail-toolbar-item stop')[0];
 		var reloadButton = item.getElementsByAttribute('class', 'tabcatalog-thumbnail-toolbar-item reload')[0];
-		if (this.shouldSendClickEvent) {
+		if (this.shouldShowNavigations) {
 			if (!isBusy) {
 				stopButton.setAttribute('disabled', true);
 				reloadButton.removeAttribute('disabled');

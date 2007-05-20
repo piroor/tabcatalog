@@ -7,6 +7,9 @@
 #tabcatalog-thumbnail-container:not([show-thumbnail-toolbar-buttons="true"]) .tabcatalog-thumbnail-toolbar-item {
 	display: none;
 }
+#tabcatalog-thumbnail-container[show-thumbnail-closebox="true"] .tabcatalog-thumbnail-header-closebox {
+	display: -moz-box;
+}
 
 
 

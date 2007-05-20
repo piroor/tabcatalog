@@ -173,6 +173,18 @@
 }
 
 
+/* Close button in thumbnail */
+
+.tabcatalog-thumbnail-header-closebox.tab-close-button .toolbarbutton-icon,
+.tabcatalog-thumbnail-header-closebox.tab-close-button {
+	margin-left: 0;
+	margin-right: 0;
+}
+.tabcatalog-thumbnail-header-closebox.tab-close-button label {
+	display: none;
+}
+
+
 /* toolbar buttons in thumbnail */
 
 /* ::::: 16px primary toolbar buttons ::::: */
@@ -189,6 +201,8 @@
 }
 .tabcatalog-thumbnail-toolbar-item .toolbarbutton-icon {
   -moz-margin-end: 0px;
+  max-width: 16px !important;
+  max-height: 16px !important;
 }
 .tabcatalog-thumbnail-toolbar-item label {
   display: none;

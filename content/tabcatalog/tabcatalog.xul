@@ -112,7 +112,7 @@
 							onclick="event.stopPropagation();"
 							ondblclick="event.stopPropagation();"
 							disabled="true"/>
-						<toolbarbutton class="tabcatalog-thumbnail-header-closebox tabs-closebutton toolbarbutton-1"
+						<toolbarbutton class="tabcatalog-thumbnail-header-closebox tabs-closebutton tab-close-button"
 							custom-tooltiptext="&tabcatalog.thumbnail.close.tooltip;"
 							oncommand="TabCatalog.onThumbnailCloseBoxClick(event);"
 							onclick="event.stopPropagation(); event.preventDefault();"/>
