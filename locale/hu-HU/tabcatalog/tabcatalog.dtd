@@ -20,6 +20,7 @@
 <!ENTITY tabcatalog.sort_by_focus  "Rendezés a legutóbb használt lapok szerint">
 <!ENTITY tabcatalog.showAllWindows "Minden ablak összes lapjának megjelenítése">
 
+
 <!ENTITY tabcatalog.override.caption      "A gyorsnézet megjelenítése a következők segítségével:">
 <!ENTITY tabcatalog.override.ctrltab      "A 'Ctrl-Tab' billentyűkombináció lenyomásával">
 <!ENTITY tabcatalog.override.ctrltab.delay.disabled "A váltás a gyorsnézet ablakai között azonnal megtörténik">
@@ -37,11 +38,11 @@
 <!ENTITY tabcatalog.override.bothclick       "Az egér bal és jobb gombjának egyidejű lenyomásával">
 
 
-<!ENTITY tabcatalog.catalog.advanced.button   "Advanced">
-<!ENTITY tabcatalog.catalog.advanced.title    "Advanced Configuration of Catalog">
+<!ENTITY tabcatalog.catalog.advanced.button   "Haladó">
+<!ENTITY tabcatalog.catalog.advanced.title    "Gyorsnézet haladó beállításai">
 
 <!ENTITY tabcatalog.split_by_window "Felosztás ablakok szerint">
-<!ENTITY tabcatalog.show_scrollbar "Show scrollbar">
+<!ENTITY tabcatalog.show_scrollbar "Gördülősáv megjelenítése">
 
 <!ENTITY tabcatalog.rendering_quality.caption "Megjelenés minősége (efektusok)">
 <!ENTITY tabcatalog.rendering_quality.low     "Gyenge (gyors)">
@@ -55,21 +56,21 @@
 
 
 
-<!ENTITY tabcatalog.tab.thumbnail "Thumbnail Features">
 
-<!ENTITY tabcatalog.send_click_event "Az 'Előző lap', 'Következő lap' és 'Lap újratöltése' gombok megjelenítése">
-<!ENTITY tabcatalog.send_click_event.description "*Lap kiválasztásához duppla-klikk a gyorsnézeten.">
+<!ENTITY tabcatalog.tab.thumbnail "Gyorsnézet funkciók">
 
-<!ENTITY tabcatalog.appearance.thumbnail.caption  "A Gyorsnézet ablakainak beállítása">
+<!ENTITY tabcatalog.send_click_event "Klikkelés engedélyezése a gyorsnézet linkjeire">
+<!ENTITY tabcatalog.send_wheel_event "Gyorsnézet mozgatása az egér görgőjével">
+
+<!ENTITY tabcatalog.appearance.thumbnail.caption  "Gyorsnézet beállítások">
 
 <!ENTITY tabcatalog.appearance.header   "Fejléc megjelenítése">
-<!ENTITY tabcatalog.appearance.closebox "Bezárás gomb megjelenítése">
+<!ENTITY tabcatalog.appearance.navigation "&quot;Előző&quot; és &quot;Következő&quot; gombok megjelenítése">
+<!ENTITY tabcatalog.appearance.closebox "&quot;Bezárás&quot; gomb megjelenítése">
 <!ENTITY tabcatalog.appearance.min.before "A gyorsnézet mindegyik ablaka nagyobb, mint">
 <!ENTITY tabcatalog.appearance.min.after  "képpont.">
 
 <!ENTITY tabcatalog.thumbnail.shortcut.enable   "Billentyűkombináció hozzárendelése minden ablakhoz">
-
-
 
 
 <!ENTITY tabcatalog.tab.auto_show "Automatikus megjelenítés">
@@ -78,12 +79,8 @@
 <!ENTITY tabcatalog.auto_show.enabled "Automatikus megjelenítés a &quot;gyorsnézet&quot; gomb fölé érve">
 <!ENTITY tabcatalog.auto_show.delay.show.before "Megjelenítés késleltetése:">
 <!ENTITY tabcatalog.auto_show.delay.show.after  "ezredmásodperc.">
-<!ENTITY tabcatalog.auto_show.delay.hide.before "Elrejtés">
-<!ENTITY tabcatalog.auto_show.delay.hide.after  "ezredmásodperccel az elhagyás után.">
 
 <!ENTITY tabcatalog.auto_show.tabbar.caption  "Fül-sáv">
 <!ENTITY tabcatalog.auto_show.tabbar.enabled "Automatikus megjelenítés a fül-sáv fölé érve">
 <!ENTITY tabcatalog.auto_show.tabbar.delay.show.before "Megjelenítés késleltetése:">
 <!ENTITY tabcatalog.auto_show.tabbar.delay.show.after  "ezredmásodperc.">
-<!ENTITY tabcatalog.auto_show.tabbar.delay.hide.before "Elrejtés">
-<!ENTITY tabcatalog.auto_show.tabbar.delay.hide.after  "ezredmásodperccel az elhagyás után.">
