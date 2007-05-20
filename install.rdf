@@ -1,11 +1,11 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <RDF:RDF xmlns:em="http://www.mozilla.org/2004/em-rdf#"
          xmlns:NC="http://home.netscape.com/NC-rdf#"
          xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <RDF:Description RDF:about="urn:mozilla:install-manifest"
                    em:id="{049952B3-A745-43bd-8D26-D1349B1ED944}"
                    em:name="Tab Catalog"
-                   em:version="1.4.2007051101"
+                   em:version="1.4.2007052001"
                    em:creator="SHIMODA Hiroshi"
                    em:description="Shows thumbnail-style catalog of tabs."
                    em:homepageURL="http://piro.sakura.ne.jp/xul/tabcatalog/"
@@ -15,7 +15,7 @@
 	<em:contributor>Ted Mielczarek</em:contributor>
 	<em:contributor>Gomita (thumbnail operations, from Tab Scope)</em:contributor>
 	<em:translator>ReinekeFux (de-DE locale)</em:translator>
-	<em:translator>Leszek teo ?yczkowski (pl-PL locale)</em:translator>
+	<em:translator>Leszek teo Życzkowski (pl-PL locale)</em:translator>
     <em:targetApplication>
       <RDF:Description em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
                        em:minVersion="1.5"

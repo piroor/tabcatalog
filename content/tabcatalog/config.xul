@@ -146,6 +146,9 @@
 		<preference id="extensions.tabcatalog.thumbnail.closebox"
 			name="extensions.tabcatalog.thumbnail.closebox"
 			type="bool"/>
+		<preference id="extensions.tabcatalog.thumbnail.navigation"
+			name="extensions.tabcatalog.thumbnail.navigation"
+			type="bool"/>
 
 		<preference id="extensions.tabcatalog.thumbnail.shortcut"
 			name="extensions.tabcatalog.thumbnail.shortcut"
@@ -169,6 +172,12 @@
 			<checkbox id="tabcatalog.appearance.header-check" flex="1"
 				label="&tabcatalog.appearance.header;"
 				preference="extensions.tabcatalog.thumbnail.header"/>
+			<hbox>
+				<spacer style="width:1em;"/>
+				<checkbox id="tabcatalog.appearance.navigation-check" flex="1"
+					label="&tabcatalog.appearance.navigation;"
+					preference="extensions.tabcatalog.thumbnail.navigation"/>
+			</hbox>
 			<hbox>
 				<spacer style="width:1em;"/>
 				<checkbox id="tabcatalog.appearance.closebox-check" flex="1"

@@ -65,7 +65,8 @@
 <!ENTITY tabcatalog.appearance.thumbnail.caption  "Thumbnail Options">
 
 <!ENTITY tabcatalog.appearance.header   "Show titlebar for each thumbnail">
-<!ENTITY tabcatalog.appearance.closebox "Show close box for each thumbnail">
+<!ENTITY tabcatalog.appearance.navigation "Show &quot;Back&quot; and &quot;Forward&quot; buttons">
+<!ENTITY tabcatalog.appearance.closebox "Show close box">
 <!ENTITY tabcatalog.appearance.min.before "Show each thumbnail larger than">
 <!ENTITY tabcatalog.appearance.min.after  "pixel(s)">
 

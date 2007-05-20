@@ -905,6 +905,7 @@ var TabCatalog = {
 		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.shortcut');
 		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.thumbnail.header');
 		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.thumbnail.closebox');
+		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.thumbnail.navigation');
 		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.thumbnail.shortcut');
 		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.send_click_event');
 
@@ -1122,6 +1123,13 @@ var TabCatalog = {
 							this.catalog.removeAttribute('show-thumbnail-closebox');
 						break;
 
+					case 'extensions.tabcatalog.thumbnail.navigation':
+						if (this.getPref(aPrefName))
+							this.catalog.setAttribute('show-thumbnail-toolbar-buttons', true);
+						else
+							this.catalog.removeAttribute('show-thumbnail-toolbar-buttons');
+						break;
+
 					case 'extensions.tabcatalog.thumbnail.shortcut':
 						this.thumbnailShortcutEnabled = this.getPref(aPrefName);
 						if (this.thumbnailShortcutEnabled)
@@ -1136,10 +1144,6 @@ var TabCatalog = {
 
 					case 'extensions.tabcatalog.send_click_event':
 						this.shouldSendClickEvent = this.getPref(aPrefName);
-						if (this.shouldSendClickEvent)
-							this.catalog.setAttribute('show-thumbnail-toolbar-buttons', true);
-						else
-							this.catalog.removeAttribute('show-thumbnail-toolbar-buttons');
 						break;
 
 					default:

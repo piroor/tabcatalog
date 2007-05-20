@@ -74,7 +74,8 @@
 <!ENTITY tabcatalog.appearance.thumbnail.caption  "サムネイルの表示">
 
 <!ENTITY tabcatalog.appearance.header   "サムネイルにタイトルバーを付ける">
-<!ENTITY tabcatalog.appearance.closebox "サムネイルにクローズボックスを付ける">
+<!ENTITY tabcatalog.appearance.navigation "「戻る」「進む」ボタンを付ける">
+<!ENTITY tabcatalog.appearance.closebox "クローズボックスを付ける">
 <!ENTITY tabcatalog.appearance.min.before "サムネイルを">
 <!ENTITY tabcatalog.appearance.min.after  "ピクセル以上の大きさで表示する">
 

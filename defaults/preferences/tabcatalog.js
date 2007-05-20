@@ -34,9 +34,10 @@ pref("extensions.tabcatalog.animation.scroll.enabled", true);
 pref("extensions.tabcatalog.animation.scroll.timeout", 150);
 
 
-pref("extensions.tabcatalog.thumbnail.header",   true);
-pref("extensions.tabcatalog.thumbnail.closebox", true);
-pref("extensions.tabcatalog.thumbnail.shortcut", false);
+pref("extensions.tabcatalog.thumbnail.header",     true);
+pref("extensions.tabcatalog.thumbnail.navigation", true);
+pref("extensions.tabcatalog.thumbnail.closebox",   true);
+pref("extensions.tabcatalog.thumbnail.shortcut",   false);
 
 pref("extensions.tabcatalog.thumbnail.min.enabled", true);
 pref("extensions.tabcatalog.thumbnail.min.size",    180);

@@ -67,6 +67,7 @@
 <!ENTITY tabcatalog.appearance.thumbnail.caption  "Einstellungen für Vorschaubilder">
 
 <!ENTITY tabcatalog.appearance.header   "Titelleiste anzeigen">
+<!ENTITY tabcatalog.appearance.navigation "Show &quot;Back&quot; and &quot;Forward&quot; buttons">
 <!ENTITY tabcatalog.appearance.closebox "Schließen-Schaltfläche anzeigen">
 <!ENTITY tabcatalog.appearance.min.before "Mindestgröße der Vorschaubilder: ">
 <!ENTITY tabcatalog.appearance.min.after  "Pixel">

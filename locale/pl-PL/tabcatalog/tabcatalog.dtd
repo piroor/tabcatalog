@@ -67,6 +67,7 @@
 <!ENTITY tabcatalog.appearance.thumbnail.caption   "Opcje miniatur">
 
 <!ENTITY tabcatalog.appearance.header   "Wyświetl pasek tytułu dla każdej miniatury">
+<!ENTITY tabcatalog.appearance.navigation "Show &quot;Back&quot; and &quot;Forward&quot; buttons">
 <!ENTITY tabcatalog.appearance.closebox "Wyświetl przycisk zamykania na każdej miniaturze">
 <!ENTITY tabcatalog.appearance.min.before "Wielkość wyświetlanych miniatur nie mniejsza niż">
 <!ENTITY tabcatalog.appearance.min.after  "pikseli">
