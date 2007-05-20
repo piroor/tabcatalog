@@ -747,11 +747,19 @@ var TabCatalog = {
  
 	fillInTooltip : function(aNode) 
 	{
+		var tooltiptext = aNode.getAttribute('custom-tooltiptext');
+
 		aNode = this.getItemFromEvent({ target : aNode });
 		if (!aNode) return false;
 
 		var tooltip = document.getElementById('tabcatalog-tooltip');
 
+		if (tooltiptext) {
+			tooltip.firstChild.lastChild.setAttribute('hidden', true);
+			tooltip.firstChild.firstChild.removeAttribute('hidden');
+			tooltip.firstChild.firstChild.setAttribute('value', tooltiptext);
+			return true;
+		}
 
 		var title = aNode.getAttribute('title');
 		if (title) {
