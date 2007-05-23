@@ -2701,10 +2701,18 @@ var TabCatalog = {
 		var w   = b.contentWindow;
 
 		var title = item.getElementsByAttribute('class', 'tabcatalog-thumbnail-header-label')[0];
-		if (!aUpdateWithDelay)
+		if (!aUpdateWithDelay) {
 			title.setAttribute('value', b.contentDocument.title || tab.getAttribute('label'));
-		else
-			window.setTimeout(function() { title.setAttribute('value', b.contentDocument.title || tab.getAttribute('label')); }, 0);
+			item.setAttribute('title', title.getAttribute('value'));
+			item.setAttribute('uri', b.currentURI.spec);
+		}
+		else {
+			window.setTimeout(function() {
+				title.setAttribute('value', b.contentDocument.title || tab.getAttribute('label'));
+				item.setAttribute('title', title.getAttribute('value'));
+				item.setAttribute('uri', b.currentURI.spec);
+			}, 0);
+		}
 
 		var isBusy = item.getAttribute('busy') == 'true';
 
