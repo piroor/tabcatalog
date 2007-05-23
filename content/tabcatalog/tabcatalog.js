@@ -3055,9 +3055,13 @@ var TabCatalog = {
 			tab = this.getTabFromThumbnailItem(node);
 
 		var canvas = this.getCanvasFromEvent(aEvent);
-		if (!canvas ||
+		if (
+			this.thumbnailDragging ||
+			!canvas ||
 			!tab ||
-			tab.linkedBrowser.contentDocument.contentType.indexOf('image') == 0)
+			/^about:(blank|config|buildconfig)/.test(tab.linkedBrowser.currentURI.spec) ||
+			/^(image|text\/(css|plain))/.test(tab.linkedBrowser.contentDocument.contentType)
+			)
 			return;
 
 		var ret = this._getCorrespondingWindowAndPoint(aEvent.screenX, aEvent.screenY, node);
