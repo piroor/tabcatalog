@@ -2,7 +2,6 @@
 
 <?xml-stylesheet href="tabcatalog.css" type="text/css"?>
 <?xml-stylesheet href="chrome://tabcatalog/skin/tabcatalog.css" type="text/css"?>
-<?xml-stylesheet href="chrome://global/skin/browser.css" type="text/css"?>
 
 <!DOCTYPE overlay SYSTEM "chrome://tabcatalog/locale/tabcatalog.dtd">
 

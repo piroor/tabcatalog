@@ -175,14 +175,54 @@
 
 /* Close button in thumbnail */
 
-.tabcatalog-thumbnail-header-closebox.tab-close-button .toolbarbutton-icon,
-.tabcatalog-thumbnail-header-closebox.tab-close-button {
-	margin-left: 0;
-	margin-right: 0;
-}
 .tabcatalog-thumbnail-header-closebox.tab-close-button label {
 	display: none;
 }
+
+/**
+ * In-tab close button
+ */
+.tabcatalog-thumbnail-header-closebox.tab-close-button > .toolbarbutton-icon {
+  -moz-margin-end: 0px !important;
+  margin-top: 1px;
+}
+
+.tabcatalog-thumbnail-header-closebox.tab-close-button {
+  -moz-appearance: none;
+  -moz-image-region: rect(0px, 16px, 16px, 0px);
+  height: 24px;
+  border: none !important;
+  padding: 0px;
+  cursor: default;
+  list-style-image: url("jar:resource:///chrome/classic.jar!/skin/classic/global/icons/close.png");
+}
+
+.tabcatalog-thumbnail:not([current="true"]) .tabcatalog-thumbnail-header-closebox.tab-close-button {
+  height: 23px;
+  margin-bottom: 1px;
+}
+
+.tabcatalog-thumbnail:not([current="true"]) .tabcatalog-thumbnail-header-closebox.tab-close-button > .toolbarbutton-icon {
+  margin-top: 2px;
+}
+
+.tabcatalog-thumbnail-header-closebox.tab-close-button:hover,
+.tabcatalog-thumbnail[current="true"] .tabcatalog-thumbnail-header-closebox.tab-close-button:hover {
+  -moz-image-region: rect(0px, 32px, 16px, 16px);
+  opacity: 1.0;
+}
+
+.tabcatalog-thumbnail-header-closebox.tab-close-button:hover:active,
+.tabcatalog-thumbnail[current="true"] .tabcatalog-thumbnail-header-closebox.tab-close-button:hover:active {
+  -moz-image-region: rect(0px, 48px, 16px, 32px);
+  opacity: 1.0;
+}
+
+.tabcatalog-thumbnail-header-closebox.tab-close-button:focus {
+  outline: none !important;
+}
+
+
 
 
 /* toolbar buttons in thumbnail */
