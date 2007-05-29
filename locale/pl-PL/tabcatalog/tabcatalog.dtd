@@ -1,5 +1,5 @@
 <!ENTITY tabcatalog.label       "Miniatury">
-<!ENTITY tabcatalog.tooltiptext "Wyświetla katalog miniatur otwartych stron w kartach">
+<!ENTITY tabcatalog.tooltiptext "Wyświetla katalog miniatur stron otwartych w kartach">
 
 <!ENTITY tabcatalog.popup.removeTabs  "Zamknij zaznaczone karty">
 
@@ -13,12 +13,13 @@
 
 <!ENTITY tabcatalog.title "Tab Catalog - ustawienia">
 
+
+
 <!ENTITY tabcatalog.tab.catalog   "Katalog">
 
-<!ENTITY tabcatalog.tab.catalog.caption "Wyświetlanie katalogu">
-
 <!ENTITY tabcatalog.sort_by_focus  "Rozmieść karty wg najczęściej oglądanych">
-<!ENTITY tabcatalog.showAllWindows "Wyświetl miniatury kart dla wszystkich okien">
+<!ENTITY tabcatalog.showAllWindows "Wyświetl miniatury wszystkich kart ze wszystkich okien">
+
 
 <!ENTITY tabcatalog.override.caption      "Wyświetl katalog miniatur za pomocą:">
 <!ENTITY tabcatalog.override.ctrltab      "Skrótu [Ctrl(Command)+Tab] (wyświetlenie i przełączanie pomiędzy kartami)">
@@ -37,10 +38,10 @@
 <!ENTITY tabcatalog.override.bothclick       "Podwójnego kliknięcia (naciśnięcie jednocześnie prawego i lewego przycisku myszy)">
 
 
-<!ENTITY tabcatalog.catalog.advanced.button   "Advanced">
-<!ENTITY tabcatalog.catalog.advanced.title    "Advanced Configuration of Catalog">
+<!ENTITY tabcatalog.catalog.advanced.button   "Zaawansowane">
+<!ENTITY tabcatalog.catalog.advanced.title    "Tab Catalog - ustawienia zaawansowane">
 
-<!ENTITY tabcatalog.split_by_window "Oddzielnie dla każdego okna">
+<!ENTITY tabcatalog.split_by_window "Grupuj według okien">
 <!ENTITY tabcatalog.show_scrollbar "Wyświetl pasek przewijania">
 
 <!ENTITY tabcatalog.rendering_quality.caption "Jakość i szybkość wyświetlania miniatur">
@@ -56,23 +57,26 @@
 
 
 
+<!ENTITY tabcatalog.tab.thumbnail "Opcje miniatur">
 
-
-
-<!ENTITY tabcatalog.tab.thumbnail "Thumbnail Features">
-
-<!ENTITY tabcatalog.send_click_event "Allow to click links on thumbnails">
-<!ENTITY tabcatalog.send_wheel_event "Allow to scroll by mouse wheel on thumbnails">
+<!ENTITY tabcatalog.send_click_event "Zarządzaj operacjami przeglądarki z miniatury">
+<!ENTITY tabcatalog.send_wheel_event "Pozwól na przewijanie kółkiem myszy w miniaturach">
 
 <!ENTITY tabcatalog.appearance.thumbnail.caption   "Opcje miniatur">
 
 <!ENTITY tabcatalog.appearance.header   "Wyświetl pasek tytułu dla każdej miniatury">
-<!ENTITY tabcatalog.appearance.navigation "Show &quot;Back&quot; and &quot;Forward&quot; buttons">
+<!ENTITY tabcatalog.appearance.navigation "Wyświetl przyciski &quot;Wstecz&quot; i &quot;Do przodu&quot;">
 <!ENTITY tabcatalog.appearance.closebox "Wyświetl przycisk zamykania na każdej miniaturze">
 <!ENTITY tabcatalog.appearance.min.before "Wielkość wyświetlanych miniatur nie mniejsza niż">
 <!ENTITY tabcatalog.appearance.min.after  "pikseli">
 
 <!ENTITY tabcatalog.thumbnail.shortcut.enable   "Przypisz każdej miniaturze skrót klawiaturowy">
+
+
+
+
+
+
 
 
 
