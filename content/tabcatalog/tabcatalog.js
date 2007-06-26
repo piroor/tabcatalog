@@ -636,7 +636,7 @@ var TabCatalog = {
 			var xpathResult = d.evaluate(
 					'ancestor-or-self::*[local-name() = "menuitem"]',
 					aEvent.originalTarget,
-					d.createNSResolver(this.NSResolver),
+					this.NSResolver,
 					XPathResult.FIRST_ORDERED_NODE_TYPE,
 					null
 				);
