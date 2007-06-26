@@ -362,7 +362,7 @@ var TabCatalog = {
 			var xpathResult = document.evaluate(
 					'descendant::*[@class and @class = "tabcatalog-thumbnail" and @selected = "true"]',
 					this.catalog,
-					document.createNSResolver(this.NSResolver),
+					this.NSResolver,
 					XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
 					null
 				);
@@ -404,7 +404,7 @@ var TabCatalog = {
 			var xpathResult = d.evaluate(
 					'ancestor-or-self::*[@class and @class = "tabcatalog-thumbnail"]',
 					target,
-					d.createNSResolver(this.NSResolver),
+					this.NSResolver,
 					XPathResult.FIRST_ORDERED_NODE_TYPE,
 					null
 				);
@@ -430,7 +430,7 @@ var TabCatalog = {
 			var xpathResult = d.evaluate(
 					'ancestor-or-self::*[local-name() = "canvas"]',
 					target,
-					d.createNSResolver(this.NSResolver),
+					this.NSResolver,
 					XPathResult.FIRST_ORDERED_NODE_TYPE,
 					null
 				);
@@ -449,7 +449,7 @@ var TabCatalog = {
 			var xpathResult = d.evaluate(
 					'descendant::*[local-name() = "img" or local-name() = "IMG"]',
 					aNode,
-					d.createNSResolver(this.NSResolver),
+					this.NSResolver,
 					XPathResult.FIRST_ORDERED_NODE_TYPE,
 					null
 				);
@@ -468,7 +468,7 @@ var TabCatalog = {
 			var xpathResult = d.evaluate(
 					'ancestor-or-self::*[((local-name() = "a" or local-name() = "A") and @href) or local-name() = "button" or local-name() = "BUTTON" or ((local-name() = "input" or local-name() = "INPUT") and (@type = "SUBMIT" or @type = "submit" or @type = "BUTTON" or @type = "button" or @type = "IMAGE" or @type = "image"))]',
 					aNode,
-					d.createNSResolver(this.NSResolver),
+					this.NSResolver,
 					XPathResult.FIRST_ORDERED_NODE_TYPE,
 					null
 				);
