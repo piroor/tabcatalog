@@ -55,6 +55,12 @@
 <!ENTITY tabcatalog.panning.behavior.1       "Jak przeciąganie ekranu">
 
 
+<!ENTITY tabcatalog.updateInBackground            "Optimize Catalog Showing">
+<!ENTITY extensions.tabcatalog.updateInBackground "Update thumbnails in background and reduce the delay to show catalog">
+<!ENTITY extensions.tabcatalog.updateInBackground.interval.before "Interval:">
+<!ENTITY extensions.tabcatalog.updateInBackground.interval.after "msec.">
+
+
 
 
 <!ENTITY tabcatalog.tab.thumbnail "Opcje miniatur">

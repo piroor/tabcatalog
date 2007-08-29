@@ -4,7 +4,7 @@ var TabCatalog = {
 /* Utilities */ 
 	 
 /* elements */ 
-	 
+	
 	get button() { 
 		return document.getElementById('tabcatalog-button');
 	},
@@ -83,12 +83,18 @@ var TabCatalog = {
 	_tabSelectPopupMenu : null,
  
 	get tabs() { 
+		this.lastSelectedIndex = 0;
+
 		var tabs = [];
+		var indexOffset = 0;
 		if (this.getPref('extensions.tabcatalog.showAllWindows')) {
 			var windows = this.getPref('extensions.tabcatalog.window.sort_by_focus') ? this.browserWindowsWithFocusedOrder : this.browserWindowsWithOpenedOrder ;
 			for (var i = 0; i < windows.length; i++)
 			{
 				if (!windows[i].gBrowser) continue;
+
+				if (windows[i] == window) indexOffset = tabs.length;
+
 				tabs = tabs.concat(Array.prototype.slice.call(windows[i].gBrowser.mTabContainer.childNodes));
 				if (this.shouldRebuild(windows[i]))
 					this.rebuildRequest = true;
@@ -103,8 +109,16 @@ var TabCatalog = {
 			var tmpTabs     = [];
 			var focusedTabs = [];
 			var max = tabs.length;
+			var currentTab = gBrowser.selectedTab;
 			for (var i = 0; i < max; i++)
 			{
+				if (
+					tabs[i] == tabs[i].__tabcatalog__relatedTabBrowser.selectedTab &&
+					tabs[i].ownerDocument.defaultView == window
+					) {
+					continue;
+				}
+
 				if (tabs[i].__tabcatalog__lastSelectedTime)
 					focusedTabs.push(tabs[i]);
 				else
@@ -119,10 +133,28 @@ var TabCatalog = {
 			);
 
 			tabs = focusedTabs.concat(tmpTabs);
+			tabs.unshift(currentTab);
+
+			this.lastSelectedIndex = 0;
+		}
+		else {
+			try {
+				var xpathResult = document.evaluate(
+						'preceding-sibling::*[local-name() = "tab" and not(@hidden) and not(@collapsed)]',
+						gBrowser.selectedTab,
+						this.NSResolver,
+						XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+						null
+					);
+				this.lastSelectedIndex = indexOffset + xpathResult.snapshotLength;
+			}
+			catch(e) {
+			}
 		}
 
 		return tabs;
 	},
+	lastSelectedIndex : 0,
  
 	get isMultiWindow() 
 	{
@@ -186,7 +218,7 @@ var TabCatalog = {
 	_WindowManager : null,
   
 /* state */ 
-	
+	 
 	get backgroundShown() { 
 		return this.background.getAttribute('catalog-shown') == 'true';
 	},
@@ -908,6 +940,7 @@ var TabCatalog = {
 		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.thumbnail.navigation');
 		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.thumbnail.shortcut');
 		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.send_click_event');
+		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.updateInBackground');
 
 		window.addEventListener('unload', function() {
 			window.removeEventListener('unload', arguments.callee, false);
@@ -1066,7 +1099,7 @@ var TabCatalog = {
 	},
   
 /* nsIObserver */ 
-	
+	 
 	domain  : 'extensions.tabcatalog', 
  
 	observe : function(aSubject, aTopic, aPrefName) 
@@ -1147,17 +1180,28 @@ var TabCatalog = {
 						this.shouldSendClickEvent = this.getPref(aPrefName);
 						break;
 
+					case 'extensions.tabcatalog.updateInBackground':
+					case 'extensions.tabcatalog.updateInBackground.interval':
+						if (this.backgroundUpdateTimer) {
+							window.clearInterval(this.backgroundUpdateTimer);
+							this.backgroundUpdateTimer = null;
+						}
+						if (value) {
+							this.backgroundUpdateTimer = window.setInterval('if (!TabCatalog.shown) TabCatalog.initUI();', this.getPref('extensions.tabcatalog.updateInBackground.interval'));
+						}
+						break;
+
 					default:
 						break;
 				}
 				break;
 		}
 	},
-  
+ 	 
 /* Event Handling */ 
-	 
+	
 /* General */ 
-	 
+	
 	onMouseDown : function(aEvent) 
 	{
 		if (
@@ -1287,7 +1331,7 @@ var TabCatalog = {
 		TabCatalog.rebuildRequest = true;
 		TabCatalog.hide();
 	},
- 	
+ 
 	onBlur : function(aEvent) 
 	{
 		TabCatalog.hide();
@@ -1611,7 +1655,7 @@ var TabCatalog = {
 	},
   
 /* Thumbnails */ 
-	 
+	
 	onCatalogClick : function(aEvent) 
 	{
 		var node = this.getItemFromEvent(aEvent);
@@ -1983,7 +2027,7 @@ var TabCatalog = {
 	},
   
 /* Toolbar Button */ 
-	 
+	
 	onButtonMouseOver : function(aEvent) 
 	{
 		if ((this.callingAction & this.CALLED_MANUALLY) ||
@@ -2006,7 +2050,7 @@ var TabCatalog = {
 	},
   
 /* Tab Bar */ 
-	 
+	
 	onTabBarMouseOver : function(aEvent) 
 	{
 		if (!TabCatalog.getPref('extensions.tabcatalog.auto_show.tabbar.enabled') ||
@@ -2049,7 +2093,7 @@ var TabCatalog = {
 	},
   
 /* Catarog Operations */ 
-	
+	 
 	show : function(aBase, aOnlyUpdate, aRelative) 
 	{
 		var tabs = this.tabs;
@@ -2070,15 +2114,6 @@ var TabCatalog = {
 		if (this.hideTimer) {
 			window.clearTimeout(this.hideTimer);
 			this.hideTimer = null;
-		}
-
-		this.lastSelectedIndex = -1;
-		for (var i = 0, max = tabs.length; i < max; i++)
-		{
-			if (tabs[i] == tabs[i].ownerDocument.defaultView.gBrowser.selectedTab) {
-				this.lastSelectedIndex = i;
-				break;
-			}
 		}
 
 		if (
@@ -2130,7 +2165,6 @@ var TabCatalog = {
 	},
 	callingAction     : null,
 	lastFocusedIndex  : -1,
-	lastSelectedIndex : -1,
 
 	CALLED_BY_UNKNOWN     : 1,
 
@@ -2170,7 +2204,6 @@ var TabCatalog = {
 		this.animateStop();
 
 		this.lastMouseOverThumbnail = null;
-		this.lastSelectedIndex = -1;
 
 
 		var focusedNode = this.getFocusedItem();
@@ -2219,19 +2252,7 @@ var TabCatalog = {
 //dump('REBUILD ? '+this.shouldRebuild()+'\n');
 		if (!this.shouldRebuild()) {
 			var tabs = this.tabs;
-			for (var i = 0, max = tabs.length; i < max; i++)
-			{
-				if (
-					this.lastFocusedIndex == i ||
-					(
-						this.lastFocusedIndex < 0 &&
-						tabs[i] == tabs[i].__tabcatalog__relatedTabBrowser.selectedTab &&
-						tabs[i].ownerDocument.defaultView == window
-					)
-					) {
-					this.lastFocusedIndex = i;
-				}
-			}
+			this.lastFocusedIndex = this.lastSelectedIndex;
 
 			this.initCanvas();
 			this.updateCanvas();

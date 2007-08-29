@@ -61,6 +61,12 @@
 <!ENTITY tabcatalog.panning.behavior.1       "画面をつかんだように動かす">
 
 
+<!ENTITY tabcatalog.updateInBackground            "表示の高速化">
+<!ENTITY extensions.tabcatalog.updateInBackground "サムネイルをバックグラウンドで更新して、一覧の表示を高速化する">
+<!ENTITY extensions.tabcatalog.updateInBackground.interval.before "サムネイル更新の間隔：">
+<!ENTITY extensions.tabcatalog.updateInBackground.interval.after "ミリ秒">
+
+
 
 
 

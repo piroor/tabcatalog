@@ -32,6 +32,13 @@
 			name="extensions.tabcatalog.panning.scrollBehavior"
 			type="int"/>
 
+		<preference id="extensions.tabcatalog.updateInBackground"
+			name="extensions.tabcatalog.updateInBackground"
+			type="bool"/>
+		<preference id="extensions.tabcatalog.updateInBackground.interval"
+			name="extensions.tabcatalog.updateInBackground.interval"
+			type="int"/>
+
 	</preferences>
 
 	<checkbox id="extensions.tabcatalog.split_by_window-check" flex="1"
@@ -69,6 +76,26 @@
 				<radio value="1" label="&tabcatalog.panning.behavior.1;"/>
 			</radiogroup>
 		</vbox>
+	</groupbox>
+
+
+	<groupbox>
+		<caption label="&tabcatalog.updateInBackground;"/>
+		<vbox>
+			<checkbox id="extensions.tabcatalog.updateInBackground-check"
+				label="&extensions.tabcatalog.updateInBackground;"
+				preference="extensions.tabcatalog.updateInBackground"/>
+		</vbox>
+		<hbox align="center">
+			<label value="&extensions.tabcatalog.updateInBackground.interval.before;"
+				control="extensions.tabcatalog.updateInBackground.interval-textbox"/>
+			<textbox id="extensions.tabcatalog.updateInBackground.interval-textbox"
+				size="5"
+				preference="extensions.tabcatalog.updateInBackground.interval"
+				type="number" min="0" increment="1"/>
+			<label value="&extensions.tabcatalog.updateInBackground.interval.after;"
+				control="extensions.tabcatalog.updateInBackground.interval-textbox"/>
+		</hbox>
 	</groupbox>
 </prefpane>
 

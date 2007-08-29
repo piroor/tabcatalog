@@ -38,6 +38,12 @@
 <!ENTITY tabcatalog.override.bothclick       "Bei gleichzeitigem Drücken der linken und rechten Maustaste">
 
 
+<!ENTITY tabcatalog.updateInBackground            "Optimize Catalog Showing">
+<!ENTITY extensions.tabcatalog.updateInBackground "Update thumbnails in background and reduce the delay to show catalog">
+<!ENTITY extensions.tabcatalog.updateInBackground.interval.before "Interval:">
+<!ENTITY extensions.tabcatalog.updateInBackground.interval.after "msec.">
+
+
 
 <!ENTITY tabcatalog.catalog.advanced.button   "Advanced">
 <!ENTITY tabcatalog.catalog.advanced.title    "Advanced Configuration of Catalog">
