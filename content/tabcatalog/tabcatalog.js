@@ -353,19 +353,29 @@ var TabCatalog = {
 	{
 		if (val) {
 			this.mRebuildRequestDate = (new Date()).getTime();
+			if (this.backgroundUpdateTimer) {
+				window.clearTimeout(this.backgroundUpdateTimer);
+				this.backgroundUpdateTimer = null;
+			}
+			if (this.getPref('extensions.tabcatalog.updateInBackground')) {
+				this.backgroundUpdateTimer = window.setTimeout('if (!TabCatalog.shown) TabCatalog.initUI(); window.clearTimeout(TabCatalog.backgroundUpdateTimer); TabCatalog.backgroundUpdateTimer = null;', this.getPref('extensions.tabcatalog.updateInBackground.delay'));
+			}
 		}
 		else {
 			this.mLastRebuildDate = (new Date()).getTime();
 		}
 		return this.rebuildRequest;
 	},
+	get rebuildRequest()
+	{
+		return this.shouldRebuild();
+	},
 	mRebuildRequestDate : (new Date()).getTime(),
 	mLastRebuildDate    : -1,
  
 	shouldRebuild : function(aWindow) 
 	{
-		if (!aWindow) aWindow = window;
-		return aWindow.TabCatalog.mRebuildRequestDate > this.mLastRebuildDate;
+		return (aWindow || window).TabCatalog.mRebuildRequestDate > this.mLastRebuildDate;
 	},
   
 /* get items */ 
@@ -1185,9 +1195,6 @@ var TabCatalog = {
 						if (this.backgroundUpdateTimer) {
 							window.clearInterval(this.backgroundUpdateTimer);
 							this.backgroundUpdateTimer = null;
-						}
-						if (value) {
-							this.backgroundUpdateTimer = window.setInterval('if (!TabCatalog.shown) TabCatalog.initUI();', this.getPref('extensions.tabcatalog.updateInBackground.interval'));
 						}
 						break;
 
@@ -2253,10 +2260,8 @@ var TabCatalog = {
 		if (!this.shouldRebuild()) {
 			var tabs = this.tabs;
 			this.lastFocusedIndex = this.lastSelectedIndex;
-
 			this.initCanvas();
 			this.updateCanvas();
-
 			return;
 		}
 

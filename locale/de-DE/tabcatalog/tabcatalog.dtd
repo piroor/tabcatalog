@@ -40,8 +40,8 @@
 
 <!ENTITY tabcatalog.updateInBackground            "Optimize Catalog Showing">
 <!ENTITY extensions.tabcatalog.updateInBackground "Update thumbnails in background and reduce the delay to show catalog">
-<!ENTITY extensions.tabcatalog.updateInBackground.interval.before "Interval:">
-<!ENTITY extensions.tabcatalog.updateInBackground.interval.after "msec.">
+<!ENTITY extensions.tabcatalog.updateInBackground.delay.before "after">
+<!ENTITY extensions.tabcatalog.updateInBackground.delay.after "msec. from the last action">
 
 
 

@@ -35,8 +35,8 @@
 		<preference id="extensions.tabcatalog.updateInBackground"
 			name="extensions.tabcatalog.updateInBackground"
 			type="bool"/>
-		<preference id="extensions.tabcatalog.updateInBackground.interval"
-			name="extensions.tabcatalog.updateInBackground.interval"
+		<preference id="extensions.tabcatalog.updateInBackground.delay"
+			name="extensions.tabcatalog.updateInBackground.delay"
 			type="int"/>
 
 	</preferences>
@@ -87,14 +87,14 @@
 				preference="extensions.tabcatalog.updateInBackground"/>
 		</vbox>
 		<hbox align="center">
-			<label value="&extensions.tabcatalog.updateInBackground.interval.before;"
-				control="extensions.tabcatalog.updateInBackground.interval-textbox"/>
-			<textbox id="extensions.tabcatalog.updateInBackground.interval-textbox"
+			<label value="&extensions.tabcatalog.updateInBackground.delay.before;"
+				control="extensions.tabcatalog.updateInBackground.delay-textbox"/>
+			<textbox id="extensions.tabcatalog.updateInBackground.delay-textbox"
 				size="5"
-				preference="extensions.tabcatalog.updateInBackground.interval"
+				preference="extensions.tabcatalog.updateInBackground.delay"
 				type="number" min="0" increment="1"/>
-			<label value="&extensions.tabcatalog.updateInBackground.interval.after;"
-				control="extensions.tabcatalog.updateInBackground.interval-textbox"/>
+			<label value="&extensions.tabcatalog.updateInBackground.delay.after;"
+				control="extensions.tabcatalog.updateInBackground.delay-textbox"/>
 		</hbox>
 	</groupbox>
 </prefpane>

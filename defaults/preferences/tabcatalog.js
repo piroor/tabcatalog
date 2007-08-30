@@ -4,7 +4,7 @@ pref("extensions.tabcatalog.window.sort_by_focus", false);
 pref("extensions.tabcatalog.showAllWindows",     true);
 pref("extensions.tabcatalog.split_by_window",    true);
 pref("extensions.tabcatalog.updateInBackground", true);
-pref("extensions.tabcatalog.updateInBackground.interval", 1000);
+pref("extensions.tabcatalog.updateInBackground.delay", 250);
 
 pref("extensions.tabcatalog.send_click_event", false);
 pref("extensions.tabcatalog.send_click_event.middlebutton", true);
