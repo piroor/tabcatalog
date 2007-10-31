@@ -113,7 +113,7 @@ var TabCatalog = {
 			for (var i = 0; i < max; i++)
 			{
 				if (
-					tabs[i] == tabs[i].__tabcatalog__relatedTabBrowser.selectedTab &&
+					tabs[i].getAttribute('selected') == 'true' &&
 					tabs[i].ownerDocument.defaultView == window
 					) {
 					continue;
