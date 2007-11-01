@@ -2,7 +2,7 @@ var TabCatalog = {
 	PREFROOT : 'extensions.{049952B3-A745-43bd-8D26-D1349B1ED944}',
 	 
 /* Utilities */ 
-	 
+	
 /* elements */ 
 	
 	get button() { 
@@ -1015,51 +1015,58 @@ var TabCatalog = {
 	},
 	updateTabBrowser : function(aTabBrowser)
 	{
-		var addTabMethod = 'addTab';
-		var removeTabMethod = 'removeTab';
-		if (aTabBrowser.__tabextensions__addTab) {
-			addTabMethod = '__tabextensions__addTab';
-			removeTabMethod = '__tabextensions__removeTab';
+		if ('resetOwner' in aTabBrowser) { // Firefox 2
+			aTabBrowser.addEventListener('TabOpen',  this, false);
+			aTabBrowser.addEventListener('TabClose', this, false);
+			aTabBrowser.addEventListener('TabMove',  this, false);
 		}
-
-		aTabBrowser.__tabcatalog__originalAddTab = aTabBrowser[addTabMethod];
-		aTabBrowser[addTabMethod] = function() {
-			var tab = this.__tabcatalog__originalAddTab.apply(this, arguments);
-			TabCatalog.rebuildRequest = true;
-			try {
-				TabCatalog.initTab(tab, this);
-				if (TabCatalog.shown)
-					window.setTimeout('TabCatalog.updateUI();', 0);
-			}
-			catch(e) {
-			}
-			return tab;
-		};
-
-		aTabBrowser.__tabcatalog__originalRemoveTab = aTabBrowser[removeTabMethod];
-		aTabBrowser[removeTabMethod] = function(aTab) {
-			try {
-				TabCatalog.destroyTab(aTab);
-			}
-			catch(e) {
+		else {
+			var addTabMethod = 'addTab';
+			var removeTabMethod = 'removeTab';
+			if (aTabBrowser.__tabextensions__addTab) {
+				addTabMethod = '__tabextensions__addTab';
+				removeTabMethod = '__tabextensions__removeTab';
 			}
 
-			var retVal = this.__tabcatalog__originalRemoveTab.apply(this, arguments);
+			aTabBrowser.__tabcatalog__originalAddTab = aTabBrowser[addTabMethod];
+			aTabBrowser[addTabMethod] = function() {
+				var tab = this.__tabcatalog__originalAddTab.apply(this, arguments);
+				TabCatalog.rebuildRequest = true;
+				try {
+					TabCatalog.initTab(tab, this);
+					if (TabCatalog.shown)
+						window.setTimeout('TabCatalog.updateUI();', 0);
+				}
+				catch(e) {
+				}
+				return tab;
+			};
 
-			if (aTab.parentNode)
-				TabCatalog.initTab(aTab, this);
+			aTabBrowser.__tabcatalog__originalRemoveTab = aTabBrowser[removeTabMethod];
+			aTabBrowser[removeTabMethod] = function(aTab) {
+				try {
+					TabCatalog.destroyTab(aTab);
+				}
+				catch(e) {
+				}
 
-			TabCatalog.rebuildRequest = true;
+				var retVal = this.__tabcatalog__originalRemoveTab.apply(this, arguments);
 
-			return retVal;
-		};
+				if (aTab.parentNode)
+					TabCatalog.initTab(aTab, this);
 
-		aTabBrowser.__tabcatalog__originalMoveTabTo = aTabBrowser.moveTabTo;
-		aTabBrowser.moveTabTo = function() {
-			var tab = this.__tabcatalog__originalMoveTabTo.apply(this, arguments);
-			TabCatalog.rebuildRequest = true;
-			return tab;
-		};
+				TabCatalog.rebuildRequest = true;
+
+				return retVal;
+			};
+
+			aTabBrowser.__tabcatalog__originalMoveTabTo = aTabBrowser.moveTabTo;
+			aTabBrowser.moveTabTo = function() {
+				var tab = this.__tabcatalog__originalMoveTabTo.apply(this, arguments);
+				TabCatalog.rebuildRequest = true;
+				return tab;
+			};
+		}
 
 		var tabs = aTabBrowser.mTabContainer.childNodes;
 		for (var i = 0, maxi = tabs.length; i < maxi; i++)
@@ -1098,6 +1105,8 @@ var TabCatalog = {
 			this.destroyTab(tabs[i]);
 		}
 
+		this.destroyTabBrowser(gBrowser);
+
 		var ObserverService = Components
 			.classes['@mozilla.org/observer-service;1']
 			.getService(Components.interfaces.nsIObserverService);
@@ -1107,9 +1116,17 @@ var TabCatalog = {
 		this.updateCanvasCue = [];
 		this.initCanvasCue = [];
 	},
+	destroyTabBrowser : function(aTabBrowser)
+	{
+		if ('resetOwner' in aTabBrowser) { // Firefox 2
+			aTabBrowser.removeEventListener('TabOpen',  this, false);
+			aTabBrowser.removeEventListener('TabClose', this, false);
+			aTabBrowser.removeEventListener('TabMove',  this, false);
+		}
+	},
   
 /* nsIObserver */ 
-	 
+	
 	domain  : 'extensions.tabcatalog', 
  
 	observe : function(aSubject, aTopic, aPrefName) 
@@ -1204,9 +1221,34 @@ var TabCatalog = {
 				break;
 		}
 	},
- 	 
+  
 /* Event Handling */ 
-	
+	 
+	handleEvent : function(aEvent) 
+	{
+		switch (aEvent.type)
+		{
+			case 'TabOpen':
+				this.rebuildRequest = true;
+				this.initTab(aEvent.originalTarget, aEvent.currentTarget);
+				if (this.shown)
+					window.setTimeout('TabCatalog.updateUI();', 0);
+				break;
+
+			case 'TabClose':
+				this.destroyTab(aEvent.originalTarget);
+				this.rebuildRequest = true;
+				break;
+
+			case 'TabMove':
+				this.rebuildRequest = true;
+				break;
+
+			default:
+				break;
+		}
+	},
+ 	
 /* General */ 
 	
 	onMouseDown : function(aEvent) 
@@ -2100,7 +2142,7 @@ var TabCatalog = {
 	},
   
 /* Catarog Operations */ 
-	 
+	
 	show : function(aBase, aOnlyUpdate, aRelative) 
 	{
 		var tabs = this.tabs;
