@@ -1066,6 +1066,9 @@ var TabCatalog = {
 				TabCatalog.rebuildRequest = true;
 				return tab;
 			};
+
+			delete addTabMethod;
+			delete removeTabMethod;
 		}
 
 		var tabs = aTabBrowser.mTabContainer.childNodes;
@@ -1074,13 +1077,11 @@ var TabCatalog = {
 			this.initTab(tabs[i], aTabBrowser);
 		}
 
-		delete addTabMethod;
-		delete removeTabMethod;
 		delete i;
 		delete maxi;
 		delete tabs;
 	},
- 
+ 	
 	destroy : function() 
 	{
 		window.removeEventListener('keydown',   this.onKeyDown,    true);
@@ -1248,7 +1249,7 @@ var TabCatalog = {
 				break;
 		}
 	},
- 	
+ 
 /* General */ 
 	
 	onMouseDown : function(aEvent) 
