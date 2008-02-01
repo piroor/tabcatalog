@@ -974,7 +974,8 @@ var TabCatalog = {
 	initialShow : function()
 	{
 		// show custom buttons only in the initial startup
-		var bar = document.getElementById('nav-bar');
+		var bar = document.getElementById('navigation-toolbar') || // Firefox 3
+				document.getElementById('nav-bar'); // Firefox 2
 		if (bar && bar.currentSet) {
 			var STRBUNDLE = Components.classes['@mozilla.org/intl/stringbundle;1'].getService(Components.interfaces.nsIStringBundleService);
 			var msg = STRBUNDLE.createBundle('chrome://tabcatalog/locale/tabcatalog.properties');
