@@ -25,27 +25,32 @@
     <em:localized>
       <RDF:Description em:locale="en-US"
                        em:name="Tab Catalog"
-                       em:description="Shows thumbnail-style catalog of tabs."/>
+                       em:description="Shows thumbnail-style catalog of tabs."
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_tabcatalog.html.en"/>
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="ja-JP"
                        em:name="タブカタログ"
-                       em:description="サムネイル形式でタブの一覧を表示します。"/>
+                       em:description="サムネイル形式でタブの一覧を表示します。"
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_tabcatalog.html"/>
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="de-DE"
                        em:name="Tab Catalog"
-                       em:description="Zeigt eine Vorschau-Übersicht der Inhalte aller offenen Tabs"/>
+                       em:description="Zeigt eine Vorschau-Übersicht der Inhalte aller offenen Tabs"
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_tabcatalog.html.en"/>
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="pl-PL"
                        em:name="Tab Catalog"
-                       em:description="Wyświetla katalog miniatur stron otwartych w kartach"/>
+                       em:description="Wyświetla katalog miniatur stron otwartych w kartach"
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_tabcatalog.html.en"/>
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="hu-HU"
                        em:name="Tab Catalog"
-                       em:description="Lapok tartalmának megjelenítése gyorsnézetben."/>
+                       em:description="Lapok tartalmának megjelenítése gyorsnézetben."
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_tabcatalog.html.en"/>
     </em:localized>
 
 
