@@ -358,7 +358,11 @@ var TabCatalog = {
 				this.backgroundUpdateTimer = null;
 			}
 			if (this.getPref('extensions.tabcatalog.updateInBackground')) {
-				this.backgroundUpdateTimer = window.setTimeout('if (!TabCatalog.shown) TabCatalog.initUI(); window.clearTimeout(TabCatalog.backgroundUpdateTimer); TabCatalog.backgroundUpdateTimer = null;', this.getPref('extensions.tabcatalog.updateInBackground.delay'));
+				this.backgroundUpdateTimer = window.setTimeout(function(aSelf) {
+					if (!aSelf.shown) aSelf.initUI();
+					window.clearTimeout(aSelf.backgroundUpdateTimer);
+					aSelf.backgroundUpdateTimer = null;
+				}, this.getPref('extensions.tabcatalog.updateInBackground.delay'), this);
 			}
 		}
 		else {
@@ -937,17 +941,17 @@ var TabCatalog = {
 		if (!('gBrowser' in window)) return;
 
 
-		window.addEventListener('keydown',   this.onKeyDown,    true);
-		window.addEventListener('keyup',     this.onKeyRelease, true);
-		window.addEventListener('keypress',  this.onKeyRelease, true);
-		window.addEventListener('mousedown', this.onMouseDown,  true);
-		window.addEventListener('mouseup',   this.onMouseUp,    true);
-		window.addEventListener('resize',    this.onResize,     true);
+		window.addEventListener('keydown',   this, true);
+		window.addEventListener('keyup',     this, true);
+		window.addEventListener('keypress',  this, true);
+		window.addEventListener('mousedown', this, true);
+		window.addEventListener('mouseup',   this, true);
+		window.addEventListener('resize',    this, true);
 
-		gBrowser.addEventListener('mouseover', this.onTabBarMouseOver, true);
-		gBrowser.addEventListener('mouseout',  this.onTabBarMouseOut,  true);
+		gBrowser.addEventListener('mouseover', this, true);
+		gBrowser.addEventListener('mouseout',  this, true);
 
-		document.getElementById('contentAreaContextMenu').addEventListener('popupshowing',  this.cancelContextMenu,  true);
+		document.getElementById('contentAreaContextMenu').addEventListener('popupshowing', this, true);
 
 		this.addPrefListener(this);
 		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.override.allinonegest');
@@ -959,12 +963,9 @@ var TabCatalog = {
 		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.send_click_event');
 		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.updateInBackground');
 
-		window.addEventListener('unload', function() {
-			window.removeEventListener('unload', arguments.callee, false);
-			TabCatalog.destroy();
-		}, false);
+		window.addEventListener('unload', this, false);
 
-		gBrowser.mTabContainer.addEventListener('select', this.onTabSelect, true);
+		gBrowser.mTabContainer.addEventListener('select', this, true);
 		gBrowser.selectedTab.__tabcatalog__lastSelectedTime = (new Date()).getTime();
 
 		this.updateTabBrowser(gBrowser);
@@ -1092,21 +1093,21 @@ var TabCatalog = {
  	
 	destroy : function() 
 	{
-		window.removeEventListener('keydown',   this.onKeyDown,    true);
-		window.removeEventListener('keyup',     this.onKeyRelease, true);
-		window.removeEventListener('keypress',  this.onKeyRelease, true);
-		window.removeEventListener('mousedown', this.onMouseDown,  true);
-		window.removeEventListener('mouseup',   this.onMouseUp,    true);
-		window.removeEventListener('resize',    this.onResize,     true);
+		window.removeEventListener('keydown',   this, true);
+		window.removeEventListener('keyup',     this, true);
+		window.removeEventListener('keypress',  this, true);
+		window.removeEventListener('mousedown', this, true);
+		window.removeEventListener('mouseup',   this, true);
+		window.removeEventListener('resize',    this, true);
 
-		gBrowser.removeEventListener('mouseover', this.onTabBarMouseOver, true);
-		gBrowser.removeEventListener('mouseout',  this.onTabBarMouseOut,  true);
+		gBrowser.removeEventListener('mouseover', this, true);
+		gBrowser.removeEventListener('mouseout',  this, true);
 
-		document.getElementById('contentAreaContextMenu').removeEventListener('popupshowing',  this.cancelContextMenu,  true);
+		document.getElementById('contentAreaContextMenu').removeEventListener('popupshowing', this, true);
 
 		this.removePrefListener(this);
 
-		gBrowser.mTabContainer.removeEventListener('select', this.onTabSelect, true);
+		gBrowser.mTabContainer.removeEventListener('select', this, true);
 
 		var tabs = gBrowser.mTabContainer.childNodes;
 		for (var i = 0, maxi = tabs.length; i < maxi; i++)
@@ -1237,11 +1238,73 @@ var TabCatalog = {
 	{
 		switch (aEvent.type)
 		{
+			case 'keydown':
+				this.onKeyDown(aEvent);
+				break;
+
+			case 'keyup':
+			case 'keypress':
+				this.onKeyRelease(aEvent);
+				break;
+
+			case 'mousedown':
+				this.onMouseDown(aEvent);
+				break;
+
+			case 'mouseup':
+				this.onMouseUp(aEvent);
+				break;
+
+			case 'resize':
+				this.onResize(aEvent);
+				break;
+
+			case 'mouseover':
+				this.onTabBarMouseOver(aEvent);
+				break;
+
+			case 'mouseout':
+				this.onTabBarMouseOut(aEvent);
+				break;
+
+			case 'popupshowing':
+				this.cancelContextMenu(aEvent);
+				break;
+
+			case 'select':
+				this.onTabSelect(aEvent);
+				break;
+
+			case 'DOMMouseScroll':
+				this.onWheelScroll(aEvent);
+				break;
+
+			case 'mousemove':
+				this.onPanningScroll(aEvent);
+				break;
+
+			case 'blur':
+				this.onBlur(aEvent);
+				break;
+
+			case 'load':
+				window.setTimeout(function(aSelf) {
+					aSelf.init();
+				}, 0, this);
+				break;
+
+			case 'unload':
+				window.removeEventListener('unload', this, false);
+				this.destroy();
+				break;
+
 			case 'TabOpen':
 				this.rebuildRequest = true;
 				this.initTab(aEvent.originalTarget, aEvent.currentTarget);
 				if (this.shown)
-					window.setTimeout('TabCatalog.updateUI();', 0);
+					window.setTimeout(function(aSelf) {
+						aSelf.updateUI();
+					}, 0, this);
 				break;
 
 			case 'TabClose':
@@ -1263,41 +1326,43 @@ var TabCatalog = {
 	onMouseDown : function(aEvent) 
 	{
 		if (
-			TabCatalog.shown &&
+			this.shown &&
 			aEvent.button == 2 &&
-			!TabCatalog.isDisabled() &&
-			!TabCatalog.isEventFiredInMenu(aEvent)
+			!this.isDisabled() &&
+			!this.isEventFiredInMenu(aEvent)
 			) {
-			TabCatalog.catalogZooming = true;
+			this.catalogZooming = true;
 		}
 		else if (
-			TabCatalog.shown &&
+			this.shown &&
 			aEvent.button != 1 &&
-			!TabCatalog.isDisabled() &&
-			!TabCatalog.getItemFromEvent(aEvent) &&
-			!TabCatalog.isEventFiredInMenu(aEvent)
+			!this.isDisabled() &&
+			!this.getItemFromEvent(aEvent) &&
+			!this.isEventFiredInMenu(aEvent)
 			) {
 			if (aEvent.target.id == 'tabcatalog-scrollbar') {
-				TabCatalog.catalogPanning = true;
-				TabCatalog.catalogPanningByScrollbar = true;
-				TabCatalog.panStartX = aEvent.screenX;
-				TabCatalog.panStartY = aEvent.screenY;
+				this.catalogPanning = true;
+				this.catalogPanningByScrollbar = true;
+				this.panStartX = aEvent.screenX;
+				this.panStartY = aEvent.screenY;
 			}
 			else if (aEvent.target.id == 'tabcatalog-scrollbar-slider') {
-				TabCatalog.onSliderClick(aEvent);
+				this.onSliderClick(aEvent);
 			}
 			else
-				TabCatalog.hide();
+				this.hide();
 		}
 		else {
-			if (TabCatalog.shown && aEvent.button == 1) {
-				TabCatalog.catalogPanning = true;
-				TabCatalog.catalogPanningByScrollbar = false;
-				TabCatalog.panStartX = aEvent.screenX;
-				TabCatalog.panStartY = aEvent.screenY;
+			if (this.shown && aEvent.button == 1) {
+				this.catalogPanning = true;
+				this.catalogPanningByScrollbar = false;
+				this.panStartX = aEvent.screenX;
+				this.panStartY = aEvent.screenY;
 			}
-			TabCatalog['button'+aEvent.button+'Pressed'] = true;
-			window.setTimeout('TabCatalog.button'+aEvent.button+'Pressed = false;', TabCatalog.getPref('extensions.tabcatalog.bothclick.delay') * 2);
+			this['button'+aEvent.button+'Pressed'] = true;
+			window.setTimeout(function(aButton, aSelf) {
+				aSelf['button'+aButton+'Pressed'] = false;
+			}, this.getPref('extensions.tabcatalog.bothclick.delay') * 2, aEvent.button, this);
 		}
 	},
 	button0Pressed : false,
@@ -1307,24 +1372,29 @@ var TabCatalog = {
 	onMouseUp : function(aEvent) 
 	{
 		if (
-			!TabCatalog.shown &&
-			!TabCatalog.isDisabled() &&
-			TabCatalog.getPref('extensions.tabcatalog.bothclick.enabled') &&
-			TabCatalog.button0Pressed && TabCatalog.button2Pressed
+			!this.shown &&
+			!this.isDisabled() &&
+			this.getPref('extensions.tabcatalog.bothclick.enabled') &&
+			this.button0Pressed && this.button2Pressed
 			) {
 			aEvent.preventDefault();
 			aEvent.stopPropagation();
-			TabCatalog.show(TabCatalog.CALLED_BY_BOTH_CLICK);
+			this.show(this.CALLED_BY_BOTH_CLICK);
 		}
 
-		if (TabCatalog.shown && TabCatalog.catalogPanning) {
-			TabCatalog.button1Pressed = false;
-			TabCatalog.exitPanningScroll();
+		if (this.shown && this.catalogPanning) {
+			this.button1Pressed = false;
+			this.exitPanningScroll();
 		}
-		else
-			window.setTimeout('TabCatalog.button'+aEvent.button+'Pressed = false;', TabCatalog.getPref('extensions.tabcatalog.bothclick.delay'));
+		else {
+			window.setTimeout(function(aButton, aSelf) {
+				aSelf['button'+aButton+'Pressed'] = false;
+			}, this.getPref('extensions.tabcatalog.bothclick.delay'), aEvent.button, this);
+		}
 
-		window.setTimeout('TabCatalog.catalogZooming = false;');
+		window.setTimeout(function(aSelf) {
+			aSelf.catalogZooming = false;
+		}, 0, this);
 	},
  
 	onMouseOver : function(aEvent) 
@@ -1386,21 +1456,21 @@ var TabCatalog = {
 		if (aEvent.target != document && aEvent.target != window)
 			return;
 
-		TabCatalog.rebuildRequest = true;
-		TabCatalog.hide();
+		this.rebuildRequest = true;
+		this.hide();
 	},
  
 	onBlur : function(aEvent) 
 	{
-		TabCatalog.hide();
+		this.hide();
 	},
  
 	onTabSelect : function(aEvent) 
 	{
-		if (!TabCatalog.catalogShowing) {
+		if (!this.catalogShowing) {
 			gBrowser.selectedTab.__tabcatalog__lastSelectedTime = (new Date()).getTime();
-			if (TabCatalog.getPref('extensions.tabcatalog.sort_by_focus'))
-				TabCatalog.rebuildRequest = true;
+			if (this.getPref('extensions.tabcatalog.sort_by_focus'))
+				this.rebuildRequest = true;
 		}
 	},
   
@@ -1409,21 +1479,21 @@ var TabCatalog = {
 	onKeyDown : function(aEvent) 
 	{
 		if (
-			TabCatalog.isDisabled() ||
-			TabCatalog.isDelayed(aEvent)
+			this.isDisabled() ||
+			this.isDelayed(aEvent)
 			) return;
 
 		var isCharCursorKeys = false;
 		if (
-			TabCatalog.tabs.length > 1 &&
+			this.tabs.length > 1 &&
 			(
 				(
-					TabCatalog.getPref('extensions.tabcatalog.override.ctrltab') &&
+					this.getPref('extensions.tabcatalog.override.ctrltab') &&
 					!aEvent.altKey &&
 					(navigator.platform.match(/mac/i) ? aEvent.metaKey : aEvent.ctrlKey )
 				) ||
 				(
-					TabCatalog.shown &&
+					this.shown &&
 					(
 						aEvent.keyCode == aEvent.DOM_VK_PAGE_UP ||
 						aEvent.keyCode == aEvent.DOM_VK_PAGE_DOWN ||
@@ -1458,7 +1528,7 @@ var TabCatalog = {
 						aEvent.keyCode == aEvent.DOM_VK_NUMPAD9 ||
 
 						(
-							isCharCursorKeys = !TabCatalog.thumbnailShortcutEnabled ?
+							isCharCursorKeys = !this.thumbnailShortcutEnabled ?
 								/^[\-\+hjkl123456789]$/i.test(String.fromCharCode(aEvent.charCode)) :
 								(
 									( // 0-9
@@ -1488,54 +1558,54 @@ var TabCatalog = {
 					)
 				) ||
 				(
-					!TabCatalog.isKeyEventFiredInTextFields(aEvent) &&
-					TabCatalog.isKeyShowhide(aEvent)
+					!this.isKeyEventFiredInTextFields(aEvent) &&
+					this.isKeyShowhide(aEvent)
 				)
 			)
 			) {
-			if (TabCatalog.shown && isCharCursorKeys) {
+			if (this.shown && isCharCursorKeys) {
 				aEvent.preventDefault();
 				aEvent.stopPropagation();
 			}
 		}
 		else {
-			TabCatalog.hide();
+			this.hide();
 		}
 	},
  
 	onKeyRelease : function(aEvent) 
 	{
 		if (
-			TabCatalog.isDisabled() ||
-			TabCatalog.isDelayed(aEvent)
+			this.isDisabled() ||
+			this.isDelayed(aEvent)
 			) return;
 
 		var keyChar;
 
 		if (
-			TabCatalog.shown &&
+			this.shown &&
 			aEvent.type == 'keypress' &&
 			(
 				aEvent.keyCode == aEvent.DOM_VK_RETURN ||
 				aEvent.keyCode == aEvent.DOM_VK_ENTER ||
 				(
-					!TabCatalog.thumbnailShortcutEnabled &&
+					!this.thumbnailShortcutEnabled &&
 					String.fromCharCode(aEvent.charCode) == '5'
 				)
 			)
 			) {
 		}
-		else if (!TabCatalog.isKeyEventFiredInTextFields(aEvent) &&
-				TabCatalog.isKeyShowhide(aEvent)) {
+		else if (!this.isKeyEventFiredInTextFields(aEvent) &&
+				this.isKeyShowhide(aEvent)) {
 			if (aEvent.type == 'keypress') {
-				if (TabCatalog.shown)
-					TabCatalog.hide();
+				if (this.shown)
+					this.hide();
 				else
-					TabCatalog.show(TabCatalog.CALLED_BY_HOTKEY);
+					this.show(this.CALLED_BY_HOTKEY);
 			}
 			return;
 		}
-		else if (TabCatalog.shown &&
+		else if (this.shown &&
 			(
 				aEvent.keyCode == aEvent.DOM_VK_PAGE_UP ||
 				aEvent.keyCode == aEvent.DOM_VK_PAGE_DOWN ||
@@ -1552,7 +1622,7 @@ var TabCatalog = {
 				aEvent.keyCode == aEvent.DOM_VK_DOWN ||
 
 				(
-					!TabCatalog.thumbnailShortcutEnabled ?
+					!this.thumbnailShortcutEnabled ?
 						/^[\-\+hjkl123456789]$/i.test(keyChar = String.fromCharCode(aEvent.charCode)) :
 						(
 							( // 0-9
@@ -1587,27 +1657,27 @@ var TabCatalog = {
 				switch (aEvent.keyCode)
 				{
 					case aEvent.DOM_VK_PAGE_UP:
-						TabCatalog.scrollCatalogBy(-(window.innerHeight / 3 * 2));
+						this.scrollCatalogBy(-(window.innerHeight / 3 * 2));
 						return;
 					case aEvent.DOM_VK_PAGE_DOWN:
-						TabCatalog.scrollCatalogBy(window.innerHeight / 3 * 2);
+						this.scrollCatalogBy(window.innerHeight / 3 * 2);
 						return;
 
 					case aEvent.DOM_VK_HOME:
-						TabCatalog.moveFocusToItem(TabCatalog.getItems()[0]);
+						this.moveFocusToItem(this.getItems()[0]);
 						return;
 					case aEvent.DOM_VK_END:
-						var items = TabCatalog.getItems();
-						TabCatalog.moveFocusToItem(items[items.length-1]);
+						var items = this.getItems();
+						this.moveFocusToItem(items[items.length-1]);
 						return;
 
 					default:
 						if (aEvent.charCode ==  0x2B) { // + (zoom in)
-							TabCatalog.zoom(1);
+							this.zoom(1);
 							return;
 						}
 						else if (aEvent.charCode ==  0x2D) { // - (zoom out)
-							TabCatalog.zoom(-1);
+							this.zoom(-1);
 							return;
 						}
 						else if (
@@ -1615,9 +1685,9 @@ var TabCatalog = {
 							aEvent.keyCode == aEvent.DOM_VK_RIGHT ||
 							aEvent.keyCode == aEvent.DOM_VK_UP ||
 							aEvent.keyCode == aEvent.DOM_VK_DOWN ||
-							!TabCatalog.thumbnailShortcutEnabled
+							!this.thumbnailShortcutEnabled
 							) {
-							TabCatalog.moveFocus(
+							this.moveFocus(
 								(
 									aEvent.keyCode == aEvent.DOM_VK_LEFT ||
 									/^[h147]$/i.test(keyChar)
@@ -1636,10 +1706,10 @@ var TabCatalog = {
 							return;
 						}
 						else {
-							var shortcutTarget = TabCatalog.catalog.parentNode.getElementsByAttribute('accesskey', String.fromCharCode(aEvent.charCode).toUpperCase());
+							var shortcutTarget = this.catalog.parentNode.getElementsByAttribute('accesskey', String.fromCharCode(aEvent.charCode).toUpperCase());
 							if (shortcutTarget.length) {
 								shortcutTarget[0].relatedTabBrowser.selectedTab = shortcutTarget[0].relatedTab;
-								TabCatalog.hide();
+								this.hide();
 								shortcutTarget[0].relatedTab.ownerDocument.defaultView.focus();
 								return;
 							}
@@ -1650,15 +1720,15 @@ var TabCatalog = {
 				return;
 		}
 		else if (
-				TabCatalog.shown &&
-				TabCatalog.callingAction != TabCatalog.CALLED_BY_TABSWITCH
+				this.shown &&
+				this.callingAction != this.CALLED_BY_TABSWITCH
 				) {
 			aEvent.preventDefault();
 			aEvent.stopPropagation();
 			return;
 		}
 		else {
-			if (!TabCatalog.getPref('extensions.tabcatalog.override.ctrltab')) {
+			if (!this.getPref('extensions.tabcatalog.override.ctrltab')) {
 				return;
 			}
 
@@ -1682,7 +1752,7 @@ var TabCatalog = {
 				scrollDown ||
 				scrollUp ||
 				( // when you release "shift" key on the menu
-					TabCatalog.shown &&
+					this.shown &&
 					standBy &&
 					(
 						(!aEvent.shiftKey && !navigator.platform.match(/linux/i)) ||
@@ -1691,25 +1761,25 @@ var TabCatalog = {
 					(aEvent.charCode == 0 && aEvent.keyCode == 16)
 				)
 				) {
-				TabCatalog.show(TabCatalog.CALLED_BY_TABSWITCH);
+				this.show(this.CALLED_BY_TABSWITCH);
 				if (
 					aEvent.type == 'keypress') {
 					aEvent.preventDefault();
 					aEvent.stopPropagation();
-					TabCatalog.scrollUpDown(scrollDown ? 1 : -1 );
+					this.scrollUpDown(scrollDown ? 1 : -1 );
 				}
 
 				return;
 			}
 		}
 
-		var focusedNode = TabCatalog.getFocusedItem();
+		var focusedNode = this.getFocusedItem();
 		if (focusedNode) {
 			focusedNode.relatedTabBrowser.selectedTab = focusedNode.relatedTab;
 			focusedNode.relatedTab.ownerDocument.defaultView.focus();
 		}
 
-		TabCatalog.hide();
+		this.hide();
 	},
   
 /* Thumbnails */ 
@@ -1894,7 +1964,9 @@ var TabCatalog = {
  
 	onBackgroundClick : function(aEvent) 
 	{
-		if (!this.catalogZooming)
+		if (!this.ignoreMiddleClick &&
+			!this.catalogPanning &&
+			!this.catalogZooming)
 			this.hide();
 	},
  
@@ -1940,37 +2012,37 @@ var TabCatalog = {
  
 	onWheelScroll : function(aEvent) 
 	{
-		if (TabCatalog.catalogZooming) {
+		if (this.catalogZooming) {
 			var dir = aEvent.detail;
-			if (TabCatalog.getPref('extensions.tabcatalog.zoom.reverseWheelScrollDirection')) dir = -dir;
+			if (this.getPref('extensions.tabcatalog.zoom.reverseWheelScrollDirection')) dir = -dir;
 
 			if (
-				(dir > 0 && TabCatalog.scrollCounter < 0) ||
-				(dir < 0 && TabCatalog.scrollCounter > 0)
+				(dir > 0 && this.scrollCounter < 0) ||
+				(dir < 0 && this.scrollCounter > 0)
 				)
-				TabCatalog.scrollCounter = 0;
+				this.scrollCounter = 0;
 
-			TabCatalog.scrollCounter += dir;
-			if (Math.abs(TabCatalog.scrollCounter) >= TabCatalog.scrollThreshold) {
-				TabCatalog.zoom(dir);
-				TabCatalog.scrollCounter = 0;
+			this.scrollCounter += dir;
+			if (Math.abs(this.scrollCounter) >= this.scrollThreshold) {
+				this.zoom(dir);
+				this.scrollCounter = 0;
 			}
 
 			aEvent.preventDefault();
 			aEvent.stopPropagation();
 		}
-		else if (TabCatalog.getPref('extensions.tabcatalog.send_wheel_event') &&
-				TabCatalog.getCanvasFromEvent(aEvent) &&
-				TabCatalog.sendWheelScrollEvent(aEvent, TabCatalog.getItemFromEvent(aEvent))) {
+		else if (this.getPref('extensions.tabcatalog.send_wheel_event') &&
+				this.getCanvasFromEvent(aEvent) &&
+				this.sendWheelScrollEvent(aEvent, this.getItemFromEvent(aEvent))) {
 			aEvent.preventDefault();
 			aEvent.stopPropagation();
 		}
-		else if (TabCatalog.catalog.overflow) {
+		else if (this.catalog.overflow) {
 			var h = Math.max(
-					TabCatalog.catalog.tnHeight / 2,
+					this.catalog.tnHeight / 2,
 					window.innerHeight / 5
 				);
-			TabCatalog.scrollCatalogBy((aEvent.detail > 0 ? 1 : -1) * h);
+			this.scrollCatalogBy((aEvent.detail > 0 ? 1 : -1) * h);
 			aEvent.preventDefault();
 			aEvent.stopPropagation();
 		}
@@ -2000,17 +2072,17 @@ var TabCatalog = {
 			ret.window.scrollBy(0, +100);
 
 		if (!aTargetThumbnail.updateTimer) {
-			aTargetThumbnail.updateTimer = setTimeout(function() {
-				TabCatalog.isSendingScrollEvent = false;
-				TabCatalog.updateOneCanvas({
+			aTargetThumbnail.updateTimer = setTimeout(function(aSelf) {
+				aSelf.isSendingScrollEvent = false;
+				aSelf.updateOneCanvas({
 					canvas        : canvas,
 					tab           : aTargetThumbnail.relatedTab,
-					isMultiWindow : TabCatalog.isMultiWindow
+					isMultiWindow : aSelf.isMultiWindow
 				});
 				if (aTargetThumbnail.relatedTab == aTargetThumbnail.relatedTabBrowser.selectedTab)
-					TabCatalog.updateBackground();
+					aSelf.updateBackground();
 				aTargetThumbnail.updateTimer = null;
-			}, 50);
+			}, 50, this);
 		}
 
 		return true;
@@ -2019,21 +2091,21 @@ var TabCatalog = {
 	onPanningScroll : function(aEvent) 
 	{
 		if (
-			!TabCatalog.catalogPanning ||
-			TabCatalog.catalogPanningBehavior < 0 ||
-			!TabCatalog.enterPanningScroll(aEvent)
+			!this.catalogPanning ||
+			this.catalogPanningBehavior < 0 ||
+			!this.enterPanningScroll(aEvent)
 			)
 			return;
 
 		var pos;
 
-		switch (TabCatalog.catalogPanningBehavior) {
+		switch (this.catalogPanningBehavior) {
 			default:
 			case 0:
 				var padding = window.innerHeight / 5;
 				pos = (
 						(
-							TabCatalog.catalog.scrollMaxY /
+							this.catalog.scrollMaxY /
 							(window.innerHeight - (padding * 2))
 						) *
 						(aEvent.screenY - window.screenY - padding)
@@ -2041,11 +2113,11 @@ var TabCatalog = {
 				break;
 
 			case 1:
-				pos = TabCatalog.panStartScrollY + (TabCatalog.panStartY - aEvent.screenY);
+				pos = this.panStartScrollY + (this.panStartY - aEvent.screenY);
 				break;
 		}
 
-		TabCatalog.scrollCatalogTo(pos, true);
+		this.scrollCatalogTo(pos, true);
 	},
 	panStartX : -1,
 	panStartY : -1,
@@ -2079,7 +2151,9 @@ var TabCatalog = {
 
 		this.catalogScrolling = false;
 		this.catalogPanning   = false;
-		window.setTimeout('TabCatalog.ignoreMiddleClick = false', 0);
+		window.setTimeout(function(aSelf) {
+			aSelf.ignoreMiddleClick = false;
+		}, 0, this);
 
 		document.documentElement.removeAttribute('tabcatalog-panning');
 	},
@@ -2094,7 +2168,9 @@ var TabCatalog = {
 
 		if (this.getPref('extensions.tabcatalog.auto_show.enabled')) {
 			this.cancelDelayedMouseOver();
-			this.delayedOnMouseOverTimer = window.setTimeout('TabCatalog.delayedOnMouseOver(TabCatalog.CALLED_BY_BUTTON)', this.getPref('extensions.tabcatalog.auto_show.show_delay'));
+			this.delayedOnMouseOverTimer = window.setTimeout(function(aSelf) {
+				aSelf.delayedOnMouseOver(aSelf.CALLED_BY_BUTTON);
+			}, this.getPref('extensions.tabcatalog.auto_show.show_delay'), this);
 		}
 	},
  
@@ -2111,37 +2187,39 @@ var TabCatalog = {
 	
 	onTabBarMouseOver : function(aEvent) 
 	{
-		if (!TabCatalog.getPref('extensions.tabcatalog.auto_show.tabbar.enabled') ||
-			(TabCatalog.callingAction & TabCatalog.CALLED_MANUALLY) ||
-			TabCatalog.contextMenuShwon ||
-			!TabCatalog.isEventFiredOnTabBar(aEvent))
+		if (!this.getPref('extensions.tabcatalog.auto_show.tabbar.enabled') ||
+			(this.callingAction & this.CALLED_MANUALLY) ||
+			this.contextMenuShwon ||
+			!this.isEventFiredOnTabBar(aEvent))
 			return;
 
-		if (TabCatalog.getPref('extensions.tabcatalog.auto_show.tabbar.enabled')) {
-			TabCatalog.cancelDelayedMouseOver();
-			TabCatalog.delayedOnMouseOverTimer = window.setTimeout('TabCatalog.delayedOnMouseOver(TabCatalog.CALLED_BY_TABBAR)', TabCatalog.getPref('extensions.tabcatalog.auto_show.tabbar.show_delay'));
+		if (this.getPref('extensions.tabcatalog.auto_show.tabbar.enabled')) {
+			this.cancelDelayedMouseOver();
+			this.delayedOnMouseOverTimer = window.setTimeout(function(aSelf) {
+				aSelf.delayedOnMouseOver(aSelf.CALLED_BY_TABBAR);
+			}, this.getPref('extensions.tabcatalog.auto_show.tabbar.show_delay'), this);
 		}
 	},
  
 	onTabBarMouseOut : function(aEvent) 
 	{
-		if (!TabCatalog.getPref('extensions.tabcatalog.auto_show.tabbar.enabled') ||
-			(TabCatalog.callingAction & TabCatalog.CALLED_MANUALLY) ||
-			TabCatalog.contextMenuShwon ||
-			!TabCatalog.isEventFiredOnTabBar(aEvent))
+		if (!this.getPref('extensions.tabcatalog.auto_show.tabbar.enabled') ||
+			(this.callingAction & this.CALLED_MANUALLY) ||
+			this.contextMenuShwon ||
+			!this.isEventFiredOnTabBar(aEvent))
 			return;
 
-		TabCatalog.cancelDelayedMouseOver();
+		this.cancelDelayedMouseOver();
 	},
   
 	cancelContextMenu : function(aEvent) 
 	{
 		if (
-			TabCatalog.shown ||
+			this.shown ||
 			(
-				!TabCatalog.isDisabled() &&
-				TabCatalog.getPref('extensions.tabcatalog.bothclick.enabled') &&
-				TabCatalog.button0Pressed && TabCatalog.button2Pressed
+				!this.isDisabled() &&
+				this.getPref('extensions.tabcatalog.bothclick.enabled') &&
+				this.button0Pressed && this.button2Pressed
 			)
 			) {
 			aEvent.preventDefault();
@@ -2203,11 +2281,11 @@ var TabCatalog = {
 		this.button1Pressed = false;
 		this.button2Pressed = false;
 
-		window.addEventListener('DOMMouseScroll', this.onWheelScroll, true);
+		window.addEventListener('DOMMouseScroll', this, true);
 		if (this.catalog.overflow) {
-			window.addEventListener('mousemove', this.onPanningScroll, true);
+			window.addEventListener('mousemove', this, true);
 		}
-		window.addEventListener('blur', this.onBlur, true);
+		window.addEventListener('blur', this, true);
 
 		if (this.getPref('extensions.tabcatalog.rendering_quality') > 0)
 			this.catalog.setAttribute('dropshadow', true);
@@ -2219,7 +2297,9 @@ var TabCatalog = {
 		if (focusedNode)
 			this.scrollCatalogToItem(focusedNode, true);
 
-		window.setTimeout('TabCatalog.catalogShowing = false;', 100);
+		window.setTimeout(function(aSelf) {
+			aSelf.catalogShowing = false;
+		}, 100, this);
 	},
 	callingAction     : null,
 	lastFocusedIndex  : -1,
@@ -2253,11 +2333,11 @@ var TabCatalog = {
 		catch(e) {
 		}
 
-		window.removeEventListener('DOMMouseScroll', this.onWheelScroll, true);
+		window.removeEventListener('DOMMouseScroll', this, true);
 		if (this.catalog.overflow) {
-			window.removeEventListener('mousemove', this.onPanningScroll, true);
+			window.removeEventListener('mousemove', this, true);
 		}
-		window.removeEventListener('blur', this.onBlur, true);
+		window.removeEventListener('blur', this, true);
 
 		this.animateStop();
 
@@ -2277,8 +2357,8 @@ var TabCatalog = {
 		this.button1Pressed = false;
 		this.button2Pressed = false;
 
-		window.setTimeout('TabCatalog.tabSelectPopupMenu.hidePopup();', 10);
-		window.setTimeout('TabCatalog.tabContextMenu.hidePopup();', 10);
+		window.setTimeout(function(aSelf) { aSelf.tabSelectPopupMenu.hidePopup(); }, 10, this);
+		window.setTimeout(function(aSelf) { aSelf.tabContextMenu.hidePopup(); }, 10, this);
 
 		this.callingAction = null;
 		document.documentElement.removeAttribute('tabcatalog-screen-show');
@@ -2286,7 +2366,7 @@ var TabCatalog = {
 		if (this.delayedOnMouseOverTimer)
 			window.clearTimeout(this.delayedOnMouseOverTimer);
 
-		window.setTimeout('TabCatalog.catalogHiding = false;', 100);
+		window.setTimeout(function(aSelf) { aSelf.catalogHiding = false; }, 100, this);
 	},
  
 	updateUI : function(aRelative) 
@@ -2297,11 +2377,14 @@ var TabCatalog = {
 		if (selectedTab != gBrowser.selectedTab) {
 			this.backgroundBackup.setAttribute('catalog-shown', true);
 			this.hide();
-			window.setTimeout('TabCatalog.backgroundBackup.removeAttribute("catalog-shown"); TabCatalog.show('+base+', true, '+aRelative+');', 0);
+			window.setTimeout(function(aBase, aRelative, aSelf) {
+				aSelf.backgroundBackup.removeAttribute('catalog-shown');
+				aSelf.show(aBase, true, aRelative);
+			}, 0, base, aRelative, this);
 		}
 		else {
 			this.hide();
-			TabCatalog.show(base, true, aRelative);
+			this.show(base, true, aRelative);
 		}
 	},
  
@@ -2562,7 +2645,9 @@ var TabCatalog = {
 	initCanvas : function() 
 	{
 		if (this.initCanvasTimer) return;
-		window.setTimeout('TabCatalog.initCanvasCallback()', 0);
+		window.setTimeout(function(aSelf) {
+			aSelf.initCanvasCallback();
+		}, 0, this);
 	},
 	stopInitCanvas : function()
 	{
@@ -2585,7 +2670,9 @@ var TabCatalog = {
 		if (!this.initCanvasCue.length)
 			this.stopInitCanvas();
 		else
-			this.initCanvasTimer = window.setTimeout('TabCatalog.initCanvasCallback()', 0);
+			this.initCanvasTimer = window.setTimeout(function(aSelf) {
+				aSelf.initCanvasCallback();
+			}, 0, this);
 	},
 	initCanvasCue : [],
 	initCanvasTimer : null,
@@ -2996,7 +3083,9 @@ var TabCatalog = {
 	updateCanvas : function() 
 	{
 		if (this.updateCanvasTimer) return;
-		window.setTimeout('TabCatalog.updateCanvasCallback()', 0);
+		window.setTimeout(function(aSelf) {
+			aSelf.updateCanvasCallback();
+		}, 0, this);
 	},
 	stopUpdateCanvas : function()
 	{
@@ -3032,7 +3121,9 @@ var TabCatalog = {
 		if (!this.updateCanvasCue.length)
 			this.stopUpdateCanvas();
 		else
-			this.updateCanvasTimer = window.setTimeout('TabCatalog.updateCanvasCallback()', 5000);
+			this.updateCanvasTimer = window.setTimeout(function(aSelf) {
+				aSelf.updateCanvasCallback();
+			}, 5000, this);
 	},
 	updateCanvasCue : [],
 	updateCanvasTimer : null,
@@ -3551,7 +3642,9 @@ var TabCatalog = {
 		var base = this.callingAction;
 		this.hide();
 		if (this.getPref('extensions.tabcatalog.keep_open.closetab'))
-			window.setTimeout('TabCatalog.show('+base+');', 0);
+			window.setTimeout(function(aBase, aSelf) {
+				aSelf.show(aBase);
+			}, 0, base, this);
 	},
  
 	zoom : function(aRelative) 
@@ -3713,7 +3806,5 @@ var TabCatalog = {
    
 }; 
 
-window.addEventListener('load', function() {
-	window.setTimeout('TabCatalog.init();', 0);
-}, false);
+window.addEventListener('load', TabCatalog, false);
  
