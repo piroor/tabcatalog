@@ -5,6 +5,35 @@ var TabCatalog = {
 	
 /* elements */ 
 	
+	get browserVBox()
+	{
+		return document.getElementById('appcontent');
+	},
+	get browserHBox()
+	{
+		return document.getElementById('browser');
+	},
+	get spacerVBox()
+	{
+		return document.getElementById('tabcatalog-browser-spacer-vertical');
+	},
+	get spacerHBox()
+	{
+		return document.getElementById('tabcatalog-browser-spacer-horizontal');
+	},
+	getContentWidth : function(aWindow)
+	{
+		return this.spacerVBox.hasAttribute('hidden') ?
+				aWindow.innerWidth :
+				Math.max(this.spacerVBox.boxObject.width, this.spacerHBox.boxObject.width) ;
+	},
+	getContentHeight : function(aWindow)
+	{
+		return this.spacerVBox.hasAttribute('hidden') ?
+				aWindow.innerHeight :
+				Math.max(this.spacerVBox.boxObject.height, this.spacerHBox.boxObject.height) ;
+	},
+ 
 	get button() { 
 		return document.getElementById('tabcatalog-button');
 	},
@@ -254,19 +283,22 @@ var TabCatalog = {
 		var b = gBrowser.getBrowserForTab(gBrowser.selectedTab);
 		var w = b.contentWindow;
 
+		var width = this.getContentWidth(w);
+		var height = this.getContentHeight(w);
+
 		var cache  = this.bgCanvas.firstChild;
 		cache.style.position = 'fixed';
 		cache.style.left  = b.boxObject.x+'px';
 		cache.style.top   = b.boxObject.y+'px';
-		cache.style.width  = w.innerWidth+'px';
-		cache.style.height = w.innerHeight+'px';
-		cache.width  = w.innerWidth;
-		cache.height = w.innerHeight;
+		cache.style.width  = width+'px';
+		cache.style.height = height+'px';
+		cache.width  = width;
+		cache.height = height;
 		try {
 			var ctx = cache.getContext("2d");
-			ctx.clearRect(0, 0, w.innerWidth, w.innerHeight);
+			ctx.clearRect(0, 0, width, height);
 			ctx.save();
-			ctx.drawWindow(w, w.scrollX, w.scrollY, w.innerWidth, w.innerHeight, "rgb(255,255,255)");
+			ctx.drawWindow(w, w.scrollX, w.scrollY, width, height, "rgb(255,255,255)");
 			ctx.restore();
 		}
 		catch(e) {
@@ -279,10 +311,22 @@ var TabCatalog = {
 	},
 	set shown(val) {
 		if (val) {
+			if (window.getComputedStyle(gBrowser.mTabBox, null).mozBoxOrient == 'vertical') {
+				this.browserVBox.removeAttribute('flex');
+				this.spacerVBox.removeAttribute('hidden');
+			}
+			else {
+				this.browserHBox.removeAttribute('flex');
+				this.spacerHBox.removeAttribute('hidden');
+			}
 			this.backgroundShown = true;
 			this.catalog.setAttribute('catalog-shown', true);
 		}
 		else {
+			this.browserVBox.setAttribute('flex', 1);
+			this.browserHBox.setAttribute('flex', 1);
+			this.spacerVBox.setAttribute('hidden', true);
+			this.spacerHBox.setAttribute('hidden', true);
 			this.backgroundShown = false;
 			this.catalog.removeAttribute('catalog-shown');
 		}
@@ -556,8 +600,8 @@ var TabCatalog = {
 		x -= parseInt(css.marginLeft, 10) + parseInt(css.borderLeftWidth, 10) + parseInt(css.paddingLeft, 10);
 		y -= parseInt(css.marginTop, 10)  + parseInt(css.borderTopWidth, 10)  + parseInt(css.paddingTop, 10);
 */
-		var xScale = canvas.width / win.innerWidth;
-		var yScale = canvas.height / win.innerHeight;
+		var xScale = canvas.width / this.getContentWidth(win);
+		var yScale = canvas.height / this.getContentHeight(win);
 		var docBox = win.document.getBoxObjectFor(win.document.documentElement);
 		x = parseInt(x / xScale, 10) + docBox.screenX + win.scrollX;
 		y = parseInt(y / yScale, 10) + docBox.screenY + win.scrollY;
@@ -3040,8 +3084,11 @@ var TabCatalog = {
 
 		var isImage = b.contentDocument.contentType.indexOf('image') == 0;
 
-		var width  = aData.width || w.innerWidth;
-		var height = aData.height || w.innerHeight;
+		var contentW = this.getContentWidth(w);
+		var contentH = this.getContentHeight(w);
+
+		var width  = aData.width || contentW;
+		var height = aData.height || contentH;
 
 		if (aData.width || aData.height) {
 			canvas.width  = canvas.maxWidth  = width;
@@ -3057,8 +3104,8 @@ var TabCatalog = {
 				var ctx = canvas.getContext('2d');
 				ctx.clearRect(0, 0, width, height);
 				ctx.save();
-				ctx.scale(width/w.innerWidth, height/w.innerHeight);
-				ctx.drawWindow(w, w.scrollX, w.scrollY, w.innerWidth, w.innerHeight, 'rgb(255,255,255)');
+				ctx.scale(width/contentW, height/contentH);
+				ctx.drawWindow(w, w.scrollX, w.scrollY, contentW, contentH, 'rgb(255,255,255)');
 				ctx.restore();
 			}
 			catch(e) {

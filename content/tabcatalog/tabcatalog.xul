@@ -50,8 +50,18 @@
 		observes="tabcatalog-featuresForMultipleTabs-broadcaster"/>
 </toolbarpalette>
 
+<hbox id="browser">
+	<spacer id="tabcatalog-browser-spacer-vertical" flex="1"
+		insertafter="appcontent"
+		hidden="true"/>
+</hbox>
 
 <window id="main-window">
+
+	<spacer id="tabcatalog-browser-spacer-horizontal" flex="1"
+		insertafter="browser"
+		hidden="true"/>
+
 	<hbox id="tabcatalog-thumbnail-container-wrapper"
 		onmouseup="TabCatalog.onCatalogDragEnd(event);"
 		onmouseover="TabCatalog.onMouseOver(event);">
