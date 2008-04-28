@@ -20,6 +20,7 @@
 	display: none;
 }
 
+#tabcatalog-thumbnail-frame-container,
 #tabcatalog-thumbnail-container[catalog-shown="true"],
 #tabcatalog-background[catalog-shown="true"],
 #tabcatalog-background-backup[catalog-shown="true"],

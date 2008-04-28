@@ -55,11 +55,6 @@
 	<hbox id="tabcatalog-thumbnail-container-wrapper"
 		onmouseup="TabCatalog.onCatalogDragEnd(event);"
 		onmouseover="TabCatalog.onMouseOver(event);">
-		<box id="tabcatalog-padding-size-box"/>
-		<box id="tabcatalog-header-size-box"/>
-		<box id="tabcatalog-splitter-size-box"/>
-		<box id="tabcatalog-scrollbar-size-box"/>
-
 		<box id="tabcatalog-background-canvas"/>
 		<box id="tabcatalog-background-backup"
 			class="tabcatalog-background"/>
@@ -68,6 +63,13 @@
 			onclick="TabCatalog.onBackgroundClick();"/>
 		<box id="tabcatalog-thumbnail-container"/>
 	</hbox>
+	<hbox id="tabcatalog-thumbnail-size-boxes">
+		<box id="tabcatalog-padding-size-box"/>
+		<box id="tabcatalog-header-size-box"/>
+		<box id="tabcatalog-splitter-size-box"/>
+		<box id="tabcatalog-scrollbar-size-box"/>
+	</hbox>
+	<hbox id="tabcatalog-thumbnail-frame-container"/>
 	<data id="thumbnail-item-template">
 		<vbox class="tabcatalog-thumbnail"
 			flex="0"

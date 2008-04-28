@@ -1,29 +1,43 @@
 var TabCatalog = { 
 	PREFROOT : 'extensions.{049952B3-A745-43bd-8D26-D1349B1ED944}',
+
+	get isGecko19()
+	{
+		const XULAppInfo = Components.classes['@mozilla.org/xre/app-info;1']
+				.getService(Components.interfaces.nsIXULAppInfo);
+		var version = XULAppInfo.platformVersion.split('.');
+		return parseInt(version[0]) >= 2 || parseInt(version[1]) >= 9;
+	},
 	 
 /* Utilities */ 
 	
 /* elements */ 
 	
+	frame : null,
+	get document()
+	{
+		return this.frame ? this.frame.contentDocument : document ;
+	},
+ 
 	get button() { 
 		return document.getElementById('tabcatalog-button');
 	},
  
 	get catalog() { 
-		return document.getElementById('tabcatalog-thumbnail-container');
+		return this.document.getElementById('tabcatalog-thumbnail-container');
 	},
  
 	get background() { 
-		return document.getElementById('tabcatalog-background');
+		return this.document.getElementById('tabcatalog-background');
 	},
 	get backgroundBackup() {
-		return document.getElementById('tabcatalog-background-backup');
+		return this.document.getElementById('tabcatalog-background-backup');
 	},
  
 	get bgCanvas() { 
 		if (!this._bgCanvas) {
-			this._bgCanvas = document.getElementById('tabcatalog-background-canvas');
-			this._bgCanvas.appendChild(document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas'));
+			this._bgCanvas = this.document.getElementById('tabcatalog-background-canvas');
+			this._bgCanvas.appendChild(this.document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas'));
 		}
 		return this._bgCanvas;
 	},
@@ -32,7 +46,7 @@ var TabCatalog = {
 	get tabContextMenu() { 
 		if (!this.mTabContextMenu) {
 			var id = gBrowser.mStrip.getAttribute('context');
-			var popup = (id == '_child') ? gBrowser.mStrip.getElementsByTagNameNS('http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul', 'menupopup')[0] : document.getELementById(id) ;
+			var popup = (id == '_child') ? gBrowser.mStrip.getElementsByTagNameNS('http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul', 'menupopup')[0] : document.getElementById(id) ;
 			this.mTabContextMenu = popup;
 
 			popup.appendChild(document.createElement('menuseparator'));
@@ -237,6 +251,11 @@ var TabCatalog = {
 			this.background.style.height = this.backgroundBackup.style.height = (window.innerHeight * 2)+'px';
 			this.background.style.zIndex = this.backgroundBackup.style.zIndex = 65050;
 			this.background.setAttribute('catalog-shown', true);
+
+			if (this.frame) {
+				this.frame.style.width = this.background.style.width;
+				this.frame.style.height = this.background.style.height;
+			}
 		}
 		else {
 			this.background.removeAttribute('catalog-shown');
@@ -401,7 +420,7 @@ var TabCatalog = {
 	getSelectedTabItems : function() 
 	{
 		try {
-			var xpathResult = document.evaluate(
+			var xpathResult = this.document.evaluate(
 					'descendant::*[@class and @class = "tabcatalog-thumbnail" and @selected = "true"]',
 					this.catalog,
 					this.NSResolver,
@@ -929,6 +948,36 @@ var TabCatalog = {
 	{
 		if (!('gBrowser' in window)) return;
 
+
+		if (this.isGecko19) {
+			/* We have to put canvas into a frame because Gecko 1.9
+			   renders canvas under the main content area if it is
+			   not in a frame.
+			*/
+			var box = document.getElementById('tabcatalog-thumbnail-container-wrapper');
+			box.parentNode.removeChild(box);
+			var frame = document.createElement('browser');
+			frame.setAttribute('id', 'tabCatalog-frame');
+			frame.setAttribute('disablehistory', 'true');
+			frame.setAttribute('src', 'chrome://tabcatalog/content/tabcatalog.xul');
+			document.getElementById('tabcatalog-thumbnail-frame-container').appendChild(frame);
+			frame.style.width = 0;
+			frame.style.height = 0;
+			this.frame = frame;
+			window.setTimeout(function(aSelf) {
+				box = frame.contentDocument.importNode(box, true);
+				var root = frame.contentDocument.documentElement;
+				root.setAttribute('style', 'overflow: none; margin: 0;padding: 0;');
+				while (root.hasChildNodes())
+				{
+					root.removeChild(root.firstChild);
+				}
+				root.appendChild(box);
+				root.addEventListener('mousedown', aSelf.onMouseDown,  true);
+				root.addEventListener('mouseup',   aSelf.onMouseUp,    true);
+				frame.contentWindow.__defineGetter('TabCatalog', function() { return aSelf; });
+			}, 100, this);
+		}
 
 		window.addEventListener('keydown',   this.onKeyDown,    true);
 		window.addEventListener('keyup',     this.onKeyRelease, true);
@@ -2044,7 +2093,7 @@ var TabCatalog = {
 	panStartY : -1,
 	enterPanningScroll : function(aEvent)
 	{
-		if (document.documentElement.getAttribute('tabcatalog-panning'))
+		if (this.document.documentElement.getAttribute('tabcatalog-panning'))
 			return true;
 
 		if (
@@ -2053,7 +2102,7 @@ var TabCatalog = {
 			)
 			return false;
 
-		document.documentElement.setAttribute('tabcatalog-panning', true);
+		this.document.documentElement.setAttribute('tabcatalog-panning', true);
 
 		this.panStartScrollX = this.catalog.scrollX;
 		this.panStartScrollY = this.catalog.scrollY;
@@ -2074,7 +2123,7 @@ var TabCatalog = {
 		this.catalogPanning   = false;
 		window.setTimeout('TabCatalog.ignoreMiddleClick = false', 0);
 
-		document.documentElement.removeAttribute('tabcatalog-panning');
+		this.document.documentElement.removeAttribute('tabcatalog-panning');
 	},
   
 /* Toolbar Button */ 
@@ -2160,7 +2209,7 @@ var TabCatalog = {
 		this.catalogShowing = true;
 
 		this.shown = true;
-		document.documentElement.setAttribute('tabcatalog-screen-show', 'true');
+		this.document.documentElement.setAttribute('tabcatalog-screen-show', 'true');
 
 		if (this.hideTimer) {
 			window.clearTimeout(this.hideTimer);
@@ -2274,7 +2323,7 @@ var TabCatalog = {
 		window.setTimeout('TabCatalog.tabContextMenu.hidePopup();', 10);
 
 		this.callingAction = null;
-		document.documentElement.removeAttribute('tabcatalog-screen-show');
+		this.document.documentElement.removeAttribute('tabcatalog-screen-show');
 
 		if (this.delayedOnMouseOverTimer)
 			window.clearTimeout(this.delayedOnMouseOverTimer);
@@ -2351,7 +2400,7 @@ var TabCatalog = {
 				matrixData.splitByWindow &&
 				tabs[i].ownerDocument != tabs[i-1].ownerDocument
 				) {
-				var splitter = document.createElement('box');
+				var splitter = this.document.createElement('box');
 				splitter.setAttribute('class', 'tabcatalog-splitter');
 				this.catalog.appendChild(splitter);
 
@@ -2372,10 +2421,12 @@ var TabCatalog = {
 				matrixData.matrix[i].width = Math.min(matrixData.width, matrixData.height / matrixData.matrix[i].aspectRatio);
 
 			var box = (i in items) ? items[i] : document.getElementById('thumbnail-item-template').firstChild.cloneNode(true) ;
+			if (box.ownerDocument != this.document)
+				box = this.document.importNode(box, true);
 			var thumbnail = (i in items) ? box.parentNode : null ;
 
 			if (!thumbnail) {
-				thumbnail = document.createElement('thumbnail');
+				thumbnail = this.document.createElement('thumbnail');
 				thumbnail.setAttribute('class', 'tabcatalog-thumbnail-box');
 				thumbnail.appendChild(box);
 				this.catalog.appendChild(thumbnail);
@@ -2521,7 +2572,7 @@ var TabCatalog = {
 
 		if (matrixData.overflow &&
 			this.getPref('extensions.tabcatalog.show_scrollbar')) {
-			var slider = document.createElement('box');
+			var slider = this.document.createElement('box');
 			slider.setAttribute('class', 'tabcatalog-scrollbar-slider');
 			slider.setAttribute('id',    'tabcatalog-scrollbar-slider');
 			this.catalog.appendChild(slider);
@@ -2532,7 +2583,7 @@ var TabCatalog = {
 			slider.style.width = this.scrollbarSize+'px';
 			slider.style.height = (window.innerHeight + this.catalog.scrollMaxY)+'px';
 
-			var bar = document.createElement('box');
+			var bar = this.document.createElement('box');
 			bar.setAttribute('class', 'tabcatalog-scrollbar');
 			bar.setAttribute('id',    'tabcatalog-scrollbar');
 			this.catalog.appendChild(bar);
@@ -2592,7 +2643,7 @@ var TabCatalog = {
 		var width  = matrixData.matrix[index].width;
 		var height = matrixData.matrix[index].height;
 
-		var canvas = box.relatedCanvas || document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas') ;
+		var canvas = box.relatedCanvas || this.document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas') ;
 		canvas.style.width  = canvas.style.maxWidth  = width+"px";
 		canvas.style.height = canvas.style.maxHeight = height+"px";
 
@@ -2667,7 +2718,7 @@ var TabCatalog = {
  
 	updateMultipleTabsState : function() 
 	{
-		var tabBroadcaster = document.getElementById('tabcatalog-featuresForMultipleTabs-broadcaster');
+		var tabBroadcaster = this.document.getElementById('tabcatalog-featuresForMultipleTabs-broadcaster');
 		var b = gBrowser;
 		if (b.mTabContainer.childNodes.length > 1)
 			tabBroadcaster.removeAttribute('disabled');
@@ -3299,11 +3350,11 @@ var TabCatalog = {
 	clear : function(aKeepThumbnails) 
 	{
 		if (aKeepThumbnails) {
-			var slider    = document.getElementById('tabcatalog-scrollbar-slider');
+			var slider    = this.document.getElementById('tabcatalog-scrollbar-slider');
 			if (slider)
 				slider.parentNode.removeChild(slider);
 
-			var scrollbar = document.getElementById('tabcatalog-scrollbar');
+			var scrollbar = this.document.getElementById('tabcatalog-scrollbar');
 			if (scrollbar)
 				scrollbar.parentNode.removeChild(scrollbar);
 
@@ -3323,7 +3374,7 @@ var TabCatalog = {
 			nodes[i].parentNode.removeChild(nodes[i]);
 		}
 
-		var range = document.createRange();
+		var range = this.document.createRange();
 		range.selectNodeContents(this.catalog);
 		range.deleteContents();
 		range.detach();
