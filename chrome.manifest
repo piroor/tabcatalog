@@ -1,4 +1,5 @@
 content	tabcatalog	jar:chrome/tabcatalog.jar!/content/tabcatalog/
+content	tabcatalog-fx3	jar:chrome/tabcatalog.jar!/content/tabcatalog-fx3/	appversion>=3.0b5pre
 
 overlay	chrome://browser/content/browser.xul	chrome://tabcatalog/content/tabcatalog.xul
 overlay	chrome://global/content/customizeToolbar.xul	chrome://tabcatalog/content/tabcatalog.xul

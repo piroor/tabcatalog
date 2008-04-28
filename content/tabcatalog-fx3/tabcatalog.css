@@ -1,0 +1,6 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+:root[tabcatalog-screen-show="true"] browser,
+:root[tabcatalog-screen-show="true"] iframe {
+	visibility: hidden !important;
+}
