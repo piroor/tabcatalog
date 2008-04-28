@@ -778,12 +778,19 @@ var TabCatalog = {
 		}
 
 		aPopupMenu.hidePopup();
-		aPopupMenu.showPopup(
-			node,
-			aEvent.screenX-document.documentElement.boxObject.screenX,
-			aEvent.screenY-document.documentElement.boxObject.screenY,
-			'popup'
-		);
+		if ('openPopupAtScreen' in aPopupMenu)
+			aPopupMenu.openPopupAtScreen(
+				aEvent.screenX,
+				aEvent.screenY,
+				true
+			);
+		else
+			aPopupMenu.showPopup(
+				node,
+				aEvent.screenX-document.documentElement.boxObject.screenX,
+				aEvent.screenY-document.documentElement.boxObject.screenY,
+				'popup'
+			);
 	},
 	contextMenuShwon : false,
  
