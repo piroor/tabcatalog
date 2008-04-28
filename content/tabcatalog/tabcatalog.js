@@ -1964,9 +1964,8 @@ var TabCatalog = {
  
 	onBackgroundClick : function(aEvent) 
 	{
-		if (!this.ignoreMiddleClick &&
-			!this.catalogPanning &&
-			!this.catalogZooming)
+		if (aEvent.button == 1 && this.ignoreMiddleClick) return;
+		if (!this.catalogPanning && !this.catalogZooming)
 			this.hide();
 	},
  
@@ -2281,7 +2280,7 @@ var TabCatalog = {
 		this.button1Pressed = false;
 		this.button2Pressed = false;
 
-		window.addEventListener('DOMMouseScroll', this, true);
+		this.background.addEventListener('DOMMouseScroll', this, true);
 		if (this.catalog.overflow) {
 			window.addEventListener('mousemove', this, true);
 		}
@@ -2333,7 +2332,7 @@ var TabCatalog = {
 		catch(e) {
 		}
 
-		window.removeEventListener('DOMMouseScroll', this, true);
+		this.background.removeEventListener('DOMMouseScroll', this, true);
 		if (this.catalog.overflow) {
 			window.removeEventListener('mousemove', this, true);
 		}
