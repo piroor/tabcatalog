@@ -2011,7 +2011,10 @@ var TabCatalog = {
  
 	onWheelScroll : function(aEvent) 
 	{
-		if (this.catalogZooming) {
+		if (
+			this.catalogZooming || 
+			(navigator.platform.match(/mac/i) ? aEvent.metaKey : aEvent.ctrlKey )
+			) {
 			var dir = aEvent.detail;
 			if (this.getPref('extensions.tabcatalog.zoom.reverseWheelScrollDirection')) dir = -dir;
 
@@ -2390,7 +2393,7 @@ var TabCatalog = {
 	initUI : function(aRelative) 
 	{
 //dump('REBUILD ? '+this.shouldRebuild()+'\n');
-		if (!this.shouldRebuild()) {
+		if (aRelative === void(0) && !this.shouldRebuild()) {
 			var tabs = this.tabs;
 			this.lastFocusedIndex = this.lastSelectedIndex;
 			this.initCanvas();
