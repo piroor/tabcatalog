@@ -4,3 +4,9 @@
 :root[tabcatalog-screen-show="true"] iframe {
 	visibility: hidden !important;
 }
+
+/* こうしておかないとDOMMouseScrollイベントが発生しない……何故？ */
+#tabcatalog-background {
+	overflow: auto !important;
+}
+

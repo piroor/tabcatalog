@@ -2280,7 +2280,7 @@ var TabCatalog = {
 		this.button1Pressed = false;
 		this.button2Pressed = false;
 
-		this.background.addEventListener('DOMMouseScroll', this, true);
+		window.addEventListener('DOMMouseScroll', this, true);
 		if (this.catalog.overflow) {
 			window.addEventListener('mousemove', this, true);
 		}
@@ -2332,7 +2332,7 @@ var TabCatalog = {
 		catch(e) {
 		}
 
-		this.background.removeEventListener('DOMMouseScroll', this, true);
+		window.removeEventListener('DOMMouseScroll', this, true);
 		if (this.catalog.overflow) {
 			window.removeEventListener('mousemove', this, true);
 		}
