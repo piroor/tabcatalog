@@ -1383,7 +1383,7 @@ var TabCatalog = {
   
 	onResize : function(aEvent) 
 	{
-		if (aEvent.target != document)
+		if (aEvent.target != document && aEvent.target != window)
 			return;
 
 		TabCatalog.rebuildRequest = true;
