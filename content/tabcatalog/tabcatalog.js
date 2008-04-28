@@ -3078,12 +3078,12 @@ var TabCatalog = {
 					var ctx = canvas.getContext('2d');
 					ctx.fillStyle = '#fff';
 					ctx.fillRect(0, 0, width, height);
-					var iW = parseInt(aImage.width);
-					var iH = parseInt(aImage.height);
+					var iW = Math.max(1, parseInt(aImage.width));
+					var iH = Math.max(1, parseInt(aImage.height));
 					var x = 0;
 					var y = 0;
 					ctx.save();
-					if ((iW / iH) < 1) {
+					if ((width / iW) > (height / iH)) {
 						iW = iW * height / iH;
 						x = Math.floor((width - iW) / 2 );
 						iH = height;
