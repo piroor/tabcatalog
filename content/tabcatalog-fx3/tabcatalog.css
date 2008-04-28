@@ -1,5 +1,7 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
+
+/* こうしておかないとサムネイルの前にフレームの内容が描画されてしまう */
 :root[tabcatalog-screen-show="true"] browser,
 :root[tabcatalog-screen-show="true"] iframe {
 	visibility: hidden !important;
