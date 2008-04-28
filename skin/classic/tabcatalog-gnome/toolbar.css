@@ -1,0 +1,77 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+/* Close button in thumbnail */
+
+.tabcatalog-thumbnail-header-closebox.tab-close-button label {
+	display: none;
+}
+
+/**
+ * In-tab close button
+ */
+
+.tabcatalog-thumbnail-header-closebox.tab-close-button {
+  list-style-image: url("moz-icon://stock/gtk-close?size=menu");
+}
+
+
+/* toolbar buttons in thumbnail */
+
+
+.tabcatalog-thumbnail-toolbar-item {
+	margin: 0 !important;
+	padding: 0 !important;
+	border-width: 0 !important;
+}
+
+
+/* back button-- */
+
+.tabcatalog-thumbnail-toolbar-item.goBack {
+  list-style-image: url("moz-icon://stock/gtk-go-back-ltr?size=menu");
+}
+.tabcatalog-thumbnail-toolbar-item.goBack[disabled="true"] {
+  list-style-image: url("moz-icon://stock/gtk-go-back-ltr?size=menu&state=disabled");
+}
+
+.tabcatalog-thumbnail-toolbar-item.goBack[chromedir="rtl"] {
+  list-style-image: url("moz-icon://stock/gtk-go-back-rtl?size=menu");
+}
+.tabcatalog-thumbnail-toolbar-item.goBack[chromedir="rtl"][disabled="true"] {
+  list-style-image: url("moz-icon://stock/gtk-go-back-rtl?size=menu&state=disabled");
+}
+
+
+/* small forward button-- */
+
+.tabcatalog-thumbnail-toolbar-item.goForward {
+  list-style-image: url("moz-icon://stock/gtk-go-forward-ltr?size=menu");
+}
+.tabcatalog-thumbnail-toolbar-item.goForward[disabled="true"] {
+  list-style-image: url("moz-icon://stock/gtk-go-forward-ltr?size=menu&state=disabled");
+}
+
+.tabcatalog-thumbnail-toolbar-item.goForward[chromedir="rtl"] {
+  list-style-image: url("moz-icon://stock/gtk-go-forward-rtl?size=menu");
+}
+.tabcatalog-thumbnail-toolbar-item.goForward[chromedir="rtl"][disabled="true"] {
+  list-style-image: url("moz-icon://stock/gtk-go-forward-rtl?size=menu&state=disabled");
+}
+
+/* stop button */
+
+.tabcatalog-thumbnail-toolbar-item.stop {
+  list-style-image: url("moz-icon://stock/gtk-stop?size=menu");
+}
+.tabcatalog-thumbnail-toolbar-item.stop[disabled="true"] {
+  list-style-image: url("moz-icon://stock/gtk-stop?size=menu&state=disabled");
+}
+
+/* reload button */
+
+.tabcatalog-thumbnail-toolbar-item.reload {
+  list-style-image: url("moz-icon://stock/gtk-refresh?size=menu");
+}
+.tabcatalog-thumbnail-toolbar-item.reload[disabled="true"] {
+  list-style-image: url("moz-icon://stock/gtk-refresh?size=menu&state=disabled");
+}

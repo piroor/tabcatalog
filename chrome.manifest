@@ -11,3 +11,6 @@ locale	tabcatalog	pl-PL	jar:chrome/tabcatalog.jar!/locale/pl-PL/tabcatalog/
 locale	tabcatalog	hu-HU	jar:chrome/tabcatalog.jar!/locale/hu-HU/tabcatalog/
 
 skin	tabcatalog	classic/1.0	jar:chrome/tabcatalog.jar!/skin/classic/tabcatalog/
+skin	tabcatalog-gnome	classic/1.0	jar:chrome/tabcatalog.jar!/skin/classic/tabcatalog-gnome/	appversion>=3.0b5pre os=Linux
+
+override	chrome://tabcatalog/skin/toolbar.css	chrome://tabcatalog-gnome/skin/toolbar.css	os=Linux
