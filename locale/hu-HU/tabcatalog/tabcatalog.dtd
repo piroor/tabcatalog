@@ -30,8 +30,8 @@
 <!ENTITY tabcatalog.override.allinonegest "Navigáció a görgővel mint az &quot;All-In-One Gestures&quot; kiterjesztésnél">
 
 <!ENTITY tabcatalog.override.shortcut                "Billentyűkombináció:">
-<!ENTITY tabcatalog.override.shortcut.set            "Beállít">
-<!ENTITY tabcatalog.override.shortcut.clear          "Töröl">
+<!ENTITY tabcatalog.override.shortcut.set            "Beállítás">
+<!ENTITY tabcatalog.override.shortcut.clear          "Törlés">
 <!ENTITY tabcatalog.override.shortcut.dialog.message "Nyomja le az új kombinációt">
 <!ENTITY tabcatalog.override.shortcut.dialog.button  "Mégse">
 
@@ -55,17 +55,17 @@
 <!ENTITY tabcatalog.panning.behavior.1       "mint a képernyőnél">
 
 
-<!ENTITY tabcatalog.updateInBackground            "Optimize Catalog Showing">
-<!ENTITY extensions.tabcatalog.updateInBackground "Update thumbnails in background and reduce the delay to show catalog">
-<!ENTITY extensions.tabcatalog.updateInBackground.delay.before "after">
-<!ENTITY extensions.tabcatalog.updateInBackground.delay.after "msec. from the last action">
+<!ENTITY tabcatalog.updateInBackground            "Gyorsnézet megjelenítésének optimalizálása">
+<!ENTITY extensions.tabcatalog.updateInBackground "Gyorsnézetek frissítése háttérben és a gyorsnézetek megjelenítésének">
+<!ENTITY extensions.tabcatalog.updateInBackground.delay.before "késleltetése az utolsó művelet után">
+<!ENTITY extensions.tabcatalog.updateInBackground.delay.after "ezredmásodperc">
 
 
 
 
 <!ENTITY tabcatalog.tab.thumbnail "Gyorsnézet funkciók">
 
-<!ENTITY tabcatalog.send_click_event "Klikkelés engedélyezése a gyorsnézet linkjeire">
+<!ENTITY tabcatalog.send_click_event "Kattintás engedélyezése a gyorsnézet linkjeire">
 <!ENTITY tabcatalog.send_wheel_event "Gyorsnézet mozgatása az egér görgőjével">
 
 <!ENTITY tabcatalog.appearance.thumbnail.caption  "Gyorsnézet beállítások">
