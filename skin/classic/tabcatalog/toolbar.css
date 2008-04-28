@@ -1,0 +1,152 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+/* Close button in thumbnail */
+
+.tabcatalog-thumbnail-header-closebox.tab-close-button label {
+	display: none;
+}
+
+/**
+ * In-tab close button
+ */
+.tabcatalog-thumbnail-header-closebox.tab-close-button > .toolbarbutton-icon {
+  -moz-margin-end: 0px !important;
+  margin-top: 1px;
+}
+
+.tabcatalog-thumbnail-header-closebox.tab-close-button {
+  -moz-appearance: none;
+  -moz-image-region: rect(0px, 16px, 16px, 0px);
+  height: 24px;
+  border: none !important;
+  padding: 0px;
+  cursor: default;
+  list-style-image: url("jar:resource:///chrome/classic.jar!/skin/classic/global/icons/close.png");
+}
+
+.tabcatalog-thumbnail:not([current="true"]) .tabcatalog-thumbnail-header-closebox.tab-close-button {
+  height: 23px;
+  margin-bottom: 1px;
+}
+
+.tabcatalog-thumbnail:not([current="true"]) .tabcatalog-thumbnail-header-closebox.tab-close-button > .toolbarbutton-icon {
+  margin-top: 2px;
+}
+
+.tabcatalog-thumbnail-header-closebox.tab-close-button:hover,
+.tabcatalog-thumbnail[current="true"] .tabcatalog-thumbnail-header-closebox.tab-close-button:hover {
+  -moz-image-region: rect(0px, 32px, 16px, 16px);
+  opacity: 1.0;
+}
+
+.tabcatalog-thumbnail-header-closebox.tab-close-button:hover:active,
+.tabcatalog-thumbnail[current="true"] .tabcatalog-thumbnail-header-closebox.tab-close-button:hover:active {
+  -moz-image-region: rect(0px, 48px, 16px, 32px);
+  opacity: 1.0;
+}
+
+.tabcatalog-thumbnail-header-closebox.tab-close-button:focus {
+  outline: none !important;
+}
+
+
+
+
+/* toolbar buttons in thumbnail */
+
+/* ::::: 16px primary toolbar buttons ::::: */
+
+.tabcatalog-thumbnail-toolbar-item {
+  -moz-box-orient: vertical;
+  min-width: 0;
+  list-style-image: url("jar:resource:///chrome/classic.jar!/skin/classic/browser/Toolbar-small.png");
+}
+.tabcatalog-thumbnail-toolbar-item[chromedir="rtl"] {
+  -moz-box-orient: vertical;
+  min-width: 0;
+  list-style-image: url("jar:resource:///chrome/classic.jar!/skin/classic/browser/Toolbar-rtl-small.png");
+}
+.tabcatalog-thumbnail-toolbar-item .toolbarbutton-icon {
+  -moz-margin-end: 0px;
+  max-width: 16px !important;
+  max-height: 16px !important;
+}
+.tabcatalog-thumbnail-toolbar-item label {
+  display: none;
+}
+
+
+/* back button-- */
+
+.tabcatalog-thumbnail-toolbar-item.goBack .toolbarbutton-icon {
+  padding-right: 1px;
+}
+.tabcatalog-thumbnail-toolbar-item.goBack {
+  -moz-image-region: rect(0px 16px 16px 0px);
+}
+.tabcatalog-thumbnail-toolbar-item.goBack:not([disabled="true"]):hover,
+.tabcatalog-thumbnail-toolbar-item.goBack[buttonover="true"] {
+  -moz-image-region: rect(16px 16px 32px 0px);
+}
+.tabcatalog-thumbnail-toolbar-item.goBack[disabled="true"] {
+  -moz-image-region: rect(32px 16px 48px 0px);
+}
+.tabcatalog-thumbnail-toolbar-item.goBack:not([disabled="true"]):hover:active {
+  -moz-image-region: rect(64px 16px 80px 0px);
+}
+
+
+/* small forward button-- */
+
+.tabcatalog-thumbnail-toolbar-item.goForward .toolbarbutton-icon {
+  padding-right: 1px;
+}
+.tabcatalog-thumbnail-toolbar-item.goForward {
+  -moz-image-region: rect(0px 32px 16px 16px);
+}
+.tabcatalog-thumbnail-toolbar-item.goForward:not([disabled="true"]):hover,
+.tabcatalog-thumbnail-toolbar-item.goForward[buttonover="true"] {
+  -moz-image-region: rect(16px 32px 32px 16px);
+}
+.tabcatalog-thumbnail-toolbar-item.goForward[disabled="true"] {
+  -moz-image-region: rect(32px 32px 48px 16px);
+}
+.tabcatalog-thumbnail-toolbar-item.goForward:not([disabled="true"]):hover:active {
+  -moz-image-region: rect(64px 32px 80px 16px);
+}
+
+/* stop button */
+
+.tabcatalog-thumbnail-toolbar-item.stop .toolbarbutton-icon {
+  padding-left: 1px;
+}
+.tabcatalog-thumbnail-toolbar-item.stop {
+  -moz-image-region: rect(0px 48px 16px 32px);
+}
+.tabcatalog-thumbnail-toolbar-item.stop:not([disabled="true"]):hover {
+  -moz-image-region: rect(16px 48px 32px 32px);
+}
+.tabcatalog-thumbnail-toolbar-item.stop[disabled="true"] {
+  -moz-image-region: rect(32px 48px 48px 32px);
+}
+.tabcatalog-thumbnail-toolbar-item.stop:not([disabled="true"]):hover:active {
+  -moz-image-region: rect(64px 48px 80px 32px);
+}
+
+/* reload button */
+
+.tabcatalog-thumbnail-toolbar-item.reload .toolbarbutton-icon {
+  padding-left: 1px;
+}
+.tabcatalog-thumbnail-toolbar-item.reload {
+  -moz-image-region: rect(0px 64px 16px 48px);
+}
+.tabcatalog-thumbnail-toolbar-item.reload:not([disabled="true"]):hover {
+  -moz-image-region: rect(16px 64px 32px 48px);
+}
+.tabcatalog-thumbnail-toolbar-item.reload[disabled="true"] {
+  -moz-image-region: rect(32px 64px 48px 48px);
+}
+.tabcatalog-thumbnail-toolbar-item.reload:not([disabled="true"]):hover:active {
+  -moz-image-region: rect(64px 64px 80px 48px);
+}

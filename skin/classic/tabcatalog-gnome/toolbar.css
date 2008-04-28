@@ -18,10 +18,24 @@
 /* toolbar buttons in thumbnail */
 
 
-.tabcatalog-thumbnail-toolbar-item {
+.tabcatalog-thumbnail-toolbar-item,
+.tabcatalog-thumbnail-toolbar-item > .toolbarbutton-icon {
 	margin: 0 !important;
 	padding: 0 !important;
 	border-width: 0 !important;
+	min-width: 16px !important;
+	min-height: 16px !important;
+	width: 16px !important;
+	height: 16px !important;
+	-moz-appearance: none !important;
+}
+
+.tabcatalog-thumbnail-toolbar-item {
+	opacity: 0.75;
+}
+.tabcatalog-thumbnail-toolbar-item:hover,
+.tabcatalog-thumbnail-toolbar-item:hover:active {
+	opacity: 1;
 }
 
 
