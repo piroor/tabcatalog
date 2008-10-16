@@ -1,6 +1,6 @@
 var TabCatalog = { 
 	PREFROOT : 'extensions.{049952B3-A745-43bd-8D26-D1349B1ED944}',
-	 
+	
 /* Utilities */ 
 	
 /* elements */ 
@@ -218,7 +218,7 @@ var TabCatalog = {
 	_WindowManager : null,
   
 /* state */ 
-	 
+	
 	get backgroundShown() { 
 		return this.background.getAttribute('catalog-shown') == 'true';
 	},
@@ -933,9 +933,21 @@ var TabCatalog = {
 	LAST_TAB_ACTION_CLOSE_TAB            : 0,
 	LAST_TAB_ACTION_CLOSE_TAB_AND_WINDOW : 1,
 	LAST_TAB_ACTION_CLOSE_WINDOW         : 2,
+ 
+	getTabBrowserFromChild : function(aNode) 
+	{
+		if (!aNode) return null;
+		return aNode.ownerDocument.evaluate(
+				'ancestor-or-self::*[local-name()="tabbrowser"]',
+				aNode,
+				null,
+				XPathResult.FIRST_ORDERED_NODE_TYPE,
+				null
+			).singleNodeValue;
+	},
   
 /* Initializing */ 
-	 
+	
 	init : function() 
 	{
 		if (!('gBrowser' in window)) return;
@@ -979,7 +991,8 @@ var TabCatalog = {
 
 		this.initialShow();
 	},
-	initialShow : function()
+	
+	initialShow : function() 
 	{
 		// show custom buttons only in the initial startup
 		var bar = document.getElementById('navigation-toolbar') || // Firefox 3
@@ -1022,7 +1035,8 @@ var TabCatalog = {
 				window.setTimeout('BrowserToolboxCustomizeDone(true);', 0);
 		}
 	},
-	updateTabBrowser : function(aTabBrowser)
+ 
+	updateTabBrowser : function(aTabBrowser) 
 	{
 		if ('resetOwner' in aTabBrowser) { // Firefox 2
 			aTabBrowser.addEventListener('TabOpen',  this, false);
@@ -1089,8 +1103,34 @@ var TabCatalog = {
 		delete i;
 		delete maxi;
 		delete tabs;
+
+		if ('swapBrowsersAndCloseOther' in aTabBrowser) {
+			eval('aTabBrowser.swapBrowsersAndCloseOther = '+aTabBrowser.swapBrowsersAndCloseOther.toSource().replace(
+				'{',
+				'{ TabCatalog.destroyTab(aOurTab);'
+			).replace(
+				'if (tabCount == 1)',
+				'TabCatalog.initTab(aOurTab) $&'
+			));
+		}
 	},
- 	
+ 
+	initTab : function(aTab, aTabBrowser) 
+	{
+		if (aTab.__tabcatalog__progressListener) return;
+
+		if (!aTabBrowser) aTabBrowser = this.getTabBrowserFromChild(aTab);
+		var filter = Components.classes['@mozilla.org/appshell/component/browser-status-filter;1'].createInstance(Components.interfaces.nsIWebProgress);
+		var listener = this.createProgressListener(aTab, aTabBrowser);
+		filter.addProgressListener(listener, Components.interfaces.nsIWebProgress.NOTIFY_ALL);
+		aTab.linkedBrowser.webProgress.addProgressListener(filter, Components.interfaces.nsIWebProgress.NOTIFY_ALL);
+
+		aTab.__tabcatalog__progressListener = listener;
+		aTab.__tabcatalog__progressFilter   = filter;
+
+		window.setTimeout('TabCatalog.updateMultipleTabsState();', 0);
+	},
+  
 	destroy : function() 
 	{
 		window.removeEventListener('keydown',   this, true);
@@ -1126,7 +1166,8 @@ var TabCatalog = {
 		this.updateCanvasCue = [];
 		this.initCanvasCue = [];
 	},
-	destroyTabBrowser : function(aTabBrowser)
+	
+	destroyTabBrowser : function(aTabBrowser) 
 	{
 		if ('resetOwner' in aTabBrowser) { // Firefox 2
 			aTabBrowser.removeEventListener('TabOpen',  this, false);
@@ -1134,7 +1175,22 @@ var TabCatalog = {
 			aTabBrowser.removeEventListener('TabMove',  this, false);
 		}
 	},
-  
+ 
+	destroyTab : function(aTab) 
+	{
+		if (!aTab.__tabcatalog__progressListener) return;
+
+		aTab.linkedBrowser.webProgress.removeProgressListener(aTab.__tabcatalog__progressFilter);
+		aTab.__tabcatalog__progressFilter.removeProgressListener(aTab.__tabcatalog__progressListener);
+		delete aTab.__tabcatalog__progressFilter;
+		delete aTab.__tabcatalog__progressListener.mTab;
+		delete aTab.__tabcatalog__progressListener.mBrowser;
+		delete aTab.__tabcatalog__progressListener.mTabBrowser;
+		delete aTab.__tabcatalog__progressListener;
+
+		window.setTimeout('TabCatalog.updateMultipleTabsState();', 0);
+	},
+   
 /* nsIObserver */ 
 	
 	domain  : 'extensions.tabcatalog', 
@@ -1233,7 +1289,7 @@ var TabCatalog = {
 	},
   
 /* Event Handling */ 
-	 
+	
 	handleEvent : function(aEvent) 
 	{
 		switch (aEvent.type)
@@ -1435,7 +1491,7 @@ var TabCatalog = {
 				this.onButtonMouseOver(aEvent);
 		}
 	},
-	 
+	
 	delayedOnMouseOver : function(aBase) 
 	{
 		this.delayedOnMouseOverTimer = null;
@@ -1853,7 +1909,7 @@ var TabCatalog = {
 		aEvent.preventDefault();
 		aEvent.stopPropagation();
 	},
-	 
+	
 	sendClickEvent : function(aEvent, aTargetThumbnail) 
 	{
 		/*
@@ -2012,7 +2068,7 @@ var TabCatalog = {
 	onWheelScroll : function(aEvent) 
 	{
 		if (
-			this.catalogZooming || 
+			this.catalogZooming ||
 			(navigator.platform.match(/mac/i) ? aEvent.metaKey : aEvent.ctrlKey )
 			) {
 			var dir = aEvent.detail;
@@ -2051,7 +2107,7 @@ var TabCatalog = {
 	},
 	scrollCounter : 0,
 	scrollThreshold : 5,
-	 
+	
 	sendWheelScrollEvent : function(aEvent, aTargetThumbnail) 
 	{
 		var canvas  = aTargetThumbnail.relatedCanvas;
@@ -2731,36 +2787,6 @@ var TabCatalog = {
 		this.catalog.scrollbar.style.top = parseInt((window.innerHeight - this.catalog.scrollbar.boxObject.height) * (curPos / this.catalog.scrollMaxY))+'px';
 	},
  
-	initTab : function(aTab, aTabBrowser) 
-	{
-		if (aTab.__tabcatalog__progressListener) return;
-
-		var filter = Components.classes['@mozilla.org/appshell/component/browser-status-filter;1'].createInstance(Components.interfaces.nsIWebProgress);
-		var listener = this.createProgressListener(aTab, aTabBrowser);
-		filter.addProgressListener(listener, Components.interfaces.nsIWebProgress.NOTIFY_ALL);
-		aTab.linkedBrowser.webProgress.addProgressListener(filter, Components.interfaces.nsIWebProgress.NOTIFY_ALL);
-
-		aTab.__tabcatalog__progressListener = listener;
-		aTab.__tabcatalog__progressFilter   = filter;
-
-		window.setTimeout('TabCatalog.updateMultipleTabsState();', 0);
-	},
- 
-	destroyTab : function(aTab) 
-	{
-		if (!aTab.__tabcatalog__progressListener) return;
-
-		aTab.linkedBrowser.webProgress.removeProgressListener(aTab.__tabcatalog__progressFilter);
-		aTab.__tabcatalog__progressFilter.removeProgressListener(aTab.__tabcatalog__progressListener);
-		delete aTab.__tabcatalog__progressFilter;
-		delete aTab.__tabcatalog__progressListener.mTab;
-		delete aTab.__tabcatalog__progressListener.mBrowser;
-		delete aTab.__tabcatalog__progressListener.mTabBrowser;
-		delete aTab.__tabcatalog__progressListener;
-
-		window.setTimeout('TabCatalog.updateMultipleTabsState();', 0);
-	},
- 
 	updateMultipleTabsState : function() 
 	{
 		var tabBroadcaster = document.getElementById('tabcatalog-featuresForMultipleTabs-broadcaster');
@@ -2938,7 +2964,7 @@ var TabCatalog = {
 			}
 		}
 	},
-	 
+	
 	getThumbnailMatrix : function(aTabs, aRelative) 
 	{
 		var padding = this.padding;
@@ -3129,7 +3155,7 @@ var TabCatalog = {
 	},
 	updateCanvasCue : [],
 	updateCanvasTimer : null,
-	 
+	
 	updateOneCanvas : function(aData, aImage) 
 	{
 		var canvas = aData.canvas;
@@ -3655,7 +3681,7 @@ var TabCatalog = {
 	},
   
 /* Override */ 
-	 
+	
 /* All-In-One Gesture */ 
 	
 	aioTabWheelNav : function() 
