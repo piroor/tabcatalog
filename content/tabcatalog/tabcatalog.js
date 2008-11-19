@@ -1109,8 +1109,8 @@ var TabCatalog = {
 				'{',
 				'{ TabCatalog.destroyTab(aOurTab);'
 			).replace(
-				'if (tabCount == 1)',
-				'TabCatalog.initTab(aOurTab); $&'
+				/(if \((?:tabCount == 1|aOurTab == this.selectedTab)\))/,
+				'TabCatalog.initTab(aOurTab); $1'
 			));
 		}
 	},
