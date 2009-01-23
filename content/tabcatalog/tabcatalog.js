@@ -95,13 +95,13 @@ var TabCatalog = {
 
 				if (windows[i] == window) indexOffset = tabs.length;
 
-				tabs = tabs.concat(Array.prototype.slice.call(windows[i].gBrowser.mTabContainer.childNodes));
+				tabs = tabs.concat(this.getTabsArray(windows[i].gBrowser));
 				if (this.shouldRebuild(windows[i]))
 					this.rebuildRequest = true;
 			}
 		}
 		else {
-			tabs = gBrowser.mTabContainer.childNodes;
+			tabs = this.getTabsArray(gBrowser);
 		}
 
 		var isSorted = this.getPref('extensions.tabcatalog.sort_by_focus');
@@ -155,6 +155,22 @@ var TabCatalog = {
 		return tabs;
 	},
 	lastSelectedIndex : 0,
+	getTabsArray : function(aTabBrowser) 
+	{
+		var tabs = aTabBrowser.ownerDocument.evaluate(
+				'descendant::*[local-name()="tab"]',
+				aTabBrowser.mTabContainer,
+				null,
+				XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+				null
+			);
+		var array = [];
+		for (var i = 0, maxi = tabs.snapshotLength; i < maxi)
+		{
+			array.push(tabs.snapshotItem(i));
+		}
+		return array;
+	},
  
 	get isMultiWindow() 
 	{
@@ -876,7 +892,7 @@ var TabCatalog = {
 	removeTab : function(aTab, aOnlyRemove) 
 	{
 		var mode = this.getPref('extensions.tabcatalog.closeTabActionForLastTab');
-		if (aTab.__tabcatalog__relatedTabBrowser.mTabContainer.childNodes.length == 1 &&
+		if (this.getTabsArray(aTab.__tabcatalog__relatedTabBrowser).length == 1 &&
 			mode != this.LAST_TAB_ACTION_CLOSE_TAB) {
 			if (mode == this.LAST_TAB_ACTION_CLOSE_TAB_AND_WINDOW)
 				aTab.__tabcatalog__relatedTabBrowser.removeTab(aTab);
@@ -1094,7 +1110,7 @@ var TabCatalog = {
 			delete removeTabMethod;
 		}
 
-		var tabs = aTabBrowser.mTabContainer.childNodes;
+		var tabs = this.getTabsArray(aTabBrowser);
 		for (var i = 0, maxi = tabs.length; i < maxi; i++)
 		{
 			this.initTab(tabs[i], aTabBrowser);
@@ -1149,7 +1165,7 @@ var TabCatalog = {
 
 		gBrowser.mTabContainer.removeEventListener('select', this, true);
 
-		var tabs = gBrowser.mTabContainer.childNodes;
+		var tabs = this.getTabsArray(gBrowser);
 		for (var i = 0, maxi = tabs.length; i < maxi; i++)
 		{
 			this.destroyTab(tabs[i]);
@@ -2791,7 +2807,7 @@ var TabCatalog = {
 	{
 		var tabBroadcaster = document.getElementById('tabcatalog-featuresForMultipleTabs-broadcaster');
 		var b = gBrowser;
-		if (b.mTabContainer.childNodes.length > 1)
+		if (this.getTabsArray(b).length > 1)
 			tabBroadcaster.removeAttribute('disabled');
 		else
 			tabBroadcaster.setAttribute('disabled', true);
@@ -3693,8 +3709,8 @@ var TabCatalog = {
 		}
 		aioTabPU = new aioPopUp(activeTab, aioTabCount, "popup", aioOldX + 2, aioOldY + 2,
 			aioReverseScroll && aioNoPopup, aioTabWheelEnd, aioTabPopping, aioTabWheeling);
-		aioTabPU.createPopup("aioContent.mTabContainer.childNodes[i].label",
-			"aioContent.mTabContainer.childNodes[i].getAttribute('image')", "");
+		aioTabPU.createPopup("TabCatalog.getTabsArray(aioContent)[i].label",
+			"TabCatalog.getTabsArray(aioContent)[i].getAttribute('image')", "");
 
 		aioTabPU.scrollerNode.hidePopup();
 
