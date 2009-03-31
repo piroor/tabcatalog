@@ -155,7 +155,7 @@ var TabCatalog = {
 		return tabs;
 	},
 	lastSelectedIndex : 0,
-	getTabsArray : function(aTabBrowser) 
+	getTabsArray : function(aTabBrowser)
 	{
 		var tabs = aTabBrowser.ownerDocument.evaluate(
 				'descendant::*[local-name()="tab"]',
@@ -561,14 +561,14 @@ var TabCatalog = {
  
 	// Emulate events on canvas for related window 
 	// codes from Tab Scope ( https://addons.mozilla.org/firefox/addon/4882 )
-	 
+	
 	_getCorrespondingWindowAndPoint : function(aScreenX, aScreenY, aTargetThumbnail) 
 	{
 		var canvas  = aTargetThumbnail.relatedCanvas;
 		var browser = aTargetThumbnail.relatedTab.linkedBrowser;
 
 		var win = browser.contentWindow;
-		var box = canvas.ownerDocument.getBoxObjectFor(canvas);
+		var box = this.getBoxObjectFor(canvas);
 		var x = aScreenX - box.screenX;
 		var y = aScreenY - box.screenY;
 /*
@@ -578,12 +578,12 @@ var TabCatalog = {
 */
 		var xScale = canvas.width / win.innerWidth;
 		var yScale = canvas.height / win.innerHeight;
-		var docBox = win.document.getBoxObjectFor(win.document.documentElement);
+		var docBox = this.getBoxObjectFor(win.document.documentElement);
 		x = parseInt(x / xScale, 10) + docBox.screenX + win.scrollX;
 		y = parseInt(y / yScale, 10) + docBox.screenY + win.scrollY;
 		return { window : this.getWindowFromPoint(win, x, y), x : x, y : y };
 	},
-	 
+	
 	getWindowFromPoint : function(aWindow, aScreenX, aScreenY) 
 	{
 		var wins = this.flattenWindows(aWindow);
@@ -597,7 +597,7 @@ var TabCatalog = {
 			for (var j = 0; j < arr.length; j++)
 				frameList.push(arr[j]);
 			for (var j = frameList.length - 1; j >= 0; j--) {
-				var box = win.document.getBoxObjectFor(frameList[j]);
+				var box = this.getBoxObjectFor(frameList[j]);
 				var l = box.screenX;
 				var t = box.screenY;
 				var r = l + box.width;
@@ -628,7 +628,7 @@ var TabCatalog = {
 			var accService = Components.classes['@mozilla.org/accessibilityService;1']
 								.getService(Components.interfaces.nsIAccessibilityService);
 			var acc = accService.getAccessibleFor(aWindow.document);
-			var box = aWindow.document.getBoxObjectFor(aWindow.document.documentElement);
+			var box = this.getBoxObjectFor(aWindow.document.documentElement);
 			accNode = /* acc.getChildAtPoint(aScreenX - box.screenX, aScreenY - box.screenY) || */ acc.getChildAtPoint(aScreenX, aScreenY);
 			/* アクセシビリティ用のノードからDOMのノードを得る */
 			accNode = accNode.QueryInterface(Components.interfaces.nsIAccessNode).DOMNode;
@@ -678,7 +678,7 @@ var TabCatalog = {
 				(img = this.getImageInLink(node))
 				)
 				node = img;
-			var box = doc.getBoxObjectFor(node);
+			var box = this.getBoxObjectFor(node);
 			var l = box.screenX;
 			var t = box.screenY;
 			var r = l + box.width;
@@ -960,6 +960,31 @@ var TabCatalog = {
 				XPathResult.FIRST_ORDERED_NODE_TYPE,
 				null
 			).singleNodeValue;
+	},
+ 
+	getBoxObjectFor : function(aNode) 
+	{
+		if ('getBoxObjectFor' in aNode.ownerDocument)
+			return aNode.ownerDocument.getBoxObjectFor(aNode);
+
+		var box = {
+				x       : 0,
+				y       : 0,
+				width   : 0,
+				height  : 0,
+				screenX : 0,
+				screenY : 0
+			};
+		try {
+			var rect = aNode.getBoundingClientRect();
+			box.x = rect.left+1;
+			box.y = rect.top+1;
+			box.width  = rect.right-rect.left;
+			box.height = rect.bottom-rect.top;
+		}
+		catch(e) {
+		}
+		return box;
 	},
   
 /* Initializing */ 
@@ -1934,7 +1959,7 @@ var TabCatalog = {
 			var canvas  = aTargetThumbnail.relatedCanvas;
 			var browser = aTargetThumbnail.relatedTab.linkedBrowser;
 
-			var box = canvas.ownerDocument.getBoxObjectFor(canvas);
+			var box = this.getBoxObjectFor(canvas);
 			var scale = browser.boxObject.width / box.width;
 			var x = parseInt((aEvent.screenX - box.screenX) * scale);
 			var y = parseInt((aEvent.screenY - box.screenY) * scale);
@@ -2129,7 +2154,7 @@ var TabCatalog = {
 		var canvas  = aTargetThumbnail.relatedCanvas;
 		var browser = aTargetThumbnail.relatedTab.linkedBrowser;
 
-		var box = canvas.ownerDocument.getBoxObjectFor(canvas);
+		var box = this.getBoxObjectFor(canvas);
 		var ret = this._getCorrespondingWindowAndPoint(
 			aEvent.screenX + box.screenX,
 			aEvent.screenY + box.screenY,
@@ -3296,10 +3321,10 @@ var TabCatalog = {
 		if (!elt) return;
 
 		var browser = tab.linkedBrowser;
-		var cBox = canvas.ownerDocument.getBoxObjectFor(canvas);
-		var bBox = browser.ownerDocument.getBoxObjectFor(browser);
+		var cBox = this.getBoxObjectFor(canvas);
+		var bBox = this.getBoxObjectFor(browser);
 
-		var box = elt.ownerDocument.getBoxObjectFor(elt);
+		var box = this.getBoxObjectFor(elt);
 		var xScale = cBox.width / bBox.width;
 		var yScale = cBox.height / bBox.height;
 		var x = parseInt((box.screenX - bBox.screenX) * xScale);
