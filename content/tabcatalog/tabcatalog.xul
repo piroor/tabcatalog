@@ -10,6 +10,7 @@
          xmlns:html="http://www.w3.org/1999/xhtml">
 
 
+<script src="boxObject.js" type="application/x-javascript"/>
 <script src="tabcatalog.js" type="application/x-javascript"/>
 <script src="keyParser.js" type="application/x-javascript"/>
 
