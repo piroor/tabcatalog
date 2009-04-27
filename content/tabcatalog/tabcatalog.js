@@ -3177,7 +3177,7 @@ var TabCatalog = {
 	updateCanvasCue : [],
 	updateCanvasTimer : null,
 	
-	updateOneCanvas : function(aData, aImage) 
+	updateOneCanvas : function(aData) 
 	{
 		var canvas = aData.canvas;
 
@@ -3199,62 +3199,38 @@ var TabCatalog = {
 			height = canvas.height;
 		}
 
-		if (!isImage) {
-			try {
-				var ctx = canvas.getContext('2d');
-				ctx.clearRect(0, 0, width, height);
-				ctx.save();
+		try {
+			var ctx = canvas.getContext('2d');
+			ctx.clearRect(0, 0, width, height);
+			ctx.save();
+			if (!isImage) {
 				ctx.scale(width/w.innerWidth, height/w.innerHeight);
 				ctx.drawWindow(w, w.scrollX, w.scrollY, w.innerWidth, w.innerHeight, 'rgb(255,255,255)');
-				ctx.restore();
-			}
-			catch(e) {
-				dump('TabCatalog Error: ' + e.message + '\n');
-			}
-		}
-		else {
-			if (aImage && aImage instanceof Image) {
-				try {
-					var ctx = canvas.getContext('2d');
-					ctx.fillStyle = '#fff';
-					ctx.fillRect(0, 0, width, height);
-					var iW = Math.max(1, parseInt(aImage.width));
-					var iH = Math.max(1, parseInt(aImage.height));
-					var x = 0;
-					var y = 0;
-					ctx.save();
-					if ((width / iW) > (height / iH)) {
-						iW = iW * height / iH;
-						x = Math.floor((width - iW) / 2 );
-						iH = height;
-					}
-					else {
-						iH = iH * width / iW;
-						y = Math.floor((height - iH) / 2 );
-						iW = width;
-					}
-					ctx.drawImage(aImage, x, y, iW, iH);
-					ctx.restore();
-				}
-				catch(e) {
-					dump('TabCatalog Error: ' + e.message + '\n');
-				}
 			}
 			else {
-				var img = new Image();
-				img.src = b.currentURI.spec;
-				var self = this;
-				img.addEventListener('load', function() {
-					img.removeEventListener('load', arguments.callee, false);
-					self.updateOneCanvas(aData, img);
-					delete self;
-					delete img;
-					delete ctx;
-					delete b;
-					delete w;
-				}, false);
-				return;
+				var image = b.contentDocument.getElementsByTagName('img')[0];
+				ctx.fillStyle = '#fff';
+				ctx.fillRect(0, 0, width, height);
+				var iW = Math.max(1, parseInt(image.width));
+				var iH = Math.max(1, parseInt(image.height));
+				var x = 0;
+				var y = 0;
+				if ((width / iW) > (height / iH)) {
+					iW = iW * height / iH;
+					x = Math.floor((width - iW) / 2 );
+					iH = height;
+				}
+				else {
+					iH = iH * width / iW;
+					y = Math.floor((height - iH) / 2 );
+					iW = width;
+				}
+				ctx.drawImage(image, x, y, iW, iH);
 			}
+			ctx.restore();
+		}
+		catch(e) {
+			dump('TabCatalog Error: ' + e.message + '\n');
 		}
 
 		if (aData.isMultiWindow)
