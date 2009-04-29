@@ -1130,8 +1130,8 @@ var TabCatalog = {
 				'{',
 				'{ TabCatalog.destroyTab(aOurTab);'
 			).replace(
-				/(if \((?:tabCount == 1|aOurTab == this.selectedTab)\))/,
-				'TabCatalog.initTab(aOurTab); $1'
+				'if (aOurTab == this.selectedTab) {this.updateCurrentBrowser(',
+				'TabCatalog.initTab(aOurTab); $&'
 			));
 		}
 	},
