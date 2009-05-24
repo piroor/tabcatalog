@@ -12,3 +12,6 @@
 	overflow: auto !important;
 }
 
+.tabcatalog-thumbnail[busy="true"] > .tabcatalog-thumbnail-header-box > .tabcatalog-thumbnail-header-favicon {
+	list-style-image: url("jar:resource:///chrome/classic.jar!/skin/classic/global/icons/loading_16.png") !important;
+}
