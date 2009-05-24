@@ -1,0 +1,5 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+.tabcatalog-thumbnail-toolbar-item[chromedir="rtl"] {
+  list-style-image: url("jar:resource:///chrome/classic.jar!/skin/classic/browser/Toolbar-small.png");
+}
