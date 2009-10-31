@@ -48,7 +48,11 @@ var TabCatalog = {
 				tabcatalogItems.push(sep.nextSibling);
 				sep = sep.nextSibling;
 				if (sep.getAttribute('oncommand'))
-					eval('sep.addEventListener("command", function(event) { ' + sep.getAttribute('oncommand') + '; }, false);');
+					sep.addEventListener(
+						'command',
+						function(event) { return eval(this.getAttribute('oncommand'); },
+						false
+					);
 			}
 
 			popup.addEventListener('popupshowing', function(aEvent) {
