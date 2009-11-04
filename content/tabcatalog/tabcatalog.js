@@ -2129,16 +2129,14 @@ var TabCatalog = {
 
 		if (!aTargetThumbnail.updateTimer) {
 			aTargetThumbnail.updateTimer = setTimeout(function(aSelf) {
+				aTargetThumbnail.updateTimer = null;
 				aSelf.isSendingScrollEvent = false;
 				aSelf.updateOneCanvas({
 					canvas        : canvas,
 					tab           : aTargetThumbnail.relatedTab,
 					isMultiWindow : aSelf.isMultiWindow
 				});
-				if (aTargetThumbnail.relatedTab == aTargetThumbnail.relatedTabBrowser.selectedTab)
-					aSelf.updateBackground();
-				aTargetThumbnail.updateTimer = null;
-			}, 50, this);
+			}, 100, this);
 		}
 
 		return true;
@@ -2901,9 +2899,6 @@ var TabCatalog = {
 							canvas : canvas,
 							isMultiWindow : TabCatalog.isMultiWindow
 						});
-
-					if (this.mTab == this.mTabBrowser.selectedTab)
-						TabCatalog.updateBackground();
 
 					var item = TabCatalog.getItemForTab(this.mTab);
 					if (item) {
