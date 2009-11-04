@@ -563,74 +563,25 @@ var TabCatalog = {
    
 	getClickableElementFromPoint : function(aWindow, aScreenX, aScreenY) 
 	{
-		var accNode;
-		try {
-			/*
-				クリック位置からアクセシビリティ用のノードを得る
-				参考：http://www.mozilla-japan.org/access/architecture.html
-			*/
-			var accService = Components.classes['@mozilla.org/accessibilityService;1']
-								.getService(Components.interfaces.nsIAccessibilityService);
-			var acc = accService.getAccessibleFor(aWindow.document);
-			var box = this.getBoxObjectFor(aWindow.document.documentElement);
-			accNode = /* acc.getChildAtPoint(aScreenX - box.screenX, aScreenY - box.screenY) || */ acc.getChildAtPoint(aScreenX, aScreenY);
-			/* アクセシビリティ用のノードからDOMのノードを得る */
-			accNode = accNode.QueryInterface(Components.interfaces.nsIAccessNode).DOMNode;
-//dump(accNode+'\n');
-//dump(accNode.localName+'\n');
-			/*
-				この時点で、得られたノードがクリック可能な要素またはその子孫である場合、
-				祖先をたどってクリック可能な要素を返す。
-			*/
-			var clickable = accNode ? this.getParentClickableNode(accNode) : null ;
-			if (clickable)
-				return this.getImageInLink(clickable) || clickable;
-		}
-		catch(e) {
-//			dump(e+'\n');
-		}
+		var box = this.getBoxObjectFor(aWindow.document.documentElement);
+		var x = aScreenX - box.screenX - aWindow.scrollX;
+		var y = aScreenY - box.screenY - aWindow.scrollY;
+		var node = aWindow.document.elementFromPoint(x, y);
+		if (!node) return null;
 
-		var doc = aWindow.document;
-		/*
-			アクセシビリティ用のノードから得られたDOMノードがクリック可能な要素または
-			その子孫で *なかった* 場合でも、かなり近い位置の祖先ノードは取得できている。
-			なので、検索をそこからスタートすれば、相当な高速化になる。
-		*/
-		var startNode = accNode || doc;
-		var filter = function(aNode) {
-			switch (aNode.localName) {
-				case 'A':
-					if (aNode.href)
-						return NodeFilter.FILTER_ACCEPT;
-					break;
-				case 'BUTTON':
-					return NodeFilter.FILTER_ACCEPT;
-					break;
-				case 'INPUT':
-					if (aNode.type == 'button' || aNode.type == 'submit' || aNode.type == 'image')
-						return NodeFilter.FILTER_ACCEPT;
-					break;
-			}
-			return NodeFilter.FILTER_SKIP;
-		};
-		var img;
-		var walker = aWindow.document.createTreeWalker(startNode, NodeFilter.SHOW_ELEMENT, filter, false);
-		for (var node = walker.firstChild(); node != null; node = walker.nextNode())
-		{
-			if (
-				node.hasChildNodes() &&
-				(img = this.getImageInLink(node))
-				)
-				node = img;
-			var box = this.getBoxObjectFor(node);
-			var l = box.screenX;
-			var t = box.screenY;
-			var r = l + box.width;
-			var b = t + box.height;
-			if (l <= aScreenX && aScreenX <= r && t <= aScreenY && aScreenY <= b)
-				return node;
-		}
-		return null;
+		return node.ownerDocument.evaluate(
+				<![CDATA[
+					ancestor-or-self::*[
+						((local-name()="a" or local-name()="A") and @href and not(@href="")) or
+						(local-name()="button" or local-name()="BUTTON") or
+						((local-name()="input" or local-name()="INPUT") and (@type="button" or @type="submit" or @type="image" or @type="BUTTON" or @type="SUBMIT" or @type="IMAGE"))
+					][1]
+				]]>,
+				node,
+				null,
+				XPathResult.FIRST_ORDERED_NODE_TYPE,
+				null
+			).singleNodeValue;
 	},
    
 /* check */ 
