@@ -9,25 +9,13 @@ var TabCatalog = {
 		return document.getElementById('tabcatalog-button');
 	},
  
+	get panel() { 
+		return document.getElementById('tabcatalog-thumbnail-panel');
+	},
+ 
 	get catalog() { 
 		return document.getElementById('tabcatalog-thumbnail-container');
 	},
- 
-	get background() { 
-		return document.getElementById('tabcatalog-background');
-	},
-	get backgroundBackup() {
-		return document.getElementById('tabcatalog-background-backup');
-	},
- 
-	get bgCanvas() { 
-		if (!this._bgCanvas) {
-			this._bgCanvas = document.getElementById('tabcatalog-background-canvas');
-			this._bgCanvas.appendChild(document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas'));
-		}
-		return this._bgCanvas;
-	},
-	_bgCanvas : null,
  
 	get tabContextMenu() { 
 		if (!this.mTabContextMenu) {
@@ -50,7 +38,7 @@ var TabCatalog = {
 				if (sep.getAttribute('oncommand'))
 					sep.addEventListener(
 						'command',
-						function(event) { return eval(this.getAttribute('oncommand'); },
+						function(event) { return eval(this.getAttribute('oncommand')); },
 						false
 					);
 			}
@@ -239,74 +227,36 @@ var TabCatalog = {
   
 /* state */ 
 	
-	get backgroundShown() { 
-		return this.background.getAttribute('catalog-shown') == 'true';
-	},
-	set backgroundShown(val) {
-		if (val == this.backgroundShown) return this.backgroundShown;
-
-		if (val) {
-			if (this.getPref('extensions.tabcatalog.rendering_quality') > 1) {
-				this.updateBackground(true);
-				var cache  = this.bgCanvas.firstChild;
-				cache.style.zIndex = 65000;
-				this.bgCanvas.setAttribute('catalog-shown', true);
-			}
-
-			this.background.style.width  = this.backgroundBackup.style.width  = (window.innerWidth * 2)+'px';
-			this.background.style.height = this.backgroundBackup.style.height = (window.innerHeight * 2)+'px';
-			this.background.style.zIndex = this.backgroundBackup.style.zIndex = 65050;
-			this.background.setAttribute('catalog-shown', true);
-		}
-		else {
-			this.background.removeAttribute('catalog-shown');
-			this.bgCanvas.removeAttribute('catalog-shown');
-		}
-		return this.backgroundShown;
-	},
-	updateBackground : function(aForce)
-	{
-		if (
-			!(aForce || this.backgroundShown) ||
-			this.getPref('extensions.tabcatalog.rendering_quality') < 2
-			) return;
-
-		var b = gBrowser.getBrowserForTab(gBrowser.selectedTab);
-		var w = b.contentWindow;
-
-		var cache  = this.bgCanvas.firstChild;
-		cache.style.position = 'fixed';
-		cache.style.left  = b.boxObject.x+'px';
-		cache.style.top   = b.boxObject.y+'px';
-		cache.style.width  = w.innerWidth+'px';
-		cache.style.height = w.innerHeight+'px';
-		cache.width  = w.innerWidth;
-		cache.height = w.innerHeight;
-		try {
-			var ctx = cache.getContext("2d");
-			ctx.clearRect(0, 0, w.innerWidth, w.innerHeight);
-			ctx.save();
-			ctx.drawWindow(w, w.scrollX, w.scrollY, w.innerWidth, w.innerHeight, "rgb(255,255,255)");
-			ctx.restore();
-		}
-		catch(e) {
-			dump('TabCatalog Error: ' + e.message + '\n');
-		}
-	},
- 
 	get shown() { 
-		return this.catalog.getAttribute('catalog-shown') == 'true';
+		return this.panel.state == 'open' || this.panel.state == 'showing';
 	},
 	set shown(val) {
 		if (val) {
-			this.backgroundShown = true;
-			this.catalog.setAttribute('catalog-shown', true);
+			this.panel.setAttribute('width', this.panelWidth);
+			this.panel.setAttribute('height', this.panelHeight);
+			this.panel.openPopupAtScreen(
+				(window.screen.availWidth - this.panelWidth) / 2,
+				(window.screen.availHeight - this.panelHeight) / 2,
+				false
+			);
 		}
 		else {
-			this.backgroundShown = false;
-			this.catalog.removeAttribute('catalog-shown');
+			this.panel.hidePopup();
 		}
-		return this.shown;
+		return val;
+	},
+ 
+	get panelWidth()
+	{
+		var max = window.screen.availWidth;
+		var margin = Math.max(80, max / 6);
+		return parseInt(max - (margin * 2));
+	},
+	get panelHeight()
+	{
+		var max = window.screen.availHeight;
+		var margin = Math.max(80, max / 6);
+		return parseInt(max - (margin * 2));
 	},
  
 	get padding() { 
@@ -345,18 +295,6 @@ var TabCatalog = {
 		return this._splitter;
 	},
 	_splitter : -1,
-	get scrollbarSize() {
-		if (this._scrollbarSize < 0) {
-			var style = window.getComputedStyle(document.getElementById('tabcatalog-scrollbar-size-box'), null);
-			this._scrollbarSize = Math.max(
-				parseInt(style.minWidth.match(/[0-9]+/) || 0),
-				parseInt(style.maxWidth.match(/[0-9]+/) || 0),
-				parseInt(style.width.match(/[0-9]+/) || 0)
-			);
-		}
-		return this._scrollbarSize;
-	},
-	_scrollbarSize : -1,
 	get shortcut() {
 		if (!this._shortcut) {
 			this._shortcut = TabCatalog_parseShortcut(this.getPref('extensions.tabcatalog.shortcut'));
@@ -703,32 +641,61 @@ var TabCatalog = {
 					'ancestor-or-self::*[local-name() = "menuitem"]',
 					aEvent.originalTarget,
 					this.NSResolver,
-					XPathResult.FIRST_ORDERED_NODE_TYPE,
+					XPathResult.BOOLEAN_TYPE,
 					null
 				);
+			return xpathResult.booleanValue;
 		}
 		catch(e) {
-			return false;
 		}
-		return xpathResult.singleNodeValue ? true : false ;
+		return false;
+	},
+ 
+	isEventFiredInPanel : function(aEvent) 
+	{
+		var d = aEvent.originalTarget.ownerDocument;
+		try {
+			var xpathResult = d.evaluate(
+					'ancestor-or-self::*[@id="tabcatalog-thumbnail-panel"]',
+					aEvent.originalTarget,
+					this.NSResolver,
+					XPathResult.BOOLEAN_TYPE,
+					null
+				);
+			return xpathResult.booleanValue;
+		}
+		catch(e) {
+		}
+		return false;
+	},
+ 
+	isEventFiredOnScrollbar : function(aEvent) 
+	{
+		return (
+				this.scrollbar &&
+				(
+					this.scrollbar.thumb == aEvent.target ||
+					this.scrollbar.slider == aEvent.target
+				)
+			);
 	},
  
 	isEventFiredOnTabBar : function(aEvent) 
 	{
-		var node;
+		var d = aEvent.originalTarget.ownerDocument;
 		try {
-			node = aEvent.originalTarget;
+			var xpathResult = d.evaluate(
+					'ancestor-or-self::*[@id="tabbrowser-strip"]',
+					aEvent.originalTarget,
+					this.NSResolver,
+					XPathResult.BOOLEAN_TYPE,
+					null
+				);
+			return xpathResult.booleanValue;
 		}
 		catch(e) {
 		}
-		if (!node) node = aEvent.target;
-
-		var tabContainer = gBrowser.mTabContainer;
-		var catalog      = this.catalog;
-		while (node && node != tabContainer && node != catalog)
-			node = node.parentNode;
-
-		return (node == tabContainer || node == catalog);
+		return false;
 	},
  
 	isKeyEventFiredInTextFields : function(aEvent) 
@@ -975,17 +942,14 @@ var TabCatalog = {
 	
 	init : function() 
 	{
-Application.console.log('INIT');
 		if (!('gBrowser' in window)) return;
 
-Application.console.log('INIT-START');
 		window.addEventListener('keydown',   this, true);
 		window.addEventListener('keyup',     this, true);
 		window.addEventListener('keypress',  this, true);
 		window.addEventListener('mousedown', this, true);
 		window.addEventListener('mouseup',   this, true);
 		window.addEventListener('resize',    this, true);
-
 		gBrowser.addEventListener('mouseover', this, true);
 		gBrowser.addEventListener('mouseout',  this, true);
 
@@ -1015,7 +979,6 @@ Application.console.log('INIT-START');
 			.getService(Components.interfaces.nsIObserverService);
 		ObserverService.addObserver(this, 'TabCatalog:browserWindowClosed', false);
 
-Application.console.log('DONE');
 		this.initialShow();
 	},
 	
@@ -1065,61 +1028,9 @@ Application.console.log('DONE');
  
 	updateTabBrowser : function(aTabBrowser) 
 	{
-		if ('resetOwner' in aTabBrowser) { // Firefox 2
-			aTabBrowser.addEventListener('TabOpen',  this, false);
-			aTabBrowser.addEventListener('TabClose', this, false);
-			aTabBrowser.addEventListener('TabMove',  this, false);
-		}
-		else {
-			var addTabMethod = 'addTab';
-			var removeTabMethod = 'removeTab';
-			if (aTabBrowser.__tabextensions__addTab) {
-				addTabMethod = '__tabextensions__addTab';
-				removeTabMethod = '__tabextensions__removeTab';
-			}
-
-			aTabBrowser.__tabcatalog__originalAddTab = aTabBrowser[addTabMethod];
-			aTabBrowser[addTabMethod] = function() {
-				var tab = this.__tabcatalog__originalAddTab.apply(this, arguments);
-				TabCatalog.rebuildRequest = true;
-				try {
-					TabCatalog.initTab(tab, this);
-					if (TabCatalog.shown)
-						window.setTimeout('TabCatalog.updateUI();', 0);
-				}
-				catch(e) {
-				}
-				return tab;
-			};
-
-			aTabBrowser.__tabcatalog__originalRemoveTab = aTabBrowser[removeTabMethod];
-			aTabBrowser[removeTabMethod] = function(aTab) {
-				try {
-					TabCatalog.destroyTab(aTab);
-				}
-				catch(e) {
-				}
-
-				var retVal = this.__tabcatalog__originalRemoveTab.apply(this, arguments);
-
-				if (aTab.parentNode)
-					TabCatalog.initTab(aTab, this);
-
-				TabCatalog.rebuildRequest = true;
-
-				return retVal;
-			};
-
-			aTabBrowser.__tabcatalog__originalMoveTabTo = aTabBrowser.moveTabTo;
-			aTabBrowser.moveTabTo = function() {
-				var tab = this.__tabcatalog__originalMoveTabTo.apply(this, arguments);
-				TabCatalog.rebuildRequest = true;
-				return tab;
-			};
-
-			delete addTabMethod;
-			delete removeTabMethod;
-		}
+		aTabBrowser.addEventListener('TabOpen',  this, false);
+		aTabBrowser.addEventListener('TabClose', this, false);
+		aTabBrowser.addEventListener('TabMove',  this, false);
 
 		var tabs = this.getTabsArray(aTabBrowser);
 		for (var i = 0, maxi = tabs.length; i < maxi; i++)
@@ -1166,7 +1077,6 @@ Application.console.log('DONE');
 		window.removeEventListener('mousedown', this, true);
 		window.removeEventListener('mouseup',   this, true);
 		window.removeEventListener('resize',    this, true);
-
 		gBrowser.removeEventListener('mouseover', this, true);
 		gBrowser.removeEventListener('mouseout',  this, true);
 
@@ -1196,11 +1106,9 @@ Application.console.log('DONE');
 	
 	destroyTabBrowser : function(aTabBrowser) 
 	{
-		if ('resetOwner' in aTabBrowser) { // Firefox 2
-			aTabBrowser.removeEventListener('TabOpen',  this, false);
-			aTabBrowser.removeEventListener('TabClose', this, false);
-			aTabBrowser.removeEventListener('TabMove',  this, false);
-		}
+		aTabBrowser.removeEventListener('TabOpen',  this, false);
+		aTabBrowser.removeEventListener('TabClose', this, false);
+		aTabBrowser.removeEventListener('TabMove',  this, false);
 	},
  
 	destroyTab : function(aTab) 
@@ -1222,7 +1130,7 @@ Application.console.log('DONE');
 	
 	domain  : 'extensions.tabcatalog', 
  
-	observe : function(aSubject, aTopic, aPrefName) 
+	observe : function(aSubject, aTopic, aData) 
 	{
 		switch (aTopic)
 		{
@@ -1232,85 +1140,90 @@ Application.console.log('DONE');
 				break;
 
 			case 'nsPref:changed':
-				var value = this.getPref(aPrefName);
-				switch (aPrefName)
-				{
-					case 'extensions.tabcatalog.override.allinonegest':
-						// for All-In-One Gesture
-						if ('aioTabWheelNav' in window &&
-							!('__tabcatalog__aioTabWheelNav' in window)) {
-							window.__tabcatalog__aioTabWheelNav = window.aioTabWheelNav;
-							window.__tabcatalog__aioTabPopping  = window.aioTabPopping;
-							window.__tabcatalog__aioTabWheeling = window.aioTabWheeling;
-							window.__tabcatalog__aioTabWheelEnd = window.aioTabWheelEnd;
-						}
-						if (value) {
-							window.aioTabWheelNav = TabCatalog.aioTabWheelNav;
-							window.aioTabPopping  = TabCatalog.aioTabPopping;
-							window.aioTabWheeling = TabCatalog.aioTabWheeling;
-							window.aioTabWheelEnd = TabCatalog.aioTabWheelEnd;
-						}
-						else {
-							window.aioTabWheelNav = window.__tabcatalog__aioTabWheelNav;
-							window.aioTabPopping  = window.__tabcatalog__aioTabPopping;
-							window.aioTabWheeling = window.__tabcatalog__aioTabWheeling;
-							window.aioTabWheelEnd = window.__tabcatalog__aioTabWheelEnd;
-						}
-						break;
-
-					case 'extensions.tabcatalog.shortcut':
-						this.shortcut = null;
-						break;
-
-					case 'extensions.tabcatalog.thumbnail.header':
-						if (this.getPref(aPrefName))
-							this.catalog.setAttribute('show-thumbnail-header', true);
-						else
-							this.catalog.removeAttribute('show-thumbnail-header');
-						break;
-
-					case 'extensions.tabcatalog.thumbnail.closebox':
-						if (this.getPref(aPrefName))
-							this.catalog.setAttribute('show-thumbnail-closebox', true);
-						else
-							this.catalog.removeAttribute('show-thumbnail-closebox');
-						break;
-
-					case 'extensions.tabcatalog.thumbnail.navigation':
-						this.shouldShowNavigations = this.getPref(aPrefName);
-						if (this.shouldShowNavigations)
-							this.catalog.setAttribute('show-thumbnail-toolbar-buttons', true);
-						else
-							this.catalog.removeAttribute('show-thumbnail-toolbar-buttons');
-						break;
-
-					case 'extensions.tabcatalog.thumbnail.shortcut':
-						this.thumbnailShortcutEnabled = this.getPref(aPrefName);
-						if (this.thumbnailShortcutEnabled)
-							this.catalog.setAttribute('show-thumbnail-shortcut', true);
-						else
-							this.catalog.removeAttribute('show-thumbnail-shortcut');
-						break;
-
-					case 'extensions.tabcatalog.thumbnail.min.size':
-						this.rebuildRequest = true;
-						break;
-
-					case 'extensions.tabcatalog.send_click_event':
-						this.shouldSendClickEvent = this.getPref(aPrefName);
-						break;
-
-					case 'extensions.tabcatalog.updateInBackground':
-					case 'extensions.tabcatalog.updateInBackground.interval':
-						if (this.backgroundUpdateTimer) {
-							window.clearInterval(this.backgroundUpdateTimer);
-							this.backgroundUpdateTimer = null;
-						}
-						break;
-
-					default:
-						break;
+				this.onPrefChange(aData);
+				break;
+		}
+	},
+ 
+	onPrefChange : function(aPrefName) 
+	{
+		var value = this.getPref(aPrefName);
+		switch (aPrefName)
+		{
+			case 'extensions.tabcatalog.override.allinonegest':
+				// for All-In-One Gesture
+				if ('aioTabWheelNav' in window &&
+					!('__tabcatalog__aioTabWheelNav' in window)) {
+					window.__tabcatalog__aioTabWheelNav = window.aioTabWheelNav;
+					window.__tabcatalog__aioTabPopping  = window.aioTabPopping;
+					window.__tabcatalog__aioTabWheeling = window.aioTabWheeling;
+					window.__tabcatalog__aioTabWheelEnd = window.aioTabWheelEnd;
 				}
+				if (value) {
+					window.aioTabWheelNav = TabCatalog.aioTabWheelNav;
+					window.aioTabPopping  = TabCatalog.aioTabPopping;
+					window.aioTabWheeling = TabCatalog.aioTabWheeling;
+					window.aioTabWheelEnd = TabCatalog.aioTabWheelEnd;
+				}
+				else {
+					window.aioTabWheelNav = window.__tabcatalog__aioTabWheelNav;
+					window.aioTabPopping  = window.__tabcatalog__aioTabPopping;
+					window.aioTabWheeling = window.__tabcatalog__aioTabWheeling;
+					window.aioTabWheelEnd = window.__tabcatalog__aioTabWheelEnd;
+				}
+				break;
+
+			case 'extensions.tabcatalog.shortcut':
+				this.shortcut = null;
+				break;
+
+			case 'extensions.tabcatalog.thumbnail.header':
+				if (this.getPref(aPrefName))
+					this.catalog.setAttribute('show-thumbnail-header', true);
+				else
+					this.catalog.removeAttribute('show-thumbnail-header');
+				break;
+
+			case 'extensions.tabcatalog.thumbnail.closebox':
+				if (this.getPref(aPrefName))
+					this.catalog.setAttribute('show-thumbnail-closebox', true);
+				else
+					this.catalog.removeAttribute('show-thumbnail-closebox');
+				break;
+
+			case 'extensions.tabcatalog.thumbnail.navigation':
+				this.shouldShowNavigations = this.getPref(aPrefName);
+				if (this.shouldShowNavigations)
+					this.catalog.setAttribute('show-thumbnail-toolbar-buttons', true);
+				else
+					this.catalog.removeAttribute('show-thumbnail-toolbar-buttons');
+				break;
+
+			case 'extensions.tabcatalog.thumbnail.shortcut':
+				this.thumbnailShortcutEnabled = this.getPref(aPrefName);
+				if (this.thumbnailShortcutEnabled)
+					this.catalog.setAttribute('show-thumbnail-shortcut', true);
+				else
+					this.catalog.removeAttribute('show-thumbnail-shortcut');
+				break;
+
+			case 'extensions.tabcatalog.thumbnail.min.size':
+				this.rebuildRequest = true;
+				break;
+
+			case 'extensions.tabcatalog.send_click_event':
+				this.shouldSendClickEvent = this.getPref(aPrefName);
+				break;
+
+			case 'extensions.tabcatalog.updateInBackground':
+			case 'extensions.tabcatalog.updateInBackground.interval':
+				if (this.backgroundUpdateTimer) {
+					window.clearInterval(this.backgroundUpdateTimer);
+					this.backgroundUpdateTimer = null;
+				}
+				break;
+
+			default:
 				break;
 		}
 	},
@@ -1338,12 +1251,25 @@ Application.console.log('DONE');
 				this.onMouseUp(aEvent);
 				break;
 
+			case 'click':
+				if (
+					!this.getItemFromEvent(aEvent) &&
+					!this.isEventFiredOnScrollbar(aEvent)
+					)
+					this.onBackgroundClick(aEvent);
+				break;
+
 			case 'resize':
 				this.onResize(aEvent);
 				break;
 
 			case 'mouseover':
-				this.onTabBarMouseOver(aEvent);
+				if (this.isEventFiredInPanel(aEvent)) {
+					this.onPanelMouseOver(aEvent);
+				}
+				else if (this.isEventFiredOnTabBar(aEvent)) {
+					this.onTabBarMouseOver(aEvent);
+				}
 				break;
 
 			case 'mouseout':
@@ -1363,6 +1289,8 @@ Application.console.log('DONE');
 				break;
 
 			case 'mousemove':
+				if (this.shouldCheckClickable && !this.isSendingScrollEvent)
+					this.drawBoxOnLink(aEvent);
 				this.onPanningScroll(aEvent);
 				break;
 
@@ -1417,13 +1345,13 @@ Application.console.log('DONE');
 			this.catalogZooming = true;
 		}
 		else if (
-			this.shown &&
+			this.isEventFiredInPanel(aEvent) &&
 			aEvent.button != 1 &&
 			!this.isDisabled() &&
 			!this.getItemFromEvent(aEvent) &&
 			!this.isEventFiredInMenu(aEvent)
 			) {
-			if (aEvent.target.id == 'tabcatalog-scrollbar') {
+			if (aEvent.target.id == 'tabcatalog-scrollbar-thumb') {
 				this.catalogPanning = true;
 				this.catalogPanningByScrollbar = true;
 				this.panStartX = aEvent.screenX;
@@ -1436,7 +1364,8 @@ Application.console.log('DONE');
 				this.hide();
 		}
 		else {
-			if (this.shown && aEvent.button == 1) {
+			if (this.isEventFiredInPanel(aEvent) &&
+				aEvent.button == 1) {
 				this.catalogPanning = true;
 				this.catalogPanningByScrollbar = false;
 				this.panStartX = aEvent.screenX;
@@ -1454,8 +1383,11 @@ Application.console.log('DONE');
  
 	onMouseUp : function(aEvent) 
 	{
+		var inPanel = this.isEventFiredInPanel(aEvent);
+		if (inPanel) this.onCatalogDragEnd(aEvent);
+
 		if (
-			!this.shown &&
+			!inPanel &&
 			!this.isDisabled() &&
 			this.getPref('extensions.tabcatalog.bothclick.enabled') &&
 			this.button0Pressed && this.button2Pressed
@@ -1465,7 +1397,9 @@ Application.console.log('DONE');
 			this.show(this.CALLED_BY_BOTH_CLICK);
 		}
 
-		if (this.shown && this.catalogPanning) {
+		if (inPanel && this.catalogPanning) {
+			aEvent.preventDefault();
+			aEvent.stopPropagation();
 			this.button1Pressed = false;
 			this.exitPanningScroll();
 		}
@@ -1480,7 +1414,7 @@ Application.console.log('DONE');
 		}, 0, this);
 	},
  
-	onMouseOver : function(aEvent) 
+	onPanelMouseOver : function(aEvent) 
 	{
 		if (this.catalogShowing ||
 			this.catalogHiding ||
@@ -1740,10 +1674,10 @@ Application.console.log('DONE');
 				switch (aEvent.keyCode)
 				{
 					case aEvent.DOM_VK_PAGE_UP:
-						this.scrollCatalogBy(-(window.innerHeight / 3 * 2));
+						this.scrollCatalogBy(-(this.panelHeight / 3 * 2));
 						return;
 					case aEvent.DOM_VK_PAGE_DOWN:
-						this.scrollCatalogBy(window.innerHeight / 3 * 2);
+						this.scrollCatalogBy(this.panelHeight / 3 * 2);
 						return;
 
 					case aEvent.DOM_VK_HOME:
@@ -2039,15 +1973,14 @@ Application.console.log('DONE');
 		aEvent.preventDefault();
 	},
  
-	onCatalogMouseMove : function(aEvent) 
-	{
-		if (!TabCatalog.isSendingScrollEvent)
-			TabCatalog.drawBoxOnLink(aEvent);
-	},
- 
 	onBackgroundClick : function(aEvent) 
 	{
-		if (aEvent.button == 1 && this.ignoreMiddleClick) return;
+		if (
+			this.getItemFromEvent(aEvent) ||
+			(aEvent.button == 1 && this.ignoreMiddleClick)
+			)
+			return;
+
 		if (!this.catalogPanning && !this.catalogZooming)
 			this.hide();
 	},
@@ -2065,12 +1998,12 @@ Application.console.log('DONE');
  
 	onSliderClick : function(aEvent) 
 	{
-		var box = this.catalog.scrollbar.boxObject;
+		var box = this.scrollbar.slider.boxObject;
 
 		if (aEvent.screenY < box.screenY)
-			TabCatalog.scrollCatalogBy(-(window.innerHeight / 3 * 2));
+			TabCatalog.scrollCatalogBy(-(this.panelHeight / 3 * 2));
 		else if (aEvent.screenY > box.screenY + box.height)
-			TabCatalog.scrollCatalogBy(window.innerHeight / 3 * 2);
+			TabCatalog.scrollCatalogBy(this.panelHeight / 3 * 2);
 
 		aEvent.stopPropagation();
 	},
@@ -2085,10 +2018,10 @@ Application.console.log('DONE');
  
 	onCatalogDragEnd : function(aEvent) 
 	{
-		if (TabCatalog.thumbnailDragging) {
-			TabCatalog.thumbnailDragging = false;
-			if (TabCatalog.getSelectedTabItems().snapshotLength)
-				TabCatalog.showPopupMenu(aEvent, TabCatalog.tabSelectPopupMenu);
+		if (this.thumbnailDragging) {
+			this.thumbnailDragging = false;
+			if (this.getSelectedTabItems().snapshotLength)
+				this.showPopupMenu(aEvent, this.tabSelectPopupMenu);
 		}
 	},
  
@@ -2122,10 +2055,10 @@ Application.console.log('DONE');
 			aEvent.preventDefault();
 			aEvent.stopPropagation();
 		}
-		else if (this.catalog.overflow) {
+		else if (this.overflow) {
 			var h = Math.max(
 					this.catalog.tnHeight / 2,
-					window.innerHeight / 5
+					this.panelHeight / 5
 				);
 			this.scrollCatalogBy((aEvent.detail > 0 ? 1 : -1) * h);
 			aEvent.preventDefault();
@@ -2187,11 +2120,11 @@ Application.console.log('DONE');
 		switch (this.catalogPanningBehavior) {
 			default:
 			case 0:
-				var padding = window.innerHeight / 5;
+				var padding = this.panelHeight / 5;
 				pos = (
 						(
 							this.catalog.scrollMaxY /
-							(window.innerHeight - (padding * 2))
+							(this.panelHeight - (padding * 2))
 						) *
 						(aEvent.screenY - window.screenY - padding)
 					);
@@ -2330,7 +2263,6 @@ Application.console.log('DONE');
 		this.catalogShowing = true;
 
 		this.shown = true;
-		document.documentElement.setAttribute('tabcatalog-screen-show', 'true');
 
 		if (this.hideTimer) {
 			window.clearTimeout(this.hideTimer);
@@ -2358,17 +2290,21 @@ Application.console.log('DONE');
 		var items = this.getItems();
 		this.moveFocusToItem(items[this.lastFocusedIndex], true);
 
-		if (this.shouldSendClickEvent &&
-			this.getPref('extensions.tabcatalog.send_click_event.indicate_clickable'))
-			window.addEventListener('mousemove', this.onCatalogMouseMove, true);
-
 		this.button0Pressed = false;
 		this.button1Pressed = false;
 		this.button2Pressed = false;
 
-		window.addEventListener('DOMMouseScroll', this, true);
-		if (this.catalog.overflow) {
-			window.addEventListener('mousemove', this, true);
+		this.panel.addEventListener('mouseover', this, true);
+		this.panel.addEventListener('click', this, true);
+		this.panel.addEventListener('DOMMouseScroll', this, true);
+
+		this.shouldCheckClickable = (
+				this.shouldSendClickEvent &&
+				this.getPref('extensions.tabcatalog.send_click_event.indicate_clickable')
+			);
+		if (this.shouldCheckClickable || this.overflow) {
+			this.panel.addEventListener('mousemove', this, true);
+			this.panel.listeningMousemove = true;
 		}
 		window.addEventListener('blur', this, true);
 
@@ -2408,19 +2344,19 @@ Application.console.log('DONE');
  
 	hide : function() 
 	{
-		if (!this.shown) return;
-
+		this.shown = false;
+	},
+ 
+	onPanelHiding : function() 
+	{
 		this.catalogHiding = true;
 
-		try {
-			window.removeEventListener('mousemove', this.onCatalogMouseMove, true);
-		}
-		catch(e) {
-		}
-
-		window.removeEventListener('DOMMouseScroll', this, true);
-		if (this.catalog.overflow) {
-			window.removeEventListener('mousemove', this, true);
+		this.panel.removeEventListener('mouseover', this, true);
+		this.panel.removeEventListener('click', this, false);
+		this.panel.removeEventListener('DOMMouseScroll', this, true);
+		if (this.panel.listeningMousemove) {
+			this.panel.listeningMousemove = false;
+			this.panel.removeEventListener('mousemove', this, true);
 		}
 		window.removeEventListener('blur', this, true);
 
@@ -2436,7 +2372,7 @@ Application.console.log('DONE');
 		this.stopUpdateCanvas();
 //		this.clear();
 		this.contextMenuShwon = false;
-		this.shown = false;
+		this.hide();
 
 		this.button0Pressed = false;
 		this.button1Pressed = false;
@@ -2446,7 +2382,6 @@ Application.console.log('DONE');
 		window.setTimeout(function(aSelf) { aSelf.tabContextMenu.hidePopup(); }, 10, this);
 
 		this.callingAction = null;
-		document.documentElement.removeAttribute('tabcatalog-screen-show');
 
 		if (this.delayedOnMouseOverTimer)
 			window.clearTimeout(this.delayedOnMouseOverTimer);
@@ -2460,10 +2395,8 @@ Application.console.log('DONE');
 		var tabs = this.tabs;
 		var selectedTab = (this.lastSelectedIndex > -1 && this.lastSelectedIndex < tabs.length) ? tabs[this.lastSelectedIndex] : null ;
 		if (selectedTab != gBrowser.selectedTab) {
-			this.backgroundBackup.setAttribute('catalog-shown', true);
 			this.hide();
 			window.setTimeout(function(aBase, aRelative, aSelf) {
-				aSelf.backgroundBackup.removeAttribute('catalog-shown');
 				aSelf.show(aBase, true, aRelative);
 			}, 0, base, aRelative, this);
 		}
@@ -2498,12 +2431,15 @@ Application.console.log('DONE');
 		var header          = this.header;
 		var splitterHeight  = this.splitter;
 
-		var offsetX = parseInt(((window.innerWidth-(
+		var panelWidth = this.panelWidth;
+		var panelHeight = this.panelHeight;
+
+		var offsetX = parseInt(((panelWidth-(
 					matrixData.maxCol * (matrixData.width + padding)
 				))/2) + (padding/2));
 
 		var offsetY = matrixData.overflow ? padding :
-				parseInt(((window.innerHeight-(
+				parseInt(((panelHeight-(
 					(matrixData.maxRow * (matrixData.height + padding + header)) + matrixData.offsetY
 				))/2) + (padding/2));
 
@@ -2534,7 +2470,7 @@ Application.console.log('DONE');
 				splitter.style.zIndex   = 65500;
 				splitter.style.left     = (offsetX - padding) + 'px !important';
 				splitter.style.top      = parseInt(thumbnail.posYBase + matrixData.height + padding + padding + ((splitterHeight) / 2)) + 'px !important';
-				splitter.style.width    = (window.innerWidth - ((offsetX - padding) * 2)) + 'px';
+				splitter.style.width    = (panelWidth - ((offsetX - padding) * 2)) + 'px';
 			}
 
 			var b = tabs[i].linkedBrowser;
@@ -2680,51 +2616,44 @@ Application.console.log('DONE');
 
 		this.catalog.posX       = 0;
 		this.catalog.posY       = 0;
-		this.catalog.style.left = 0;
-		this.catalog.style.top  = 0;
+		this.catalog.style.marginTop = 0;
 
 		this.catalog.maxX       = matrixData.maxCol;
 		this.catalog.maxY       = matrixData.maxRow;
 		this.catalog.tnWidth    = matrixData.width;
 		this.catalog.tnHeight   = matrixData.height;
-		this.catalog.overflow   = matrixData.overflow;
+		this.overflow           = matrixData.overflow;
 
 		this.catalog.scrollX    = 0;
 		this.catalog.scrollY    = 0;
 		this.catalog.maxScrollX = matrixData.maxCol * (padding + matrixData.width);
-		this.catalog.scrollMaxY = offsetY + matrixData.matrix[max-1].posY + matrixData.height - window.innerHeight + padding + header;
+		this.catalog.scrollMaxY = offsetY + matrixData.matrix[max-1].posY + matrixData.height - panelHeight + padding + header;
 
 		if (matrixData.overflow &&
 			this.getPref('extensions.tabcatalog.show_scrollbar')) {
-			var slider = document.createElement('box');
-			slider.setAttribute('class', 'tabcatalog-scrollbar-slider');
-			slider.setAttribute('id',    'tabcatalog-scrollbar-slider');
-			this.catalog.appendChild(slider);
+			var slider = document.getElementById('tabcatalog-scrollbar-slider');
 
-			slider.style.position = 'fixed';
-			slider.style.left = (window.innerWidth - this.scrollbarSize)+'px';
-			slider.style.zIndex = 135000;
-			slider.style.width = this.scrollbarSize+'px';
-			slider.style.height = (window.innerHeight + this.catalog.scrollMaxY)+'px';
+			var thumb = document.getElementById('tabcatalog-scrollbar-thumb');
+			var style = window.getComputedStyle(slider, null);
+			var maxHeight = panelHeight - parseInt(style.marginTop.match(/[0-9]+/) || 0) - parseInt(style.marginBottom.match(/[0-9]+/) || 0);
+			var height = parseInt(maxHeight / (maxHeight + this.catalog.scrollMaxY) * maxHeight);
+			thumb.style.height = height+'px';
 
-			var bar = document.createElement('box');
-			bar.setAttribute('class', 'tabcatalog-scrollbar');
-			bar.setAttribute('id',    'tabcatalog-scrollbar');
-			this.catalog.appendChild(bar);
+			this.scrollbar = {
+				thumb     : thumb,
+				slider    : slider,
+				maxHeight : maxHeight,
+				height    : height
+			};
 
-			bar.style.position = 'fixed';
-			bar.style.left = (window.innerWidth - this.scrollbarSize)+'px';
-			bar.style.zIndex = 165000;
-			bar.style.width = this.scrollbarSize+'px';
-
-			bar.style.height = parseInt(window.innerHeight * window.innerHeight / (window.innerHeight + this.catalog.scrollMaxY))+'px';
-
-			this.catalog.scrollbar = bar;
+			slider.removeAttribute('collapsed', true);
 
 			this.updateScrollbar();
 		}
-		else
-			this.catalog.scrollbar = null;
+		else {
+			document.getElementById('tabcatalog-scrollbar-slider').setAttribute('collapsed', true);
+			this.scrollbar = null;
+		}
 	},
  
 	initCanvas : function() 
@@ -2803,7 +2732,7 @@ Application.console.log('DONE');
  
 	updateScrollbar : function(aCurrent) 
 	{
-		if (!this.catalog.scrollbar) return;
+		if (!this.scrollbar) return;
 
 		var curPos = aCurrent;
 		if (curPos === void(0))
@@ -2811,7 +2740,7 @@ Application.console.log('DONE');
 
 		curPos = Math.max(Math.min(curPos, TabCatalog.catalog.scrollMaxY), 0);
 
-		this.catalog.scrollbar.style.top = parseInt((window.innerHeight - this.catalog.scrollbar.boxObject.height) * (curPos / this.catalog.scrollMaxY))+'px';
+		this.scrollbar.thumb.style.marginTop = parseInt((this.scrollbar.maxHeight - this.scrollbar.height) * curPos / this.catalog.scrollMaxY)+'px';
 	},
  
 	updateMultipleTabsState : function() 
@@ -3024,9 +2953,11 @@ Application.console.log('DONE');
 		}
 
 		var minSize = this.getPref('extensions.tabcatalog.thumbnail.min.enabled') ? Math.min(this.getPref('extensions.tabcatalog.thumbnail.min.size'), (aspectRatio  < 1 ? boxObject.width : boxObject.height )) : -1;
+		var panelWidth = this.panelWidth;
+		var panelHeight = this.panelHeight;
 
 		// ウィンドウの中に敷き詰められるサムネイルの、理論上の最大サイズ（縦横比を無視したもの）を計算する
-		var thumbnailMaxSize = window.innerWidth * window.innerHeight * 0.9 / tabNum;
+		var thumbnailMaxSize = panelWidth * panelHeight * 0.9 / tabNum;
 		var boxWidth = parseInt(Math.min(Math.sqrt(thumbnailMaxSize), window.outerWidth * 0.5)) - padding;
 		var boxHeight = parseInt(boxWidth * aspectRatio );
 
@@ -3093,7 +3024,9 @@ Application.console.log('DONE');
 
 		var splitByWindow = this.splitByWindow;
 
-		var maxCol = Math.max(1, Math.floor((window.innerWidth - padding) / (aWidth + padding)));
+		var panelWidth = this.panelWidth;
+		var panelHeight = this.panelHeight;
+		var maxCol = Math.max(1, Math.floor((panelWidth - padding) / (aWidth + padding)));
 
 		var matrix = [],
 			offsetY = 0,
@@ -3131,7 +3064,7 @@ Application.console.log('DONE');
 			offsetY  : offsetY,
 			maxCol   : maxCol,
 			maxRow   : rowCount,
-			overflow : (((aHeight + padding + header) * rowCount + padding + offsetY) > window.innerHeight)
+			overflow : (((aHeight + padding + header) * rowCount + padding + offsetY) > panelHeight)
 		};
 	},
  
@@ -3428,18 +3361,9 @@ Application.console.log('DONE');
 	clear : function(aKeepThumbnails) 
 	{
 		if (aKeepThumbnails) {
-			var slider    = document.getElementById('tabcatalog-scrollbar-slider');
-			if (slider)
-				slider.parentNode.removeChild(slider);
-
-			var scrollbar = document.getElementById('tabcatalog-scrollbar');
-			if (scrollbar)
-				scrollbar.parentNode.removeChild(scrollbar);
-
 			var splitters = this.catalog.getElementsByAttribute('class', 'tabcatalog-splitter');
 			for (var i = splitters.length-1; i > -1; i--)
 				splitters[i].parentNode.removeChild(splitters[i]);
-
 			return;
 		}
 
@@ -3609,14 +3533,14 @@ Application.console.log('DONE');
 
 		if (aDoNotAnimate || !this.getPref('extensions.tabcatalog.animation.scroll.enabled')) {
 			this.catalog.scrollY = -this.catalog.posY;
-			this.catalog.style.top = this.catalog.posY + 'px';
+			this.catalog.style.marginTop = this.catalog.posY + 'px';
 			this.updateScrollbar();
 			window.setTimeout(this.scrollCatalogByAnimationEndCallback, 100);
 		}
 		else {
 			this.animate(
 				this.catalog.style,
-				'top',
+				'marginTop',
 				originalY,
 				this.catalog.posY,
 				this.getPref('extensions.tabcatalog.animation.scroll.timeout'),
@@ -3646,7 +3570,7 @@ Application.console.log('DONE');
 		var h = aTarget.boxObject.height;
 		if (
 			aTarget.parentNode.posY + this.catalog.posY < 0 ||
-			aTarget.parentNode.posY + this.catalog.posY + h > window.innerHeight
+			aTarget.parentNode.posY + this.catalog.posY + h > this.panelHeight
 			)
 			this.scrollCatalogTo(aTarget.parentNode.posY - this.padding - this.header, aDoNotAnimate);
 	},

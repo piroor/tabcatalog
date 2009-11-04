@@ -12,21 +12,13 @@
 }
 
 
-
-#tabcatalog-thumbnail-container:not([catalog-shown="true"]),
-#tabcatalog-background:not([catalog-shown="true"]),
-#tabcatalog-background-backup:not([catalog-shown="true"]),
-#tabcatalog-background-canvas:not([catalog-shown="true"]) {
-	display: none;
+#tabcatalog-thumbnail-container-wrapper {
+	position: relative;
+	overflow: hidden;
 }
 
-#tabcatalog-thumbnail-container[catalog-shown="true"],
-#tabcatalog-background[catalog-shown="true"],
-#tabcatalog-background-backup[catalog-shown="true"],
-#tabcatalog-background-canvas[catalog-shown="true"] {
+#tabcatalog-thumbnail-container {
 	position: fixed;
-	top: 0;
-	left: 0;
 }
 
 
@@ -49,15 +41,8 @@
 }
 
 
-
-/* こうしておかないとサムネイルの前にフレームの内容が描画されてしまう */
-:root[tabcatalog-screen-show="true"] browser,
-:root[tabcatalog-screen-show="true"] iframe {
-	visibility: hidden !important;
-}
-
 /* こうしておかないとDOMMouseScrollイベントが発生しない……何故？ */
-#tabcatalog-background {
+#tabcatalog-thumbnail-panel {
 	overflow: auto !important;
 }
 

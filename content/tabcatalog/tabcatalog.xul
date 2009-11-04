@@ -54,22 +54,29 @@
 
 
 <window id="main-window">
-	<hbox id="tabcatalog-thumbnail-container-wrapper"
-		onmouseup="TabCatalog.onCatalogDragEnd(event);"
-		onmouseover="TabCatalog.onMouseOver(event);">
-		<box id="tabcatalog-padding-size-box"/>
-		<box id="tabcatalog-header-size-box"/>
-		<box id="tabcatalog-splitter-size-box"/>
-		<box id="tabcatalog-scrollbar-size-box"/>
-
-		<box id="tabcatalog-background-canvas"/>
-		<box id="tabcatalog-background-backup"
-			class="tabcatalog-background"/>
-		<box id="tabcatalog-background"
-			class="tabcatalog-background"
-			onclick="TabCatalog.onBackgroundClick(event);"/>
-		<box id="tabcatalog-thumbnail-container"/>
-	</hbox>
+	<panel id="tabcatalog-thumbnail-panel"
+		noautofocus="true"
+		onpopuphiding="TabCatalog.onPanelHiding(event);">
+		<hbox flex="1">
+			<box id="tabcatalog-thumbnail-container-wrapper"
+				flex="1">
+				<box id="tabcatalog-thumbnail-container"/>
+			</box>
+			<vbox id="tabcatalog-scrollbar-slider"
+				class="tabcatalog-scrollbar-slider"
+				collapsed="true">
+				<vbox id="tabcatalog-scrollbar-thumb"
+					class="tabcatalog-scrollbar-thumb"/>
+			</vbox>
+		</hbox>
+	</panel>
+	<box collapsed="true">
+		<box style="position:fixed; top: 0; left: 0;">
+			<box id="tabcatalog-padding-size-box"/>
+			<box id="tabcatalog-header-size-box"/>
+			<box id="tabcatalog-splitter-size-box"/>
+		</box>
+	</box>
 	<data id="thumbnail-item-template">
 		<vbox class="tabcatalog-thumbnail"
 			flex="0"
@@ -117,7 +124,7 @@
 						<toolbarbutton class="tabcatalog-thumbnail-header-closebox tabs-closebutton tab-close-button"
 							custom-tooltiptext="&tabcatalog.thumbnail.close.tooltip;"
 							oncommand="TabCatalog.onThumbnailCloseBoxClick(event);"
-							onclick="event.stopPropagation(); event.preventDefault();"/>
+							onclick="event.stopPropagation();"/>
 					</hbox>
 				</stack>
 			</hbox>

@@ -190,34 +190,32 @@
 /* scrollbar, slider */
 
 #tabcatalog-scrollbar-size-box {
-	width: 1em !important;
 }
 
-.tabcatalog-scrollbar {
-	background: white;
-	border: 1px gray solid;
-	opacity: 0.7;
-	-moz-opacity: 0.7;
+.tabcatalog-scrollbar-thumb {
+	background: rgba(255, 255, 255, 0.7);
+	border: 1px rgba(80, 80, 80, 0.7) solid;
 	-moz-box-sizing: border-box;
 	cursor: -moz-grab;
-	min-height: 2em;
+	margin-left: -1px;
+	margin-right: -1px;
 }
 
 .tabcatalog-scrollbar-slider {
-	background: black;
-	opacity: 0.2;
-	-moz-opacity: 0.2;
+	background: rgba(0, 0, 0, 0.2);
 	-moz-box-sizing: border-box;
 	cursor: normal;
+	margin: 16px 0;
+	width: 1em;
 }
 
 
 
-/* Background Screen */
-
-.tabcatalog-background {
-	background: black;
-	opacity: 0.3;
+#tabcatalog-thumbnail-panel {
+	background: rgba(0, 0, 0, 0.45) none;
+	-moz-appearance: none;
+	-moz-border-radius: 16px 16px 16px 16px;
+	border: 0 none;
 	margin: 0;
 	padding: 0;
 }
