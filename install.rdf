@@ -26,31 +26,61 @@
       <RDF:Description em:locale="en-US"
                        em:name="Tab Catalog"
                        em:description="Shows thumbnail-style catalog of tabs."
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_tabcatalog.html.en"/>
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_tabcatalog.html.en">
+		<em:contributor>Ted Mielczarek</em:contributor>
+		<em:contributor>Gomita (thumbnail operations, from Tab Scope)</em:contributor>
+		<em:translator>ReinekeFux (de-DE locale)</em:translator>
+		<em:translator>Leszek teo yczkowski (pl-PL locale)</em:translator>
+		<em:translator>Mikes Kaszmn Istvn (hu-HU locale)</em:translator>
+      </RDF:Description>
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="ja-JP"
                        em:name="タブカタログ"
                        em:description="サムネイル形式でタブの一覧を表示します。"
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_tabcatalog.html"/>
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_tabcatalog.html">
+		<em:contributor>Ted Mielczarek</em:contributor>
+		<em:contributor>Gomita (thumbnail operations, from Tab Scope)</em:contributor>
+		<em:translator>ReinekeFux (de-DE locale)</em:translator>
+		<em:translator>Leszek teo yczkowski (pl-PL locale)</em:translator>
+		<em:translator>Mikes Kaszmn Istvn (hu-HU locale)</em:translator>
+      </RDF:Description>
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="de-DE"
                        em:name="Tab Catalog"
                        em:description="Zeigt eine Vorschau-Übersicht der Inhalte aller offenen Tabs"
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_tabcatalog.html.en"/>
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_tabcatalog.html.en">
+		<em:contributor>Ted Mielczarek</em:contributor>
+		<em:contributor>Gomita (thumbnail operations, from Tab Scope)</em:contributor>
+		<em:translator>ReinekeFux (de-DE locale)</em:translator>
+		<em:translator>Leszek teo yczkowski (pl-PL locale)</em:translator>
+		<em:translator>Mikes Kaszmn Istvn (hu-HU locale)</em:translator>
+      </RDF:Description>
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="pl-PL"
                        em:name="Tab Catalog"
                        em:description="Wyświetla katalog miniatur stron otwartych w kartach"
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_tabcatalog.html.en"/>
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_tabcatalog.html.en">
+		<em:contributor>Ted Mielczarek</em:contributor>
+		<em:contributor>Gomita (thumbnail operations, from Tab Scope)</em:contributor>
+		<em:translator>ReinekeFux (de-DE locale)</em:translator>
+		<em:translator>Leszek teo yczkowski (pl-PL locale)</em:translator>
+		<em:translator>Mikes Kaszmn Istvn (hu-HU locale)</em:translator>
+      </RDF:Description>
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="hu-HU"
                        em:name="Tab Catalog"
                        em:description="Lapok tartalmának megjelenítése gyorsnézetben."
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_tabcatalog.html.en"/>
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_tabcatalog.html.en">
+		<em:contributor>Ted Mielczarek</em:contributor>
+		<em:contributor>Gomita (thumbnail operations, from Tab Scope)</em:contributor>
+		<em:translator>ReinekeFux (de-DE locale)</em:translator>
+		<em:translator>Leszek teo yczkowski (pl-PL locale)</em:translator>
+		<em:translator>Mikes Kaszmn Istvn (hu-HU locale)</em:translator>
+      </RDF:Description>
     </em:localized>
 
 
@@ -58,7 +88,7 @@
     <em:targetApplication>
       <RDF:Description em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
                        em:minVersion="1.5"
-                       em:maxVersion="3.0.*" />
+                       em:maxVersion="3.6.*" />
     </em:targetApplication>
   </RDF:Description>
 </RDF:RDF>
