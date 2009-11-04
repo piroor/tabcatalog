@@ -5,7 +5,7 @@
   <RDF:Description RDF:about="urn:mozilla:install-manifest"
                    em:id="{049952B3-A745-43bd-8D26-D1349B1ED944}"
                    em:name="Tab Catalog"
-                   em:version="1.4.2008052701"
+                   em:version="2.0.2008052701"
                    em:creator="SHIMODA Hiroshi"
                    em:description="Shows thumbnail-style catalog of tabs."
                    em:homepageURL="http://piro.sakura.ne.jp/xul/tabcatalog/"
@@ -88,7 +88,7 @@
     <em:targetApplication>
       <RDF:Description em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
                        em:minVersion="3.0"
-                       em:maxVersion="3.6.*" />
+                       em:maxVersion="3.7a1pre" />
     </em:targetApplication>
   </RDF:Description>
 </RDF:RDF>

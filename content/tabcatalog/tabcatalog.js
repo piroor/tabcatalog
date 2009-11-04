@@ -2253,10 +2253,13 @@ var TabCatalog = {
 		var tabs = this.tabs;
 
 		if (
-			this.callingAction ||
-			this.shown ||
-			tabs.length == 1 ||
-			this.isDisabled()
+			!aOnlyUpdate &&
+			(
+				this.callingAction ||
+				this.shown ||
+				tabs.length == 1 ||
+				this.isDisabled()
+			)
 			)
 			return;
 
@@ -2394,16 +2397,7 @@ var TabCatalog = {
 		var base = this.callingAction;
 		var tabs = this.tabs;
 		var selectedTab = (this.lastSelectedIndex > -1 && this.lastSelectedIndex < tabs.length) ? tabs[this.lastSelectedIndex] : null ;
-		if (selectedTab != gBrowser.selectedTab) {
-			this.hide();
-			window.setTimeout(function(aBase, aRelative, aSelf) {
-				aSelf.show(aBase, true, aRelative);
-			}, 0, base, aRelative, this);
-		}
-		else {
-			this.hide();
-			this.show(base, true, aRelative);
-		}
+		this.show(base, true, aRelative);
 	},
  
 	initUI : function(aRelative) 
