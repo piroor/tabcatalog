@@ -1336,25 +1336,35 @@ var TabCatalog = {
 			case 'TabOpen':
 				this.rebuildRequest = true;
 				this.initTab(aEvent.originalTarget, aEvent.currentTarget);
-				if (this.shown)
-					window.setTimeout(function(aSelf) {
-						aSelf.updateUI();
-					}, 0, this);
+				
+				if (this.shown) this.updateUIOnTabChange();
 				break;
 
 			case 'TabClose':
 				this.destroyTab(aEvent.originalTarget);
 				this.rebuildRequest = true;
+				if (this.shown) this.updateUIOnTabChange();
 				break;
 
 			case 'TabMove':
 				this.rebuildRequest = true;
+				if (this.shown) this.updateUIOnTabChange();
 				break;
 
 			default:
 				break;
 		}
 	},
+	updateUIOnTabChange : function()
+	{
+		if (this.updateUIOnTabChangeTimer)
+			window.clearTimeout(this.updateUIOnTabChangeTimer);
+		this.updateUIOnTabChangeTimer = window.setTimeout(function(aSelf) {
+			aSelf.updateUI();
+			aSelf.updateUIOnTabChangeTimer = null;
+		}, 10, this);
+	},
+	updateUIOnTabChangeTimer : null,
  
 /* General */ 
 	
