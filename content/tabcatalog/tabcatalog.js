@@ -1763,16 +1763,9 @@ var TabCatalog = {
 			else
 				return;
 		}
-		else if (
-				this.shown &&
-				this.callingAction != this.CALLED_BY_TABSWITCH
-				) {
-			aEvent.preventDefault();
-			aEvent.stopPropagation();
-			return;
-		}
 		else {
-			if (!this.getPref('extensions.tabcatalog.override.ctrltab')) {
+			if (!this.shown &&
+				!this.getPref('extensions.tabcatalog.override.ctrltab')) {
 				return;
 			}
 
