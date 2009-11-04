@@ -341,6 +341,28 @@ var TabCatalog = {
 	{
 		return (aWindow || window).TabCatalog.mRebuildRequestDate > this.mLastRebuildDate;
 	},
+ 
+	get overrideCtrlTab() 
+	{
+		if (this._nativeCtrlTabAvailable === null) {
+			const XULAppInfo = Components.classes['@mozilla.org/xre/app-info;1']
+					.getService(Components.interfaces.nsIXULAppInfo);
+			const comparator = Components.classes['@mozilla.org/xpcom/version-comparator;1']
+								.getService(Components.interfaces.nsIVersionComparator);
+			this._nativeCtrlTabAvailable = comparator.compare(XULAppInfo.version, '3.6a1pre') >= 0;
+		}
+		return (
+				this.getPref('extensions.tabcatalog.override.ctrltab') &&
+				(
+					!this._nativeCtrlTabAvailable ||
+					(
+						!this.getPref('browser.allTabs.previews') &&
+						!this.getPref('browser.ctrlTab.previews')
+					)
+				)
+			);
+	},
+	_nativeCtrlTabAvailable : null,
   
 /* get items */ 
 	
@@ -683,7 +705,6 @@ var TabCatalog = {
  
 	isDelayed : function(aEvent) 
 	{
-
 		if (
 			this.getPref('extensions.tabcatalog.override.ctrltab.delay.enabled') &&
 			!aEvent.altKey &&
@@ -1493,7 +1514,7 @@ var TabCatalog = {
 			this.tabs.length > 1 &&
 			(
 				(
-					this.getPref('extensions.tabcatalog.override.ctrltab') &&
+					this.overrideCtrlTab &&
 					!aEvent.altKey &&
 					(navigator.platform.match(/mac/i) ? aEvent.metaKey : aEvent.ctrlKey )
 				) ||
@@ -1725,8 +1746,7 @@ var TabCatalog = {
 				return;
 		}
 		else {
-			if (!this.shown &&
-				!this.getPref('extensions.tabcatalog.override.ctrltab')) {
+			if (!this.shown && !this.overrideCtrlTab) {
 				return;
 			}
 

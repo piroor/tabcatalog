@@ -17,6 +17,7 @@
 	onpaneload="
 		shortcutShowHideCatalog = document.getElementById('shortcutShowHideCatalog');
 		shortcutShowHideCatalog.keyData = TabCatalog_parseShortcut(shortcutShowHideCatalog.value);
+		updateCtrlTabPrefs();
 	">
 	<preferences>
 		<preference id="extensions.tabcatalog.sort_by_focus"
@@ -54,6 +55,12 @@
 			type="int"/>
 		<preference id="extensions.tabcatalog.override.allinonegest"
 			name="extensions.tabcatalog.override.allinonegest"
+			type="bool"/>
+		<preference id="browser.allTabs.previews"
+			name="browser.allTabs.previews"
+			type="bool"/>
+		<preference id="browser.ctrlTab.previews"
+			name="browser.ctrlTab.previews"
 			type="bool"/>
 
 		<preference id="extensions.tabcatalog.shortcut"
@@ -104,17 +111,21 @@
 			<radiogroup id="extensions.tabcatalog.override.ctrltab.delay.enabled-radio"
 				preference="extensions.tabcatalog.override.ctrltab.delay.enabled"
 				orient="vertical">
-				<radio value="false" label="&tabcatalog.override.ctrltab.delay.disabled;"/>
+				<radio id="extensions.tabcatalog.override.ctrltab.delay-disabled-radio"
+					value="false" label="&tabcatalog.override.ctrltab.delay.disabled;"/>
 				<hbox align="center">
-					<radio value="true"
+					<radio id="extensions.tabcatalog.override.ctrltab.delay-enabled-radio"
+						value="true"
 						label="&tabcatalog.override.ctrltab.delay.enabled;"/>
-					<label value="&tabcatalog.override.ctrltab.delay.before;"
+					<label id="extensions.tabcatalog.override.ctrltab.delay-before"
+						value="&tabcatalog.override.ctrltab.delay.before;"
 						control="extensions.tabcatalog.override.ctrltab.delay-textbox"/>
 					<textbox id="extensions.tabcatalog.override.ctrltab.delay-textbox"
 						size="5"
 						preference="extensions.tabcatalog.override.ctrltab.delay"
 						type="number" min="0" increment="1"/>
-					<label value="&tabcatalog.override.ctrltab.delay.after;"
+					<label id="extensions.tabcatalog.override.ctrltab.delay-after"
+						value="&tabcatalog.override.ctrltab.delay.after;"
 						control="extensions.tabcatalog.override.ctrltab.delay-textbox"/>
 				</hbox>
 			</radiogroup>
@@ -313,6 +324,36 @@ function clearShortcut(aNode)
 	var event = document.createEvent('UIEvents');
 	event.initUIEvent('input', true, false, window, 0);
 	aNode.dispatchEvent(event);
+}
+
+
+function updateCtrlTabPrefs()
+{
+	const XULAppInfo = Components.classes['@mozilla.org/xre/app-info;1']
+			.getService(Components.interfaces.nsIXULAppInfo);
+	const comparator = Components.classes['@mozilla.org/xpcom/version-comparator;1']
+						.getService(Components.interfaces.nsIVersionComparator);
+
+	var disabled = (comparator.compare(XULAppInfo.version, '3.6a1pre') >= 0) &&
+			(
+				document.getElementById('browser.allTabs.previews').value ||
+				document.getElementById('browser.ctrlTab.previews').value
+			);
+	[
+		'tabcatalog.override.ctrltab-check',
+		'extensions.tabcatalog.override.ctrltab.delay.enabled-radio',
+		'extensions.tabcatalog.override.ctrltab.delay-disabled-radio',
+		'extensions.tabcatalog.override.ctrltab.delay-enabled-radio',
+		'extensions.tabcatalog.override.ctrltab.delay-before',
+		'extensions.tabcatalog.override.ctrltab.delay-textbox',
+		'extensions.tabcatalog.override.ctrltab.delay-after'
+	].forEach(function(aID) {
+		var item = document.getElementById(aID);
+		if (disabled)
+			item.setAttribute('disabled', true);
+		else
+			item.removeAttribute('disabled');
+	});
 }
 
 
