@@ -1,5 +1,4 @@
 content	tabcatalog	jar:chrome/tabcatalog.jar!/content/tabcatalog/
-content	tabcatalog-fx3	jar:chrome/tabcatalog.jar!/content/tabcatalog-fx3/	appversion>=3.0b5pre
 
 overlay	chrome://browser/content/browser.xul	chrome://tabcatalog/content/tabcatalog.xul
 overlay	chrome://global/content/customizeToolbar.xul	chrome://tabcatalog/content/tabcatalog.xul
@@ -11,9 +10,9 @@ locale	tabcatalog	pl-PL	jar:chrome/tabcatalog.jar!/locale/pl-PL/tabcatalog/
 locale	tabcatalog	hu-HU	jar:chrome/tabcatalog.jar!/locale/hu-HU/tabcatalog/
 
 skin	tabcatalog	classic/1.0	jar:chrome/tabcatalog.jar!/skin/classic/tabcatalog/
-skin	tabcatalog-gnome	classic/1.0	jar:chrome/tabcatalog.jar!/skin/classic/tabcatalog-gnome/	appversion>=3.0b5pre os=Linux
-skin	tabcatalog-fx35	classic/1.0	jar:chrome/tabcatalog.jar!/skin/classic/tabcatalog-fx35/	appversion>=3.5b4pre
+skin	tabcatalog-gnome	classic/1.0	jar:chrome/tabcatalog.jar!/skin/classic/tabcatalog-gnome/	appversion>=3.0 os=Linux
+skin	tabcatalog-fx35	classic/1.0	jar:chrome/tabcatalog.jar!/skin/classic/tabcatalog-fx35/	appversion>=3.5
 
-style chrome://browser/content/browser.xul chrome://tabcatalog-fx35/skin/toolbar.css appversion>=3.5b4pre
+style chrome://browser/content/browser.xul chrome://tabcatalog-fx35/skin/toolbar.css appversion>=3.5
 
 override	chrome://tabcatalog/skin/toolbar.css	chrome://tabcatalog-gnome/skin/toolbar.css	os=Linux

@@ -11,6 +11,7 @@
 
 
 <script src="boxObject.js" type="application/x-javascript"/>
+<script src="prefs.js" type="application/x-javascript"/>
 <script src="tabcatalog.js" type="application/x-javascript"/>
 <script src="keyParser.js" type="application/x-javascript"/>
 
