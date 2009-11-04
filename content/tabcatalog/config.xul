@@ -292,7 +292,7 @@ function setShortcut(aNode)
 		window.openDialog(
 			'chrome://tabcatalog/content/keyDetecter.xul',
 			'_blank',
-			'chrome,modal,resizable=no,titlebar=no,centerscreen',
+			'chrome,modal,centerscreen,dialog=no',
 			aNode.keyData,
 			shortcutShowHideCatalog.getAttribute('dialogMessage'),
 			shortcutShowHideCatalog.getAttribute('dialogButton')
