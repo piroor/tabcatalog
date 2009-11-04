@@ -994,6 +994,8 @@ var TabCatalog = {
 			.getService(Components.interfaces.nsIObserverService);
 		ObserverService.addObserver(this, 'TabCatalog:browserWindowClosed', false);
 
+		this.panel.style.opacity = 0;
+
 		this.initialShow();
 	},
 	
@@ -2345,14 +2347,46 @@ var TabCatalog = {
 		else
 			this.catalog.removeAttribute('dropshadow');
 
-
 		var focusedNode = this.getFocusedItem();
 		if (focusedNode)
 			this.scrollCatalogToItem(focusedNode, true);
 
-		window.setTimeout(function(aSelf) {
-			aSelf.catalogShowing = false;
-		}, 100, this);
+		var duration = this.getPref('extensions.tabcatalog.animation.fade.duration');
+		var opacity = Number(window.getComputedStyle(this.panel, null).opacity);
+		if (aOnlyUpdate || duration <= 0) {
+			this.panel.style.opacity = 1;
+			window.setTimeout(function(aSelf) {
+				aSelf.catalogShowing = false;
+			}, 100, this);
+		}
+		else {
+			this.stopFade();
+			var style  = this.panel.style;
+			var radian = 90 * Math.PI / 180;
+			var self   = this;
+			this.fadeAnimationTask = function(aTime, aBeginning, aChange, aDuration) {
+				var opacity, finished;
+				if (aTime >= aDuration) {
+					delete self.fadeAnimationTask;
+					opacity = 1;
+					finished = true;
+				}
+				else {
+					opacity = aBeginning + (aChange * Math.sin(aTime / aDuration * radian));
+					finished = false;
+				}
+				style.opacity = opacity;
+				if (finished) {
+					self.catalogShowing = false;
+				}
+				return finished;
+			};
+			window['piro.sakura.ne.jp'].animationManager.addTask(
+				this.fadeAnimationTask,
+				opacity, 1-opacity,
+				duration
+			);
+		}
 	},
 	callingAction     : null,
 	lastFocusedIndex  : -1,
@@ -2374,9 +2408,52 @@ var TabCatalog = {
 
 	CALLED_FOR_SWITCHING  : 48, // 16+32
  
+	stopFade : function()
+	{
+		if (this.fadeAnimationTask) {
+			window['piro.sakura.ne.jp'].animationManager.removeTask(
+				this.fadeAnimationTask
+			);
+			delete this.fadeAnimationTask;
+		}
+	},
+ 
 	hide : function() 
 	{
-		this.shown = false;
+		this.stopFade();
+		var duration = this.getPref('extensions.tabcatalog.animation.fade.duration');
+		var opacity = Number(window.getComputedStyle(this.panel, null).opacity);
+		if (duration <= 0 || opacity <= 0) {
+			this.panel.style.opacity = 0;
+			this.shown = false;
+		}
+		else {
+			var style  = this.panel.style;
+			var radian = 90 * Math.PI / 180;
+			var self   = this;
+			this.fadeAnimationTask = function(aTime, aBeginning, aChange, aDuration) {
+				var opacity, finished;
+				if (aTime >= aDuration) {
+					delete self.fadeAnimationTask;
+					opacity = 0;
+					finished = true;
+				}
+				else {
+					opacity = aBeginning + (aChange * Math.sin(aTime / aDuration * radian));
+					finished = false;
+				}
+				style.opacity = opacity;
+				if (finished) {
+					self.shown = false;
+				}
+				return finished;
+			};
+			window['piro.sakura.ne.jp'].animationManager.addTask(
+				this.fadeAnimationTask,
+				opacity, -opacity,
+				duration
+			);
+		}
 	},
  
 	onPanelHiding : function() 
@@ -2392,7 +2469,7 @@ var TabCatalog = {
 		}
 		window.removeEventListener('blur', this, true);
 
-		this.animateStop();
+		this.stopScroll();
 
 		this.lastMouseOverThumbnail = null;
 
@@ -3405,64 +3482,7 @@ var TabCatalog = {
 		range.deleteContents();
 		range.detach();
 	},
-  
-	animate : function(aTarget, aProp, aStart, aEnd, aInterval, aCallbackFunc, aEndCallbackFunc) 
-	{
-		this.animateStop();
-
-		this.animateTarget   = aTarget;
-		this.animateProp     = aProp;
-		this.animateCurrent  = aStart;
-		this.animateEnd      = aEnd;
-		this.animateStep     = (aEnd - aStart) / 5;
-		this.animateRegisteredCallbackFunc    = aCallbackFunc;
-		this.animateRegisteredEndCallbackFunc = aEndCallbackFunc;
-
-		aTarget[aProp] = parseInt(aStart) + 'px';
-		this.animateTimer  = window.setInterval(this.animateCallback, Math.max(1, Math.max(1, aInterval)/5), this);
-	},
-	animateCallback : function(aThis)
-	{
-		aThis.animateCurrent += aThis.animateStep;
-
-		if ((aThis.animateStep < 0) ?
-			(aThis.animateCurrent <= aThis.animateEnd) :
-			(aThis.animateCurrent >= aThis.animateEnd)) {
-			aThis.animateStop();
-			return;
-		}
-
-		aThis.animateTarget[aThis.animateProp] = parseInt(aThis.animateCurrent) + 'px';
-
-		try {
-			if (aThis.animateRegisteredCallbackFunc &&
-				typeof aThis.animateRegisteredCallbackFunc == 'function')
-				aThis.animateRegisteredCallbackFunc(aThis.animateCurrent);
-		}
-		catch(e) {
-		}
-	},
-	animateStop : function()
-	{
-		if (this.animateTimer) {
-			window.clearTimeout(this.animateTimer);
-			this.animateTimer = null;
-		}
-		if (this.animateTarget) {
-			this.animateTarget[this.animateProp] = parseInt(this.animateEnd) + 'px';
-			this.animateTarget = null;
-		}
-		try {
-			if (this.animateRegisteredEndCallbackFunc &&
-				typeof this.animateRegisteredEndCallbackFunc == 'function')
-				this.animateRegisteredEndCallbackFunc();
-		}
-		catch(e) {
-		}
-		this.animateRegisteredCallbackFunc = null;
-		this.animateRegisteredEndCallbackFunc = null;
-	},
-  
+   
 /* Commands */ 
 	
 /* Thumbnail Focus */ 
@@ -3552,36 +3572,63 @@ var TabCatalog = {
 				Math.min(this.catalog.posY, 0) :
 				Math.max(this.catalog.posY, -this.catalog.scrollMaxY)
 		);
+		aDelta = this.catalog.posY - originalY;
 
 		this.catalogScrolling = true;
+
+		this.stopScroll();
 
 		if (aDoNotAnimate || !this.getPref('extensions.tabcatalog.animation.scroll.enabled')) {
 			this.catalog.scrollY = -this.catalog.posY;
 			this.catalog.style.marginTop = this.catalog.posY + 'px';
 			this.updateScrollbar();
-			window.setTimeout(this.scrollCatalogByAnimationEndCallback, 100);
+			window.setTimeout(function(aSelf) {
+				aSelf.catalog.scrollY = -aSelf.catalog.posY;
+				aSelf.updateScrollbar();
+				aSelf.catalogScrolling = false;
+			}, 100, this);
 		}
 		else {
-			this.animate(
-				this.catalog.style,
-				'marginTop',
-				originalY,
-				this.catalog.posY,
-				this.getPref('extensions.tabcatalog.animation.scroll.timeout'),
-				this.scrollCatalogByAnimationCallback,
-				this.scrollCatalogByAnimationEndCallback
+			var style = this.catalog.style;
+			var startOffset = originalY;
+			var radian = 90 * Math.PI / 180;
+			var self   = this;
+			this.scrollAnimationTask = function(aTime, aBeginning, aChange, aDuration) {
+				var offset, finished;
+				if (aTime >= aDuration) {
+					delete self.scrollAnimationTask;
+					offset = self.catalog.posY;
+					finished = true;
+				}
+				else {
+					offset = startOffset + (aChange * Math.sin(aTime / aDuration * radian));
+					finished = false;
+				}
+				style.marginTop = offset+'px';
+				self.updateScrollbar(parseInt(-offset));
+				if (finished) {
+					self.catalog.scrollY = -offset;
+					self.updateScrollbar();
+					self.catalogScrolling = false;
+				}
+				return finished;
+			};
+			window['piro.sakura.ne.jp'].animationManager.addTask(
+				this.scrollAnimationTask,
+				originalY, aDelta,
+				this.getPref('extensions.tabcatalog.animation.scroll.duration')
 			);
 		}
 	},
-	scrollCatalogByAnimationCallback : function(aCurPos)
+ 
+	stopScroll : function() 
 	{
-		TabCatalog.updateScrollbar(-parseInt(aCurPos));
-	},
-	scrollCatalogByAnimationEndCallback : function()
-	{
-		TabCatalog.catalog.scrollY = -TabCatalog.catalog.posY;
-		TabCatalog.updateScrollbar();
-		TabCatalog.catalogScrolling = false;
+		if (this.scrollAnimationTask) {
+			window['piro.sakura.ne.jp'].animationManager.removeTask(
+				this.scrollAnimationTask
+			);
+			delete this.scrollAnimationTask;
+		}
 	},
  
 	scrollCatalogTo : function(aY, aDoNotAnimate) 

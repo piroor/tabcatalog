@@ -33,7 +33,9 @@ pref("extensions.tabcatalog.zoom.reverseWheelScrollDirection", false);
 pref("extensions.tabcatalog.rendering_quality", 2);
 
 pref("extensions.tabcatalog.animation.scroll.enabled", true);
-pref("extensions.tabcatalog.animation.scroll.timeout", 150);
+pref("extensions.tabcatalog.animation.scroll.duration", 150);
+
+pref("extensions.tabcatalog.animation.fade.duration", 0);
 
 
 pref("extensions.tabcatalog.thumbnail.header",     true);
