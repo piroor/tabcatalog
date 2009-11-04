@@ -52,6 +52,9 @@ pref("extensions.tabcatalog.auto_show.tabbar.enabled", false);
 pref("extensions.tabcatalog.auto_show.tabbar.show_delay", 300);
 
 
+pref("extensions.tabcatalog.tabdrag.autoclear", true);
+
+
 
 pref("extensions.tabcatalog.keep_open.closetab",     true);
 

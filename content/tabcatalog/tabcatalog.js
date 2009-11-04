@@ -43,11 +43,12 @@ var TabCatalog = {
 					);
 			}
 
-			popup.addEventListener('popupshowing', function(aEvent) {
-				TabCatalog.contextMenuShwon = true;
-				var selectedTabItems = TabCatalog.getSelectedTabItems();
+			var self = this;
+			popup.__tabcatalog__onPopupShowing = function(aEvent) {
+				self.contextMenuShwon = true;
+				var selectedTabItems = self.getSelectedTabItems();
 				for (var i = 0; i < tabcatalogItems.length; i++) {
-					tabcatalogItems[i].hidden = !TabCatalog.shown;
+					tabcatalogItems[i].hidden = !self.shown;
 					if (tabcatalogItems[i].getAttribute("for-multiple-selected") == "true") {
 						if (selectedTabItems.snapshotLength < 2)
 							tabcatalogItems[i].setAttribute('disabled', true);
@@ -55,13 +56,14 @@ var TabCatalog = {
 							tabcatalogItems[i].removeAttribute('disabled');
 					}
 				}
-			}, false);
-
-			popup.addEventListener('popuphidden', function(aEvent) {
-				TabCatalog.contextMenuShwon = false;
-				if (TabCatalog.shown)
-					TabCatalog.updateUI();
-			}, false);
+			};
+			popup.__tabcatalog__onPopupHiding = function(aEvent) {
+				self.contextMenuShwon = false;
+				if (self.shown)
+					self.updateUI();
+			};
+			popup.addEventListener('popupshowing', popup.__tabcatalog__onPopupShowing, false);
+			popup.addEventListener('popuphidden', popup.__tabcatalog__onPopupHiding, false);
 		}
 		return this.mTabContextMenu;
 	},
@@ -246,7 +248,7 @@ var TabCatalog = {
 		return val;
 	},
  
-	get panelWidth()
+	get panelWidth() 
 	{
 		var max = window.screen.availWidth;
 		var margin = Math.max(80, max / 6);
@@ -757,7 +759,7 @@ var TabCatalog = {
 	},
 	delayedKeydownTime : -1,
   
-	showPopupMenu : function(aEvent, aPopupMenu) 
+	showPopupMenu : function(aEvent, aPopupMenu, aIsAutoShow) 
 	{
 		var node = this.getItemFromEvent(aEvent);
 		if (node) {
@@ -768,20 +770,33 @@ var TabCatalog = {
 			document.popupNode = gBrowser.mTabContainer;
 		}
 
-		aPopupMenu.hidePopup();
-		if ('openPopupAtScreen' in aPopupMenu)
+		var self = this;
+		var autoClose = function(aEvent) {
+				if (aEvent.target != aEvent.currentTarget) return;
+				aEvent.currentTarget.removeEventListener('popuphiding', arguments.callee, false);
+				self.clearSelection();
+			};
+		if (aPopupMenu == this.tabSelectPopupMenu &&
+			'MultipleTabService' in window &&
+			'showSelectionPopup' in MultipleTabService) {
+			MultipleTabService.showSelectionPopup(
+				aEvent,
+				aIsAutoShow ? this.getPref('extensions.multipletab.tabdrag.autoclear') : false
+			);
+			if (MultipleTabService.tabSelectionPopup &&
+				MultipleTabService.tabSelectionPopup.autoClearSelection)
+				MultipleTabService.tabSelectionPopup.addEventListener('popuphiding', autoClose, false);
+		}
+		else {
+			aPopupMenu.hidePopup();
 			aPopupMenu.openPopupAtScreen(
 				aEvent.screenX,
 				aEvent.screenY,
 				true
 			);
-		else
-			aPopupMenu.showPopup(
-				node,
-				aEvent.screenX-document.documentElement.boxObject.screenX,
-				aEvent.screenY-document.documentElement.boxObject.screenY,
-				'popup'
-			);
+			if (aIsAutoShow && this.getPref('extensions.tabcatalog.tabdrag.autoclear'))
+				aPopupMenu.addEventListener('popuphiding', autoClose, false);
+		}
 	},
 	contextMenuShwon : false,
  
@@ -1085,6 +1100,13 @@ var TabCatalog = {
 		this.removePrefListener(this);
 
 		gBrowser.mTabContainer.removeEventListener('select', this, true);
+
+		if (this.tabContextMenu) {
+			this.tabContextMenu.addEventListener('popupshowing', this.tabContextMenu.__tabcatalog__onPopupShowing, false);
+			this.tabContextMenu.addEventListener('popuphidden', this.tabContextMenu.__tabcatalog__onPopupHiding, false);
+			delete this.tabContextMenu.__tabcatalog__onPopupShowing;
+			delete this.tabContextMenu.__tabcatalog__onPopupHiding;
+		}
 
 		var tabs = this.getTabsArray(gBrowser);
 		for (var i = 0, maxi = tabs.length; i < maxi; i++)
@@ -1440,10 +1462,13 @@ var TabCatalog = {
 		}
 
 		if (this.thumbnailDragging) {
-			if (node.getAttribute('selected') == 'true')
+			var selected = node.getAttribute('selected') == 'true';
+			if (selected)
 				node.removeAttribute('selected');
 			else
 				node.setAttribute('selected', true);
+			if ('MultipleTabService' in window)
+				MultipleTabService.setSelection(this.getTabFromThumbnailItem(node), !selected);
 		}
 		else {
 			if (this.callingAction == this.CALLED_BY_TABBAR)
@@ -1829,13 +1854,19 @@ var TabCatalog = {
 			aEvent.ctrlKey &&
 			this.callingAction != this.CALLED_BY_TABSWITCH
 			) {
-			if (node.getAttribute('selected') == 'true')
+			var selected = node.getAttribute('selected') == 'true';
+			if (selected)
 				node.removeAttribute('selected');
 			else
 				node.setAttribute('selected', true);
+			if ('MultipleTabService' in window)
+				MultipleTabService.setSelection(tab, !selected);
 		}
 		else if (aEvent.type == 'click' && aEvent.button == 2) {
-			this.showPopupMenu(aEvent, this.tabContextMenu);
+			if (this.getSelectedTabItems().snapshotLength)
+				this.showPopupMenu(aEvent, this.tabSelectPopupMenu, false);
+			else
+				this.showPopupMenu(aEvent, this.tabContextMenu);
 		}
 		else if (tab) {
 			if (
@@ -2013,6 +2044,8 @@ var TabCatalog = {
 		var node = TabCatalog.getItemFromEvent(aEvent);
 		TabCatalog.thumbnailDragging = true;
 		node.setAttribute('selected', true);
+		if ('MultipleTabService' in window)
+			MultipleTabService.setSelection(this.getTabFromThumbnailItem(node), true);
 	},
 	thumbnailDragging : false,
  
@@ -2021,7 +2054,7 @@ var TabCatalog = {
 		if (this.thumbnailDragging) {
 			this.thumbnailDragging = false;
 			if (this.getSelectedTabItems().snapshotLength)
-				this.showPopupMenu(aEvent, this.tabSelectPopupMenu);
+				this.showPopupMenu(aEvent, this.tabSelectPopupMenu, true);
 		}
 	},
  
@@ -2281,11 +2314,7 @@ var TabCatalog = {
 			)
 			this.lastFocusedIndex = -1;
 
-		var nodes = this.getSelectedTabItems();
-		if (nodes.snapshotLength) {
-			for (i = nodes.snapshotLength-1; i > -1; i--)
-				nodes.snapshotItem(i).removeAttribute('selected');
-		}
+		this.clearSelection();
 
 		this.callingAction = aBase || this.callingAction || this.CALLED_BY_UNKNOWN ;
 		this.initUI(aRelative);
@@ -2367,6 +2396,7 @@ var TabCatalog = {
 
 		this.lastMouseOverThumbnail = null;
 
+		this.clearSelection();
 
 		var focusedNode = this.getFocusedItem();
 		this.lastFocusedIndex = (focusedNode) ? parseInt(focusedNode.getAttribute('index')) : -1 ;
@@ -3594,6 +3624,23 @@ var TabCatalog = {
 			window.setTimeout(function(aBase, aSelf) {
 				aSelf.show(aBase);
 			}, 0, base, this);
+	},
+ 
+	clearSelection : function() 
+	{
+		var nodes = this.getSelectedTabItems();
+		if (nodes.snapshotLength) {
+			for (i = nodes.snapshotLength-1; i > -1; i--)
+			{
+				nodes.snapshotItem(i).removeAttribute('selected');
+			}
+		}
+		if ('MultipleTabService' in window) {
+			this.browserWindowsWithOpenedOrder.forEach(function(aWindow) {
+				if ('MultipleTabService' in aWindow)
+					aWindow.MultipleTabService.clearSelection();
+			});
+		}
 	},
  
 	zoom : function(aRelative) 
