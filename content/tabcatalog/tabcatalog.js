@@ -2136,7 +2136,7 @@ var TabCatalog = {
 					tab           : aTargetThumbnail.relatedTab,
 					isMultiWindow : aSelf.isMultiWindow
 				});
-			}, 100, this);
+			}, 50, this);
 		}
 
 		return true;
