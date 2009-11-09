@@ -1648,6 +1648,8 @@ var TabCatalog = {
 				aEvent.keyCode == aEvent.DOM_VK_DOWN ||
 
 				(
+					aEvent.type == 'keyup' ?
+						false :
 					!this.thumbnailShortcutEnabled ?
 						/^[\-\+hjkl123456789]$/i.test(keyChar = String.fromCharCode(aEvent.charCode)) :
 						(
@@ -1698,15 +1700,7 @@ var TabCatalog = {
 						return;
 
 					default:
-						if (aEvent.charCode ==  0x2B) { // + (zoom in)
-							this.zoom(1);
-							return;
-						}
-						else if (aEvent.charCode ==  0x2D) { // - (zoom out)
-							this.zoom(-1);
-							return;
-						}
-						else if (
+						if (
 							aEvent.keyCode == aEvent.DOM_VK_LEFT ||
 							aEvent.keyCode == aEvent.DOM_VK_RIGHT ||
 							aEvent.keyCode == aEvent.DOM_VK_UP ||
@@ -1731,13 +1725,23 @@ var TabCatalog = {
 							);
 							return;
 						}
-						else {
-							var shortcutTarget = this.catalog.parentNode.getElementsByAttribute('accesskey', String.fromCharCode(aEvent.charCode).toUpperCase());
-							if (shortcutTarget.length) {
-								shortcutTarget[0].relatedTabBrowser.selectedTab = shortcutTarget[0].relatedTab;
-								this.hide();
-								shortcutTarget[0].relatedTab.ownerDocument.defaultView.focus();
+						else if (aEvent.type == 'keypress') {
+							if (aEvent.charCode ==  0x2B) { // + (zoom in)
+								this.zoom(1);
 								return;
+							}
+							else if (aEvent.charCode ==  0x2D) { // - (zoom out)
+								this.zoom(-1);
+								return;
+							}
+							else {
+								var shortcutTarget = this.catalog.parentNode.getElementsByAttribute('accesskey', String.fromCharCode(aEvent.charCode).toUpperCase());
+								if (shortcutTarget.length) {
+									shortcutTarget[0].relatedTabBrowser.selectedTab = shortcutTarget[0].relatedTab;
+									this.hide();
+									shortcutTarget[0].relatedTab.ownerDocument.defaultView.focus();
+									return;
+								}
 							}
 						}
 				}
@@ -1776,7 +1780,7 @@ var TabCatalog = {
 						(!aEvent.shiftKey && !navigator.platform.match(/linux/i)) ||
 						(aEvent.shiftKey && navigator.platform.match(/linux/i))
 					) &&
-					(aEvent.charCode == 0 && aEvent.keyCode == 16)
+					(aEvent.keyCode == 16 && (aEvent.type == 'keyup' || aEvent.charCode == 0))
 				)
 				) {
 				this.show(this.CALLED_BY_TABSWITCH);
