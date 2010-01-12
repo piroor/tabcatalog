@@ -277,8 +277,8 @@
 </prefpane>
 
 
-<script src="keyParser.js" type="application/x-javascript"/>
-<script type="application/x-javascript"><![CDATA[
+<script src="keyParser.js" type="application/javascript"/>
+<script type="application/javascript"><![CDATA[
 
 const WindowManager = Components.classes['@mozilla.org/appshell/window-mediator;1'].getService(Components.interfaces.nsIWindowMediator);
 function opener()

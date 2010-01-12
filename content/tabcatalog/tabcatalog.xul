@@ -10,11 +10,11 @@
          xmlns:html="http://www.w3.org/1999/xhtml">
 
 
-<script src="boxObject.js" type="application/x-javascript"/>
-<script src="prefs.js" type="application/x-javascript"/>
-<script src="animationManager.js" type="application/x-javascript"/>
-<script src="tabcatalog.js" type="application/x-javascript"/>
-<script src="keyParser.js" type="application/x-javascript"/>
+<script src="boxObject.js" type="application/javascript"/>
+<script src="prefs.js" type="application/javascript"/>
+<script src="animationManager.js" type="application/javascript"/>
+<script src="tabcatalog.js" type="application/javascript"/>
+<script src="keyParser.js" type="application/javascript"/>
 
 <broadcasterset id="mainBroadcasterSet">
 	<broadcaster id="tabcatalog-featuresForMultipleTabs-broadcaster"
