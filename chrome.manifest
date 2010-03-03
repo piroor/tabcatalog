@@ -13,6 +13,7 @@ skin	tabcatalog	classic/1.0	jar:chrome/tabcatalog.jar!/skin/classic/tabcatalog/
 skin	tabcatalog-gnome	classic/1.0	jar:chrome/tabcatalog.jar!/skin/classic/tabcatalog-gnome/	appversion>=3.0 os=Linux
 skin	tabcatalog-fx35	classic/1.0	jar:chrome/tabcatalog.jar!/skin/classic/tabcatalog-fx35/	appversion>=3.5
 
+style chrome://browser/content/browser.xul chrome://tabcatalog/skin/panel.css appversion<3.5
 style chrome://browser/content/browser.xul chrome://tabcatalog-fx35/skin/toolbar.css appversion>=3.5
 
 override	chrome://tabcatalog/skin/toolbar.css	chrome://tabcatalog-gnome/skin/toolbar.css	os=Linux
