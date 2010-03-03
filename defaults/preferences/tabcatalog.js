@@ -63,7 +63,3 @@ pref("extensions.tabcatalog.keep_open.closetab",     true);
 // -1 = disable, 0 = like scrollbar, 1 = like Adobe Reader
 pref("extensions.tabcatalog.panning.scrollBehavior", 0);
 
-
-
-pref("extensions.{049952B3-A745-43bd-8D26-D1349B1ED944}.name", "chrome://tabcatalog/locale/tabcatalog.properties") ;
-pref("extensions.{049952B3-A745-43bd-8D26-D1349B1ED944}.description", "chrome://tabcatalog/locale/tabcatalog.properties") ;
