@@ -16,9 +16,10 @@ pref("extensions.tabcatalog.send_wheel_event", true);
 pref("extensions.tabcatalog.closeTabActionForLastTab", 1);
 
 pref("extensions.tabcatalog.show_scrollbar",  true);
+pref("extensions.tabcatalog.margin.min",  80);
+pref("extensions.tabcatalog.margin.factor",  "0.16"); // means "16% margin"
 
 pref("extensions.tabcatalog.bothclick.enabled", true);
-pref("extensions.tabcatalog.bothclick.delay",   100);
 pref("extensions.tabcatalog.bothclick.delay",   100);
 
 pref("extensions.tabcatalog.shortcut", "F8");

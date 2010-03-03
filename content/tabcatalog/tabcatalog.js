@@ -251,13 +251,13 @@ var TabCatalog = {
 	get panelWidth() 
 	{
 		var max = window.screen.availWidth;
-		var margin = Math.max(80, max / 6);
+		var margin = Math.max(this.minMargin, max * this.marginFactor);
 		return parseInt(max - (margin * 2));
 	},
 	get panelHeight()
 	{
 		var max = window.screen.availHeight;
-		var margin = Math.max(80, max / 6);
+		var margin = Math.max(this.minMargin, max * this.marginFactor);
 		return parseInt(max - (margin * 2));
 	},
  
@@ -950,6 +950,8 @@ var TabCatalog = {
 		this.addPrefListener(this);
 		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.override.allinonegest');
 		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.shortcut');
+		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.margin.min');
+		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.margin.factor');
 		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.thumbnail.header');
 		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.thumbnail.closebox');
 		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.thumbnail.navigation');
@@ -1179,22 +1181,32 @@ var TabCatalog = {
 				this.shortcut = null;
 				break;
 
+			case 'extensions.tabcatalog.margin.min':
+				this.minMargin = value;
+				this.rebuildRequest = true;
+				break;
+
+			case 'extensions.tabcatalog.margin.factor':
+				this.marginFactor = Number(value);
+				this.rebuildRequest = true;
+				break;
+
 			case 'extensions.tabcatalog.thumbnail.header':
-				if (this.getPref(aPrefName))
+				if (value)
 					this.catalog.setAttribute('show-thumbnail-header', true);
 				else
 					this.catalog.removeAttribute('show-thumbnail-header');
 				break;
 
 			case 'extensions.tabcatalog.thumbnail.closebox':
-				if (this.getPref(aPrefName))
+				if (value)
 					this.catalog.setAttribute('show-thumbnail-closebox', true);
 				else
 					this.catalog.removeAttribute('show-thumbnail-closebox');
 				break;
 
 			case 'extensions.tabcatalog.thumbnail.navigation':
-				this.shouldShowNavigations = this.getPref(aPrefName);
+				this.shouldShowNavigations = value;
 				if (this.shouldShowNavigations)
 					this.catalog.setAttribute('show-thumbnail-toolbar-buttons', true);
 				else
@@ -1202,7 +1214,7 @@ var TabCatalog = {
 				break;
 
 			case 'extensions.tabcatalog.thumbnail.shortcut':
-				this.thumbnailShortcutEnabled = this.getPref(aPrefName);
+				this.thumbnailShortcutEnabled = value;
 				if (this.thumbnailShortcutEnabled)
 					this.catalog.setAttribute('show-thumbnail-shortcut', true);
 				else
@@ -1214,7 +1226,7 @@ var TabCatalog = {
 				break;
 
 			case 'extensions.tabcatalog.send_click_event':
-				this.shouldSendClickEvent = this.getPref(aPrefName);
+				this.shouldSendClickEvent = value;
 				break;
 
 			case 'extensions.tabcatalog.updateInBackground':
