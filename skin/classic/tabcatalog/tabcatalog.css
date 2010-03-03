@@ -208,3 +208,11 @@
 	margin: 16px 0;
 	width: 1em;
 }
+
+
+#tabcatalog-thumbnail-panel:-moz-system-metric(windows-compositor) {
+	background: transparent;
+	-moz-appearance: -moz-win-glass;
+	-moz-border-radius: 0;
+	border: none;
+}

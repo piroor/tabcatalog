@@ -363,6 +363,11 @@ var TabCatalog = {
 			);
 	},
 	_nativeCtrlTabAvailable : null,
+ 
+	get aeroGlass() 
+	{
+		return window.getComputedStyle(this.panel, null).MozAppearance == '-moz-win-glass';
+	},
   
 /* get items */ 
 	
@@ -966,7 +971,8 @@ var TabCatalog = {
 			.getService(Components.interfaces.nsIObserverService);
 		ObserverService.addObserver(this, 'TabCatalog:browserWindowClosed', false);
 
-		this.panel.style.opacity = 0;
+		if (!this.aeroGlass)
+			this.panel.style.opacity = 0;
 
 		this.initialShow();
 	},
@@ -2327,8 +2333,10 @@ var TabCatalog = {
 		if (focusedNode)
 			this.scrollCatalogToItem(focusedNode, true);
 
-		var duration = this.getPref('extensions.tabcatalog.animation.fade.duration');
-		var opacity = Number(window.getComputedStyle(this.panel, null).opacity);
+		var glass = this.aeroGlass;
+		var duration = glass ? 0 : this.getPref('extensions.tabcatalog.animation.fade.duration') ;
+		var opacity = glass ? 0 : Number(window.getComputedStyle(this.panel, null).opacity) ;
+		this.panel.removeAttribute('collapsed');
 		if (aOnlyUpdate || duration <= 0) {
 			this.panel.style.opacity = 1;
 			window.setTimeout(function(aSelf) {
@@ -2397,10 +2405,13 @@ var TabCatalog = {
 	hide : function() 
 	{
 		this.stopFade();
-		var duration = this.getPref('extensions.tabcatalog.animation.fade.duration');
-		var opacity = Number(window.getComputedStyle(this.panel, null).opacity);
+		var glass = this.aeroGlass;
+		var duration = glass ? 0 : this.getPref('extensions.tabcatalog.animation.fade.duration') ;
+		var opacity = glass ? 0 : Number(window.getComputedStyle(this.panel, null).opacity) ;
 		if (duration <= 0 || opacity <= 0) {
-			this.panel.style.opacity = 0;
+			if (!glass)
+				this.panel.style.opacity = 0;
+			this.panel.setAttribute('collapsed', true);
 			this.shown = false;
 		}
 		else {
@@ -2420,6 +2431,7 @@ var TabCatalog = {
 				}
 				style.opacity = opacity;
 				if (finished) {
+					self.panel.setAttribute('collapsed', true);
 					self.shown = false;
 				}
 				return finished;

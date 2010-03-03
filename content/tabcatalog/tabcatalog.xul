@@ -58,7 +58,8 @@
 	<panel id="tabcatalog-thumbnail-panel"
 		class="KUI-panel"
 		noautofocus="true"
-		onpopuphiding="TabCatalog.onPanelHiding(event);">
+		onpopuphiding="TabCatalog.onPanelHiding(event);"
+		collapsed="true">
 		<hbox flex="1">
 			<box id="tabcatalog-thumbnail-container-wrapper"
 				flex="1">
