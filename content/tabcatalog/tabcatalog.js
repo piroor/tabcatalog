@@ -234,13 +234,17 @@ var TabCatalog = {
 	},
 	set shown(val) {
 		if (val) {
+			let currentSize = screen.availWidth+'x'+screen.availHeight;
+			if (this.panel.lastScreenSize != currentSize)
+				this.rebuildRequest = true;
 			this.panel.setAttribute('width', this.panelWidth);
 			this.panel.setAttribute('height', this.panelHeight);
 			this.panel.openPopupAtScreen(
-				(window.screen.availWidth - this.panelWidth) / 2,
-				(window.screen.availHeight - this.panelHeight) / 2,
+				((screen.availWidth - this.panelWidth) / 2) + screen.availLeft,
+				((screen.availHeight - this.panelHeight) / 2) + screen.availTop,
 				false
 			);
+			this.panel.lastScreenSize = currentSize;
 		}
 		else {
 			this.panel.hidePopup();
@@ -252,17 +256,17 @@ var TabCatalog = {
 	{
 		var max = this.maxMargin;
 		if (max < 0)
-			max = window.screen.availWidth * this.marginFactor;
+			max = screen.availWidth * this.marginFactor;
 		var margin = Math.max(this.minMargin, max);
-		return parseInt(max - (margin * 2));
+		return parseInt(screen.availWidth - (margin * 2));
 	},
 	get panelHeight()
 	{
 		var max = this.maxMargin;
 		if (max < 0)
-			max = window.screen.availHeight * this.marginFactor;
+			max = screen.availHeight * this.marginFactor;
 		var margin = Math.max(this.minMargin, max);
-		return parseInt(max - (margin * 2));
+		return parseInt(screen.availHeight - (margin * 2));
 	},
 	marginFactor : 0.16,
  
