@@ -19,18 +19,24 @@ var TabCatalog = {
  
 	get tabContextMenu() { 
 		if (!this.mTabContextMenu) {
-			var id = gBrowser.mStrip.getAttribute('context');
-			var popup = (id == '_child') ? gBrowser.mStrip.getElementsByTagNameNS('http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul', 'menupopup')[0] : document.getELementById(id) ;
+			let strip = gBrowser.mStrip || gBrowser.tabContainer;
+			let id = strip.getAttribute('context');
+			let popup = (id == '_child') ?
+					(
+						strip.getElementsByTagNameNS('http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul', 'menupopup')[0] ||
+						document.getAnonymousElementByAttribute(strip, 'anonid', 'tabContextMenu')
+					) :
+					document.getElementById(id) ;
 			this.mTabContextMenu = popup;
 
 			popup.appendChild(document.createElement('menuseparator'));
 			popup.lastChild.setAttribute('class', 'tabcatalog-tabcontextmenu-separator');
-			var sep = popup.lastChild;
-			var range = document.createRange();
+			let sep = popup.lastChild;
+			let range = document.createRange();
 			range.selectNodeContents(this.tabSelectPopupMenu);
 			popup.appendChild(range.cloneContents());
 			range.detach();
-			var tabcatalogItems = [];
+			let tabcatalogItems = [];
 			tabcatalogItems.push(sep);
 			while (sep.nextSibling) {
 				tabcatalogItems.push(sep.nextSibling);
@@ -43,7 +49,7 @@ var TabCatalog = {
 					);
 			}
 
-			var self = this;
+			let self = this;
 			popup.__tabcatalog__onPopupShowing = function(aEvent) {
 				self.contextMenuShwon = true;
 				var selectedTabItems = self.getSelectedTabItems();
