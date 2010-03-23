@@ -174,7 +174,7 @@ var TabCatalog = {
  
 	get tabStrip() 
 	{
-		return gBrowser.mStirp || gBrowser.tabContainer;
+		return gBrowser.mStrip || gBrowser.tabContainer;
 	},
  
 	get isMultiWindow() 
