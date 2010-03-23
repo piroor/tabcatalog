@@ -1270,6 +1270,7 @@ var TabCatalog = {
 	
 	handleEvent : function(aEvent) 
 	{
+		var b;
 		switch (aEvent.type)
 		{
 			case 'keydown':
@@ -1349,7 +1350,8 @@ var TabCatalog = {
 
 			case 'TabOpen':
 				this.rebuildRequest = true;
-				this.initTab(aEvent.originalTarget, aEvent.currentTarget);
+				b = this.getTabBrowserFromChild(aEvent.currentTarget);
+				this.initTab(aEvent.originalTarget, b);
 				
 				if (this.shown) this.updateUIOnTabChange();
 				break;
