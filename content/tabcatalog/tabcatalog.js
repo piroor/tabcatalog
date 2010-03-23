@@ -19,7 +19,7 @@ var TabCatalog = {
  
 	get tabContextMenu() { 
 		if (!this.mTabContextMenu) {
-			let strip = gBrowser.mStrip || gBrowser.tabContainer;
+			let strip = this.tabStrip;
 			let id = strip.getAttribute('context');
 			let popup = (id == '_child') ?
 					(
@@ -170,6 +170,11 @@ var TabCatalog = {
 			array.push(tabs.snapshotItem(i));
 		}
 		return array;
+	},
+ 
+	get tabStrip() 
+	{
+		return gBrowser.mStirp || gBrowser.tabContainer.parentNode;
 	},
  
 	get isMultiWindow() 
@@ -399,6 +404,8 @@ var TabCatalog = {
 		if (!focused.length) {
 			if (aPreventFallback) return null;
 			focused = this.catalog.parentNode.getElementsByAttribute('selected', 'true');
+			if (!focused.length)
+				focused = this.catalog.parentNode.getElementsByAttribute('current', 'true');
 		}
 
 		return focused[0];
@@ -1040,9 +1047,9 @@ var TabCatalog = {
  
 	updateTabBrowser : function(aTabBrowser) 
 	{
-		aTabBrowser.addEventListener('TabOpen',  this, false);
-		aTabBrowser.addEventListener('TabClose', this, false);
-		aTabBrowser.addEventListener('TabMove',  this, false);
+		aTabBrowser.mTabContainer.addEventListener('TabOpen',  this, false);
+		aTabBrowser.mTabContainer.addEventListener('TabClose', this, false);
+		aTabBrowser.mTabContainer.addEventListener('TabMove',  this, false);
 
 		var tabs = this.getTabsArray(aTabBrowser);
 		for (var i = 0, maxi = tabs.length; i < maxi; i++)
@@ -1125,9 +1132,9 @@ var TabCatalog = {
 	
 	destroyTabBrowser : function(aTabBrowser) 
 	{
-		aTabBrowser.removeEventListener('TabOpen',  this, false);
-		aTabBrowser.removeEventListener('TabClose', this, false);
-		aTabBrowser.removeEventListener('TabMove',  this, false);
+		aTabBrowser.mTabContainer.removeEventListener('TabOpen',  this, false);
+		aTabBrowser.mTabContainer.removeEventListener('TabClose', this, false);
+		aTabBrowser.mTabContainer.removeEventListener('TabMove',  this, false);
 	},
  
 	destroyTab : function(aTab) 
@@ -2639,7 +2646,7 @@ var TabCatalog = {
 			box.relatedTabBrowser = tabs[i].__tabcatalog__relatedTabBrowser || tabs[i].parentNode;
 			while (box.relatedTabBrowser.localName != 'tabbrowser')
 			{
-				box.relatedTabBrowser = box.relatedTabBrowser.parentNode;
+				box.relatedTabBrowser = box.relatedTabBrowser.tabbrowser || box.relatedTabBrowser.parentNode;
 				tabs[i].__tabcatalog__relatedTabBrowser = box.relatedTabBrowser;
 			}
 
@@ -3516,9 +3523,11 @@ var TabCatalog = {
 			index = (index + 1) % max;
 
 		focusedNode = this.catalog.parentNode.getElementsByAttribute('index', index)[0];
-		focusedNode.parentNode.setAttribute('container-focused', true);
-		focusedNode.setAttribute('focused', true);
-		this.scrollCatalogToItem(focusedNode);
+		if (focusedNode) {
+			focusedNode.parentNode.setAttribute('container-focused', true);
+			focusedNode.setAttribute('focused', true);
+			this.scrollCatalogToItem(focusedNode);
+		}
 	},
  
 	moveFocus : function(aX, aY) 
@@ -3554,6 +3563,7 @@ var TabCatalog = {
 	},
 	moveFocusToItem : function(aItem, aSetCurrent)
 	{
+		if (!aItem) return;
 		var focusedNode = this.getFocusedItem();
 		if (focusedNode) {
 			focusedNode.parentNode.removeAttribute('container-focused');
