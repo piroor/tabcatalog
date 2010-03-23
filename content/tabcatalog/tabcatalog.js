@@ -250,16 +250,21 @@ var TabCatalog = {
  
 	get panelWidth() 
 	{
-		var max = window.screen.availWidth;
-		var margin = Math.max(this.minMargin, max * this.marginFactor);
+		var max = this.maxMargin;
+		if (max < 0)
+			max = window.screen.availWidth * this.marginFactor;
+		var margin = Math.max(this.minMargin, max);
 		return parseInt(max - (margin * 2));
 	},
 	get panelHeight()
 	{
-		var max = window.screen.availHeight;
-		var margin = Math.max(this.minMargin, max * this.marginFactor);
+		var max = this.maxMargin;
+		if (max < 0)
+			max = window.screen.availHeight * this.marginFactor;
+		var margin = Math.max(this.minMargin, max);
 		return parseInt(max - (margin * 2));
 	},
+	marginFactor : 0.16,
  
 	get padding() { 
 		if (this._padding < 0) {
@@ -951,7 +956,7 @@ var TabCatalog = {
 		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.override.allinonegest');
 		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.shortcut');
 		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.margin.min');
-		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.margin.factor');
+		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.margin.max');
 		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.thumbnail.header');
 		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.thumbnail.closebox');
 		this.observe(null, 'nsPref:changed', 'extensions.tabcatalog.thumbnail.navigation');
@@ -1186,8 +1191,8 @@ var TabCatalog = {
 				this.rebuildRequest = true;
 				break;
 
-			case 'extensions.tabcatalog.margin.factor':
-				this.marginFactor = Number(value);
+			case 'extensions.tabcatalog.margin.max':
+				this.maxMargin = value;
 				this.rebuildRequest = true;
 				break;
 
