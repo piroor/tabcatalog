@@ -21,12 +21,14 @@ var TabCatalog = {
 		if (!this.mTabContextMenu) {
 			let strip = this.tabStrip;
 			let id = strip.getAttribute('context');
-			let popup = (id == '_child') ?
-					(
-						strip.getElementsByTagNameNS('http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul', 'menupopup')[0] ||
-						document.getAnonymousElementByAttribute(strip, 'anonid', 'tabContextMenu')
-					) :
-					document.getElementById(id) ;
+			let popup = gBrowser.tabContextMenu ||
+					(id == '_child' ?
+						(
+							strip.getElementsByTagNameNS('http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul', 'menupopup')[0] ||
+							document.getAnonymousElementByAttribute(strip, 'anonid', 'tabContextMenu')
+						) :
+						document.getElementById(id)
+					);
 			this.mTabContextMenu = popup;
 
 			popup.appendChild(document.createElement('menuseparator'));
@@ -174,7 +176,10 @@ var TabCatalog = {
  
 	get tabStrip() 
 	{
-		return gBrowser.mStrip || gBrowser.tabContainer;
+		var strip = gBrowser.mStrip;
+		return (strip && strip.localName == 'hbox') ?
+				strip :
+				gBrowser.tabContainer.parentNode;
 	},
  
 	get isMultiWindow() 
