@@ -17,3 +17,5 @@ style chrome://browser/content/browser.xul chrome://tabcatalog/skin/panel.css ap
 style chrome://browser/content/browser.xul chrome://tabcatalog-fx35/skin/toolbar.css appversion>=3.5
 
 override	chrome://tabcatalog/skin/toolbar.css	chrome://tabcatalog-gnome/skin/toolbar.css	os=Linux
+
+resource tabcatalog-modules modules/

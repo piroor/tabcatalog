@@ -956,7 +956,7 @@ var TabCatalog = {
  
 	getBoxObjectFor : function(aNode) 
 	{
-		return window['piro.sakura.ne.jp'].boxObject.getBoxObjectFor(aNode);
+		return this.namespace.boxObject.getBoxObjectFor(aNode);
 	},
   
 /* Initializing */ 
@@ -1097,6 +1097,9 @@ var TabCatalog = {
   
 	destroy : function() 
 	{
+		this.stopFade();
+		this.stopScroll();
+
 		window.removeEventListener('keydown',   this, true);
 		window.removeEventListener('keyup',     this, true);
 		window.removeEventListener('keypress',  this, true);
@@ -2408,7 +2411,7 @@ var TabCatalog = {
 				}
 				return finished;
 			};
-			window['piro.sakura.ne.jp'].animationManager.addTask(
+			this.namespace.animationManager.addTask(
 				this.fadeAnimationTask,
 				opacity, 1-opacity,
 				duration
@@ -2438,7 +2441,7 @@ var TabCatalog = {
 	stopFade : function()
 	{
 		if (this.fadeAnimationTask) {
-			window['piro.sakura.ne.jp'].animationManager.removeTask(
+			this.namespace.animationManager.removeTask(
 				this.fadeAnimationTask
 			);
 			delete this.fadeAnimationTask;
@@ -2479,7 +2482,7 @@ var TabCatalog = {
 				}
 				return finished;
 			};
-			window['piro.sakura.ne.jp'].animationManager.addTask(
+			this.namespace.animationManager.addTask(
 				this.fadeAnimationTask,
 				opacity, -opacity,
 				duration
@@ -3644,7 +3647,7 @@ var TabCatalog = {
 				}
 				return finished;
 			};
-			window['piro.sakura.ne.jp'].animationManager.addTask(
+			this.namespace.animationManager.addTask(
 				this.scrollAnimationTask,
 				originalY, aDelta,
 				this.getPref('extensions.tabcatalog.animation.scroll.duration')
@@ -3655,7 +3658,7 @@ var TabCatalog = {
 	stopScroll : function() 
 	{
 		if (this.scrollAnimationTask) {
-			window['piro.sakura.ne.jp'].animationManager.removeTask(
+			this.namespace.animationManager.removeTask(
 				this.scrollAnimationTask
 			);
 			delete this.scrollAnimationTask;
@@ -3782,7 +3785,13 @@ var TabCatalog = {
     
 	___ : null 
 };
-TabCatalog.__proto__ = window['piro.sakura.ne.jp'].prefs;
+(function() {
+	var namespace = {};
+	Components.utils.import('resource://tabcatalog-modules/prefs.js', namespace);
+	Components.utils.import('resource://tabcatalog-modules/namespace.jsm', namespace);
+	TabCatalog.__proto__ = namespace.prefs;
+	TabCatalog.namespace = namespace.prefs.getNamespaceFor('piro.sakura.ne.jp')['piro.sakura.ne.jp'];
+})();
 
 window.addEventListener('load', TabCatalog, false);
  
