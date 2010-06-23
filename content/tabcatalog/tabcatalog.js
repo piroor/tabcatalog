@@ -3790,7 +3790,7 @@ var TabCatalog = {
 	Components.utils.import('resource://tabcatalog-modules/prefs.js', namespace);
 	Components.utils.import('resource://tabcatalog-modules/namespace.jsm', namespace);
 	TabCatalog.__proto__ = namespace.prefs;
-	TabCatalog.namespace = namespace.prefs.getNamespaceFor('piro.sakura.ne.jp')['piro.sakura.ne.jp'];
+	TabCatalog.namespace = namespace.getNamespaceFor('piro.sakura.ne.jp')['piro.sakura.ne.jp'];
 })();
 
 window.addEventListener('load', TabCatalog, false);
