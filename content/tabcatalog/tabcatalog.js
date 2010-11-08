@@ -796,7 +796,8 @@ var TabCatalog = {
 			aPopupMenu.openPopupAtScreen(
 				aEvent.screenX,
 				aEvent.screenY,
-				true
+				true,
+				aEvent
 			);
 			if (aIsAutoShow && this.getPref('extensions.tabcatalog.tabdrag.autoclear'))
 				aPopupMenu.addEventListener('popuphiding', autoClose, false);
