@@ -1055,6 +1055,8 @@ var TabCatalog = {
  
 	updateTabBrowser : function(aTabBrowser) 
 	{
+		aTabBrowser.addTabsProgressListener(this, Components.interfaces.nsIWebProgress.NOTIFY_ALL);
+
 		aTabBrowser.mTabContainer.addEventListener('TabOpen',  this, false);
 		aTabBrowser.mTabContainer.addEventListener('TabClose', this, false);
 		aTabBrowser.mTabContainer.addEventListener('TabMove',  this, false);
@@ -1068,30 +1070,16 @@ var TabCatalog = {
 		delete i;
 		delete maxi;
 		delete tabs;
-
-		if ('swapBrowsersAndCloseOther' in aTabBrowser) {
-			eval('aTabBrowser.swapBrowsersAndCloseOther = '+aTabBrowser.swapBrowsersAndCloseOther.toSource().replace(
-				'{',
-				'{ TabCatalog.destroyTab(aOurTab);'
-			).replace(
-				'if (aOurTab == this.selectedTab) {this.updateCurrentBrowser(',
-				'TabCatalog.initTab(aOurTab); $&'
-			));
-		}
 	},
  
 	initTab : function(aTab, aTabBrowser) 
 	{
-		if (aTab.__tabcatalog__progressListener) return;
+		if (aTab.__tabcatalog__parentTabBrowser) return;
 
 		if (!aTabBrowser) aTabBrowser = this.getTabBrowserFromChild(aTab);
-		var filter = Components.classes['@mozilla.org/appshell/component/browser-status-filter;1'].createInstance(Components.interfaces.nsIWebProgress);
-		var listener = this.createProgressListener(aTab, aTabBrowser);
-		filter.addProgressListener(listener, Components.interfaces.nsIWebProgress.NOTIFY_ALL);
-		aTab.linkedBrowser.webProgress.addProgressListener(filter, Components.interfaces.nsIWebProgress.NOTIFY_ALL);
 
-		aTab.__tabcatalog__progressListener = listener;
-		aTab.__tabcatalog__progressFilter   = filter;
+		aTab.__tabcatalog__parentTabBrowser = aTabBrowser;
+		aTab.linkedBrowser.__tabcatalog__tab = aTab;
 
 		window.setTimeout('TabCatalog.updateMultipleTabsState();', 0);
 	},
@@ -1143,6 +1131,7 @@ var TabCatalog = {
 	
 	destroyTabBrowser : function(aTabBrowser) 
 	{
+		aTabBrowser.removeTabsProgressListener(this);
 		aTabBrowser.mTabContainer.removeEventListener('TabOpen',  this, false);
 		aTabBrowser.mTabContainer.removeEventListener('TabClose', this, false);
 		aTabBrowser.mTabContainer.removeEventListener('TabMove',  this, false);
@@ -1150,15 +1139,10 @@ var TabCatalog = {
  
 	destroyTab : function(aTab) 
 	{
-		if (!aTab.__tabcatalog__progressListener) return;
+		if (!aTab.__tabcatalog__parentTabBrowser) return;
 
-		aTab.linkedBrowser.webProgress.removeProgressListener(aTab.__tabcatalog__progressFilter);
-		aTab.__tabcatalog__progressFilter.removeProgressListener(aTab.__tabcatalog__progressListener);
-		delete aTab.__tabcatalog__progressFilter;
-		delete aTab.__tabcatalog__progressListener.mTab;
-		delete aTab.__tabcatalog__progressListener.mBrowser;
-		delete aTab.__tabcatalog__progressListener.mTabBrowser;
-		delete aTab.__tabcatalog__progressListener;
+		delete aTab.__tabcatalog__parentTabBrowser;
+		delete aTab.linkedBrowser.__tabcatalog__tab;
 
 		window.setTimeout('TabCatalog.updateMultipleTabsState();', 0);
 	},
@@ -2904,74 +2888,6 @@ var TabCatalog = {
 		return null;
 	},
  
-	createProgressListener : function(aTab, aTabBrowser) 
-	{
-		return {
-			mTab        : aTab,
-			mBrowser    : aTab.linkedBrowser,
-			mTabBrowser : aTabBrowser,
-			onProgressChange: function (aWebProgress, aRequest, aCurSelfProgress, aMaxSelfProgress, aCurTotalProgress, aMaxTotalProgress)
-			{
-				var item = TabCatalog.getItemForTab(this.mTab);
-				if (item) {
-					item.totalProgress = aMaxTotalProgress ? aCurTotalProgress / aMaxTotalProgress : 0;
-					item.removeAttribute('busy');
-					TabCatalog.updateThumbnail(item);
-				}
-			},
-			onStateChange : function(aWebProgress, aRequest, aStateFlags, aStatus)
-			{
-				const nsIWebProgressListener = Components.interfaces.nsIWebProgressListener;
-				if (
-					aStateFlags & nsIWebProgressListener.STATE_STOP &&
-					aStateFlags & nsIWebProgressListener.STATE_IS_NETWORK
-					) {
-					var canvas = TabCatalog.getCanvasForTab(this.mTab);
-					if (canvas)
-						TabCatalog.updateOneCanvas({
-							tab    : this.mTab,
-							canvas : canvas,
-							isMultiWindow : TabCatalog.isMultiWindow
-						});
-
-					var item = TabCatalog.getItemForTab(this.mTab);
-					if (item) {
-						item.removeAttribute('busy');
-						TabCatalog.updateThumbnail(item, true);
-					}
-				}
-				else if (
-					aStateFlags & nsIWebProgressListener.STATE_START &&
-					aStateFlags & nsIWebProgressListener.STATE_IS_NETWORK
-					) {
-					var item = TabCatalog.getItemForTab(this.mTab);
-					if (item) {
-						item.setAttribute('busy', true);
-						TabCatalog.updateThumbnail(item);
-					}
-				}
-			},
-			onLocationChange : function(aWebProgress, aRequest, aLocation)
-			{
-			},
-			onStatusChange : function(aWebProgress, aRequest, aStatus, aMessage)
-			{
-			},
-			onSecurityChange : function(aWebProgress, aRequest, aState)
-			{
-			},
-			QueryInterface : function(aIID)
-			{
-				if (aIID.equals(Components.interfaces.nsIWebProgressListener) ||
-					aIID.equals(Components.interfaces.nsISupportsWeakReference) ||
-					aIID.equals(Components.interfaces.nsISupports))
-					return this;
-				throw Components.results.NS_NOINTERFACE;
-			}
-
-		};
-	},
- 
 	updateThumbnail : function(aThumbnailItem, aUpdateWithDelay) 
 	{
 		var item = aThumbnailItem;
@@ -3784,6 +3700,83 @@ var TabCatalog = {
 		aioRestoreListeners();
 	},
     
+/* nsIWebProgressListener */ 
+	onProgressChange : function(aWebProgress, aRequest, aCurSelfProgress, aMaxSelfProgress, aCurTotalProgress, aMaxTotalProgress)
+	{
+		// ignore not for tab
+		if (!(aWebProgress instanceof Components.interfaces.nsIDOMElement))
+			return;
+
+		var browser = arguments[0];
+		var tab = browser.__tabcatalog__tab;
+		aCurTotalProgress = arguments[5];
+		aMaxTotalProgress = arguments[6];
+
+		var item = this.getItemForTab(this);
+		if (item) {
+			item.totalProgress = aMaxTotalProgress ? aCurTotalProgress / aMaxTotalProgress : 0;
+			item.removeAttribute('busy');
+			this.updateThumbnail(item);
+		}
+	},
+	onStatusChange : function() {},
+	onSecurityChange : function() {},
+	onStateChange : function(aWebProgress, aRequest, aStateFlags, aStatus)
+	{
+		// ignore not for tab
+		if (!(aWebProgress instanceof Components.interfaces.nsIDOMElement))
+			return;
+
+		var browser = arguments[0];
+		var tab = browser.__tabcatalog__tab;
+		aStateFlags = arguments[3];
+
+		const nsIWebProgressListener = Components.interfaces.nsIWebProgressListener;
+		if (
+			aStateFlags & nsIWebProgressListener.STATE_STOP &&
+			aStateFlags & nsIWebProgressListener.STATE_IS_NETWORK
+			) {
+			var canvas = this.getCanvasForTab(tab);
+			if (canvas)
+				this.updateOneCanvas({
+					tab    : tab,
+					canvas : canvas,
+					isMultiWindow : this.isMultiWindow
+				});
+
+			var item = this.getItemForTab(tab);
+			if (item) {
+				item.removeAttribute('busy');
+				this.updateThumbnail(item, true);
+			}
+		}
+		else if (
+			aStateFlags & nsIWebProgressListener.STATE_START &&
+			aStateFlags & nsIWebProgressListener.STATE_IS_NETWORK
+			) {
+			var item = this.getItemForTab(tab);
+			if (item) {
+				item.setAttribute('busy', true);
+				this.updateThumbnail(item);
+			}
+		}
+	},
+	onLocationChange : function() {},
+
+/* nsIWebProgressListener2 */
+	onProgressChange64 : function() {},
+	onRefreshAttempted : function() { return true; },
+
+/* nsISupports */
+	QueryInterface : function (aIID)
+	{
+		if (aIID.equals(Ci.nsIWebProgressListener) ||
+			aIID.equals(Ci.nsIWebProgressListener2) ||
+			aIID.equals(Ci.nsISupports))
+			return this;
+		throw Components.results.NS_NOINTERFACE;
+	},
+ 
 	___ : null 
 };
 (function() {
