@@ -203,7 +203,9 @@ var TabCatalog = {
 			target;
 		while (targets.hasMoreElements())
 		{
-			target = targets.getNext().QueryInterface(Components.interfaces.nsIDOMWindowInternal);
+			target = targets.getNext().QueryInterface(Components.interfaces.nsIDOMWindow);
+			if ('nsIDOMWindowInternal' in Components.interfaces) // for Firefox 7 or olders
+				target = target.QueryInterface(Components.interfaces.nsIDOMWindowInternal);
 			browserWindows.push(target);
 		}
 
@@ -221,7 +223,9 @@ var TabCatalog = {
 			i;
 		while (targets.hasMoreElements())
 		{
-			target = targets.getNext().QueryInterface(Components.interfaces.nsIDOMWindowInternal);
+			target = targets.getNext().QueryInterface(Components.interfaces.nsIDOMWindow);
+			if ('nsIDOMWindowInternal' in Components.interfaces) // for Firefox 7 or olders
+				target = target.QueryInterface(Components.interfaces.nsIDOMWindowInternal);
 			for (i in browserWindows)
 			{
 				if (target != browserWindows[i]) continue;
