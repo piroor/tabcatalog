@@ -27,7 +27,7 @@
 <!ENTITY tabcatalog.showAllWindows "すべてのウィンドウのタブを表示する">
 
 <!ENTITY tabcatalog.override.caption      "以下の場合にタブの一覧を表示する">
-<!ENTITY tabcatalog.override.ctrltab      "Ctrl(Command)-Tabでタブを切り替える時">
+<!ENTITY tabcatalog.override.ctrltab      "Ctrl/⌘-Tabでタブを切り替える時">
 <!ENTITY tabcatalog.override.ctrltab.delay.disabled "すぐに表示する">
 <!ENTITY tabcatalog.override.ctrltab.delay.enabled  "以下の秒数が経過した後に表示する：">
 <!ENTITY tabcatalog.override.ctrltab.delay.before "">

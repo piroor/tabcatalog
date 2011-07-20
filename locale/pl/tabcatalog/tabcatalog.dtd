@@ -11,7 +11,7 @@
 <!ENTITY tabcatalog.sort_by_focus  "Rozmieść karty wg najczęściej oglądanych">
 <!ENTITY tabcatalog.showAllWindows "Wyświetl miniatury wszystkich kart ze wszystkich okien">
 <!ENTITY tabcatalog.override.caption      "Wyświetl katalog miniatur za pomocą:">
-<!ENTITY tabcatalog.override.ctrltab      "Skrótu [Ctrl(Command)+Tab] (wyświetlenie i przełączanie pomiędzy kartami)">
+<!ENTITY tabcatalog.override.ctrltab      "Skrótu [Ctrl//⌘+Tab] (wyświetlenie i przełączanie pomiędzy kartami)">
 <!ENTITY tabcatalog.override.ctrltab.delay.disabled "Wyświetl katalog natychmiast po użyciu skrótu">
 <!ENTITY tabcatalog.override.ctrltab.delay.enabled  "Wyświetl katalog z opóźnieniem:">
 <!ENTITY tabcatalog.override.ctrltab.delay.before   "">

@@ -22,7 +22,7 @@
 
 
 <!ENTITY tabcatalog.override.caption      "Show Catalog of Tabs for">
-<!ENTITY tabcatalog.override.ctrltab      "Ctrl(Command)-Tab to switch tabs">
+<!ENTITY tabcatalog.override.ctrltab      "Ctrl/⌘-Tab to switch tabs">
 <!ENTITY tabcatalog.override.ctrltab.delay.disabled "Show Catalog just the moment I use the keys">
 <!ENTITY tabcatalog.override.ctrltab.delay.enabled  "Show Catalog after a delay:">
 <!ENTITY tabcatalog.override.ctrltab.delay.before   "">
