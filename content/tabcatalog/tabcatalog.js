@@ -835,7 +835,7 @@ var TabCatalog = {
 
 
 		var uri = aNode.getAttribute('uri');
-		uri = (uri == 'about:blank') ? '' : uri ;
+		uri = (window.isBlankPageURL ? window.isBlankPageURL(uri) : (uri == 'about:blank')) ? '' : uri ;
 		if (uri) {
 			tooltip.firstChild.lastChild.removeAttribute('hidden');
 			tooltip.firstChild.lastChild.setAttribute('value', uri);
