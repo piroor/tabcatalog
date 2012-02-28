@@ -1,10 +1,12 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
 #tabcatalog-thumbnail-panel {
-	background: rgba(0, 0, 0, 0.45) none;
+	appearance: none;
 	-moz-appearance: none;
-	-moz-border-radius: 16px 16px 16px 16px;
+	background: rgba(0, 0, 0, 0.45) none;
 	border: 0 none;
+	border-radius: 16px 16px 16px 16px;
+	-moz-border-radius: 16px 16px 16px 16px;
 	margin: 0;
 	padding: 0;
 }

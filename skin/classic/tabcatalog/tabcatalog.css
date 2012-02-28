@@ -157,20 +157,21 @@
 
 
 .tabcatalog-thumbnail-header-progress {
-	height: 0.4em;
-	min-height: 0.4em;
-	max-height: 0.4em;
-	min-width: 0;
+	appearance: none;
 	-moz-appearance: none;
 	border: none;
-	outline: none;
-
-	position: relative;
-	margin-top: 0.2em;
+	height: 0.4em;
 	margin-bottom: -0.2em;
+	margin-top: 0.2em;
+	max-height: 0.4em;
+	min-height: 0.4em;
+	min-width: 0;
+	outline: none;
+	position: relative;
 }
 .tabcatalog-thumbnail-header-progress > .progress-bar,
 .tabcatalog-thumbnail-header-progress > .progress-remainder {
+	appearance: none;
 	-moz-appearance: none;
 }
 
@@ -195,6 +196,7 @@
 .tabcatalog-scrollbar-thumb {
 	background: rgba(255, 255, 255, 0.7);
 	border: 1px rgba(80, 80, 80, 0.7) solid;
+	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	cursor: -moz-grab;
 	margin-left: -1px;
@@ -203,6 +205,7 @@
 
 .tabcatalog-scrollbar-slider {
 	background: rgba(0, 0, 0, 0.2);
+	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	cursor: normal;
 	margin: 16px 0;
@@ -211,8 +214,10 @@
 
 
 #tabcatalog-thumbnail-panel:-moz-system-metric(windows-compositor) {
-	background: transparent;
+	appearance: -moz-win-glass;
 	-moz-appearance: -moz-win-glass;
+	background: transparent;
+	border-radius: 0;
 	-moz-border-radius: 0;
 	border: none;
 }

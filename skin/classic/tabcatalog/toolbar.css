@@ -21,11 +21,13 @@
 /* ::::: 16px primary toolbar buttons ::::: */
 
 .tabcatalog-thumbnail-toolbar-item {
+  box-orient: vertical;
   -moz-box-orient: vertical;
   min-width: 0;
   list-style-image: url("jar:resource:///chrome/classic.jar!/skin/classic/browser/Toolbar-small.png");
 }
 .tabcatalog-thumbnail-toolbar-item[chromedir="rtl"] {
+  box-orient: vertical;
   -moz-box-orient: vertical;
   min-width: 0;
   list-style-image: url("jar:resource:///chrome/classic.jar!/skin/classic/browser/Toolbar-rtl-small.png");
