@@ -3708,7 +3708,7 @@ var TabCatalog = {
 	onProgressChange : function(aWebProgress, aRequest, aCurSelfProgress, aMaxSelfProgress, aCurTotalProgress, aMaxTotalProgress)
 	{
 		// ignore not for tab
-		if (!(aWebProgress instanceof Components.interfaces.nsIDOMElement))
+		if (!(aWebProgress instanceof Element))
 			return;
 
 		var browser = arguments[0];
@@ -3728,7 +3728,7 @@ var TabCatalog = {
 	onStateChange : function(aWebProgress, aRequest, aStateFlags, aStatus)
 	{
 		// ignore not for tab
-		if (!(aWebProgress instanceof Components.interfaces.nsIDOMElement))
+		if (!(aWebProgress instanceof Element))
 			return;
 
 		var browser = arguments[0];
