@@ -2,7 +2,7 @@
 
 appname=tabcatalog
 
-cp buildscript/makexpi.sh ./
+cp makexpi/makexpi.sh ./
 ./makexpi.sh $appname version=0
 rm ./makexpi.sh
 
