@@ -19,14 +19,11 @@
    // restart after doing something
    window['piro.sakura.ne.jp'].animationManager.start();
 
- license: The MIT License, Copyright (c) 2009-2011 YUKI "Piro" Hiroshi
-   http://github.com/piroor/fxaddonlibs/blob/master/license.txt
+ license: The MIT License, Copyright (c) 2009-2015 YUKI "Piro" Hiroshi
  original:
-   http://github.com/piroor/fxaddonlibs/blob/master/animationManager.js
+   http://github.com/piroor/fxaddonlib-animation-manager
 */
 
-/* To work as a JS Code Module (*require jstimer.jsm)
-   http://github.com/piroor/fxaddonlibs/blob/master/jstimer.jsm */
 if (typeof window == 'undefined' ||
 	(window && typeof window.constructor == 'function')) {
 	this.EXPORTED_SYMBOLS = ['animationManager'];
@@ -41,12 +38,10 @@ if (typeof window == 'undefined' ||
 	catch(e) {
 		window = {};
 	}
-	if (!('setInterval' in window))
-		Components.utils.import('resource://tabcatalog-modules/jstimer.jsm', window);
 }
 
 (function() {
-	const currentRevision = 9;
+	const currentRevision = 19;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -68,103 +63,72 @@ if (typeof window == 'undefined' ||
 	window['piro.sakura.ne.jp'].animationManager = {
 		revision : currentRevision,
 
+		running : false,
+
 		addTask : function(aTask, aBeginningValue, aTotalChange, aDuration, aRelatedWindow) 
 		{
-			if (!aTask) return;
+			if (!aRelatedWindow &&
+				window &&
+				typeof window.Window == 'function' &&
+				window instanceof window.Window)
+				aRelatedWindow = window;
 
-			if (this._isAnimationFrameAvailable(aRelatedWindow)) {
-				if (this._windows.indexOf(aRelatedWindow) < 0)
-					this._windows.push(aRelatedWindow);
-			}
-			else {
-				aRelatedWindow = null;
-			}
+			if (!aTask || !aRelatedWindow) return;
+
+			if (this._windows.indexOf(aRelatedWindow) < 0)
+				this._windows.push(aRelatedWindow);
 
 			this.tasks.push({
 				task      : aTask,
-				start     : aRelatedWindow ? aRelatedWindow.mozAnimationStartTime : (new Date()).getTime(),
+				start     : aRelatedWindow ? aRelatedWindow.mozAnimationStartTime : Date.now(),
 				beginning : aBeginningValue,
 				change    : aTotalChange,
 				duration  : aDuration,
 				window    : aRelatedWindow
 			});
 
-			if (this.tasks.length == 1)
-				this.start();
+			this.start();
 		},
 
 		removeTask : function(aTask) 
 		{
 			if (!aTask) return;
-			var task;
-			for (var i in this.tasks)
+			for (let i = this.tasks.length - 1; i > -1; i--)
 			{
-				task = this.tasks[i];
-				if (task.task != aTask) continue;
-				delete task.task;
-				delete task.start;
-				delete task.beginning;
-				delete task.change;
-				delete task.duration;
-				delete task.window;
+				let registeredTask = this.tasks[i];
+				if (registeredTask) {
+					if (registeredTask.task != aTask)
+						continue;
+					delete registeredTask.task;
+					delete registeredTask.start;
+					delete registeredTask.beginning;
+					delete registeredTask.change;
+					delete registeredTask.duration;
+					delete registeredTask.window;
+				}
 				this.tasks.splice(i, 1);
-				this._cleanUpWindows();
-				break;
 			}
-			if (!this.tasks.length)
-				this.stop();
+			this._cleanUpWindows();
 		},
 
 		start : function()
 		{
-			this.stop();
-			if (this.tasks.some(function(aTask) {
-					return !aTask.window;
-				})) {
-				this.timer = window.setInterval(
-					this.onAnimation,
-					this.interval,
-					this
-				);
-			}
-			if (this._windows.length) { // Firefox 4-
-				this._windows.forEach(function(aWindow) {
-					var index = this._animatingWindows.indexOf(aWindow);
-					var callback;
-					if (index < 0) {
-						let self = this;
-						callback = function() {
-							self.processAnimationFrame(aWindow);
-						};
-						this._animatingWindowCallbacks.push(callback);
-						this._animatingWindows.push(aWindow);
-
-						this._animatingWindowSafetyTimers.push(window.setTimeout(function(aSelf) {
-							aSelf.processAnimationFrame(aWindow);
-						}, 1000, this));
-					}
-					else {
-						callback = this._animatingWindowCallbacks[index];
-					}
-					aWindow.mozRequestAnimationFrame(callback);
-				}, this);
-			}
+			if (!this._windows.length)
+				return;
+			this._windows.forEach(function(aWindow) {
+				if (this._animatingWindows.indexOf(aWindow) > -1)
+					return;
+				this._animatingWindows.push(aWindow);
+				let self = this;
+				aWindow.requestAnimationFrame(function() {
+					self.processAnimationFrame(aWindow);
+				});
+			}, this);
 		},
 
 		stop : function() 
 		{
-			if (this.timer) {
-				window.clearInterval(this.timer);
-				this.timer = null;
-			}
-			if (this._animatingWindows.length) { // Firefox 4-
-				this._animatingWindows.forEach(function(aWindow, aIndex) {
-					window.clearTimeout(this._animatingWindowSafetyTimers[aIndex]);
-				}, this);
-				this._animatingWindows = [];
-				this._animatingWindowSafetyTimers = [];
-				this._animatingWindowCallbacks = [];
-			}
+			this._animatingWindows = [];
 		},
 
 		removeAllTasks : function()
@@ -175,82 +139,68 @@ if (typeof window == 'undefined' ||
 		},
 
 		tasks    : tasks,
-		interval : 10,
-		timer    : null,
-
-		// Firefox 4 animation frame API
 		_windows : windows,
 		_animatingWindows : [],
-		_animatingWindowSafetyTimers : [],
-		_animatingWindowCallbacks : [],
-
-		_isAnimationFrameAvailable : function(aWindow)
-		{
-			return aWindow && 'mozRequestAnimationFrame' in aWindow;
-		},
 
 		_cleanUpWindows : function()
 		{
-			this._windows = this._windows.filter(function(aWindow) {
+			for (let i = this._windows.length - 1; i > -1; i--)
+			{
+				let w = this._windows[i];
 				if (this.tasks.some(function(aTask) {
-						return aTask.window && this._windows.indexOf(aTask.window) > -1;
-					}, this))
-					return true;
-				let index = this._animatingWindows.indexOf(aWindow);
-				if (index > -1) {
-					let timer = this._animatingWindowSafetyTimers[index];
-					if (timer)
-						window.clearTimeout(timer);
+						return aTask && aTask.window == w;
+					}))
+					continue;
+
+				let index = this._animatingWindows.indexOf(w);
+				if (index > -1)
 					this._animatingWindows.splice(index, 1);
-					this._animatingWindowSafetyTimers.splice(index, 1);
-					this._animatingWindowCallbacks.splice(index, 1);
-				}
-				return false;
-			}, this);
+
+				this._windows.splice(i, 1);
+			}
 		},
 
 		processAnimationFrame : function(aWindow)
 		{
-			var index = this._animatingWindows.indexOf(aWindow);
-			if (index > -1) {
-				let timer = this._animatingWindowSafetyTimers[index];
-				if (timer) window.clearTimeout(timer);
-				this._animatingWindowSafetyTimers[index] = null;
+			if (this._animatingWindows.indexOf(aWindow) > -1) {
+				this.onAnimation(aWindow);
 			}
-			this.onAnimation(this, aWindow);
 			this._cleanUpWindows();
-			if (index > -1 && this._animatingWindowCallbacks[index])
-				aWindow.mozRequestAnimationFrame(this._animatingWindowCallbacks[index]);
+			if (this._animatingWindows.indexOf(aWindow) > -1) {
+				let self = this;
+				aWindow.requestAnimationFrame(function() {
+					self.processAnimationFrame(aWindow);
+				});
+			}
 		},
 
-		onAnimation : function(aSelf, aWindow) 
+		onAnimation : function(aWindow) 
 		{
 			// task should return true if it finishes.
-			var now = (new Date()).getTime() ;
-			var tasks = aSelf.tasks;
-			aSelf.tasks = [null];
-			tasks = tasks.filter(function(aTask) {
-				if (!aTask)
-					return false;
-				if (aWindow && aTask.window != aWindow)
-					return true;
+			var now = Date.now();
+			for (let i = this.tasks.length - 1; i > -1; i--)
+			{
+				let task = this.tasks[i];
 				try {
-					var time = Math.min(aTask.duration, now - aTask.start);
-					var finished = aTask.task(
-							time,
-							aTask.beginning,
-							aTask.change,
-							aTask.duration
-						);
-					return !finished && (time < aTask.duration);
+					if (task && !task.window.closed) {
+						if (task.window != aWindow)
+							continue;
+						let time = Math.min(task.duration, now - task.start);
+						let finished = task.task(
+								time,
+								task.beginning,
+								task.change,
+								task.duration
+							);
+						if (!finished && (time < task.duration))
+							continue;
+					}
 				}
 				catch(e) {
+					dump(e+'\n'+e.stack+'\n');
 				}
-				return false;
-			});
-			aSelf.tasks = aSelf.tasks.slice(1).concat(tasks);
-			if (!aSelf.tasks.length)
-				aSelf.stop();
+				this.tasks.splice(i, 1);
+			}
 		}
 
 	};
