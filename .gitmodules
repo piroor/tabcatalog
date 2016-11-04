@@ -1,5 +1,5 @@
-[submodule "buildscript"]
-	path = buildscript
+[submodule "makexpi"]
+	path = makexpi
 	url = https://github.com/piroor/makexpi.git
 [submodule "makexpi"]
 	path = makexpi
